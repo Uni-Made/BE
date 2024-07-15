@@ -1,5 +1,7 @@
 package umc.unimade.domain.accounts.entity;
 
 public enum Provider {
-    KAKAO, NAVER, GOOGLE
+    KAKAO,
+    NAVER,
+    GOOGLE
 }
