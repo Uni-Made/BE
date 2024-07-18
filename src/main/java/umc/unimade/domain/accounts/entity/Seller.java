@@ -38,6 +38,9 @@ public class Seller extends BaseEntity {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
