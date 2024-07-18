@@ -41,6 +41,9 @@ public class Products extends BaseEntity {
     @Column(name = "status")
     private ProductStatus status;
 
+    @Column(name = "university", nullable = false)
+    private String university;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Seller seller;
