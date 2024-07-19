@@ -53,7 +53,7 @@ public class Products extends BaseEntity {
     private String bankName;
 
     @Column(name = "account_number", nullable = false)
-    private String accountNumber;
+    private Long accountNumber;
 
     @Column(name = "account_name", nullable = false)
     private String accountName;

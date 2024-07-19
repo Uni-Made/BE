@@ -2,6 +2,7 @@ package umc.unimade.domain.products.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.global.registerStatus.RegisterStatus;
 
 import java.time.LocalDate;
@@ -48,7 +49,7 @@ public class ProductRegister {
     private String bankName;
 
     @Column(name = "account_number", nullable = false)
-    private String accountNumber;
+    private Long accountNumber;
 
     @Column(name = "account_name", nullable = false)
     private String accountName;
@@ -56,6 +57,10 @@ public class ProductRegister {
     @Enumerated(EnumType.STRING)
     @Column(name = "registerStatus", nullable = false)
     private RegisterStatus registerStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

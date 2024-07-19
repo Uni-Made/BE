@@ -22,7 +22,6 @@ public enum ErrorCode implements BaseErrorCode {
 
     // 판매자 관련 에러
 
-
     // 구매자 관련 에러
 
     private final HttpStatus httpStatus;

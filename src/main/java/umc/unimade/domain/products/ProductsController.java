@@ -8,10 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.*;
 import umc.unimade.domain.products.dto.ProductResponse;
+import umc.unimade.domain.products.dto.ProductRequest;
+import umc.unimade.domain.products.entity.ProductRegister;
 import umc.unimade.domain.products.entity.ViewType;
 import umc.unimade.domain.products.service.ProductsCommandService;
 import umc.unimade.domain.products.service.ProductsQueryService;
 import umc.unimade.global.common.ApiResponse;
+import umc.unimade.global.common.BaseEntity;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.ProductsExceptionHandler;
 import umc.unimade.global.common.exception.UserExceptionHandler;
@@ -20,7 +23,7 @@ import umc.unimade.global.common.exception.UserExceptionHandler;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-public class ProductsController {
+public class ProductsController extends BaseEntity {
     private final ProductsQueryService productsQueryService;
     private final ProductsCommandService productsCommandService;
 
@@ -53,5 +56,12 @@ public class ProductsController {
         } catch (UserExceptionHandler e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
         }
+    }
+
+    // 상품 등록
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse<ProductRegister>> createProduct(@RequestBody ProductRequest.CreateProductDto request) {
+        ApiResponse<ProductRegister> createdProduct = productsCommandService.createProduct(request);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 }
