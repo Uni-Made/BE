@@ -54,14 +54,14 @@ public class ProductRegister {
     private String accountName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "registerStatus", nullable = false)
     private RegisterStatus registerStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProductsImage> productImages = new ArrayList<>();
 
     @PostPersist
