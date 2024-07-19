@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.review.ReviewRepository;
+import umc.unimade.domain.review.dto.ReviewListResponse;
 import umc.unimade.domain.review.dto.ReviewResponse;
 import umc.unimade.domain.products.entity.Products;
 
@@ -21,13 +22,12 @@ public class ReviewStrategy implements ProductStrategy {
     @Override
     public ProductResponse loadProduct(Products product, PageRequest pageRequest) {
         ProductResponse response = ProductResponse.to(product);
-        List<ReviewResponse> reviews = reviewRepository.findByProductId(product.getId(), pageRequest)
+        List<ReviewListResponse> reviews = reviewRepository.findByProductId(product.getId(), pageRequest)
                 .getContent().stream()
-                .map(ReviewResponse::to)
-                .toList();
-        response.setReviews(reviews.stream()
-                .map(ReviewResponse::getContent) // assuming you want to extract content here
-                .collect(Collectors.toList()));
+                .map(ReviewListResponse::to)
+                .collect(Collectors.toList());
+        response.setReviews(reviews);
         return response;
     }
 }
+

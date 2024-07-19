@@ -8,6 +8,7 @@ import umc.unimade.global.common.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -37,4 +38,13 @@ public class Review extends BaseEntity {
 
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ReviewImage> reviewImages = new ArrayList<>();
+
+    public void setReviewImages(List<ReviewImage> reviewImages) {
+        this.reviewImages = reviewImages.stream()
+                .map(reviewImage -> {
+                    reviewImage.setReview(this);
+                    return reviewImage;
+                })
+                .collect(Collectors.toList());
+    }
 }
