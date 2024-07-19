@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.data.domain.PageRequest;
 import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.products.entity.Products;
-import umc.unimade.domain.qna.dto.QnAResponse;
+import umc.unimade.domain.qna.dto.QnAListResponse;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
 
 import lombok.*;
@@ -17,15 +17,13 @@ public class QnAStrategy implements ProductStrategy{
     private final QuestionsRepository questionsRepository;
 
     @Override
-    public ProductResponse loadProduct (Products product, PageRequest pageRequest){
+    public ProductResponse loadProduct(Products product, PageRequest pageRequest) {
         ProductResponse response = ProductResponse.to(product);
-        List<QnAResponse> questions = questionsRepository.findByProductId(product.getId(), pageRequest)
+        List<QnAListResponse> questions = questionsRepository.findByProductId(product.getId(), pageRequest)
                 .getContent().stream()
-                .map(QnAResponse::toQnAResponse)
-                .toList();
-        response.setQuestions(questions.stream()
-                .map(QnAResponse::getContent)
-                .collect(Collectors.toList()));
+                .map(QnAListResponse::to)
+                .collect(Collectors.toList());
+        response.setQuestions(questions);
         return response;
     }
 }

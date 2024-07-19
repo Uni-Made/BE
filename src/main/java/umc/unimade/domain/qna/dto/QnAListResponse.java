@@ -1,9 +1,9 @@
 package umc.unimade.domain.qna.dto;
 import lombok.*;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 import umc.unimade.domain.qna.entity.Answers;
 import umc.unimade.domain.qna.entity.Questions;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,19 +11,21 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class QnAResponse {
+public class QnAListResponse {
         private Long questionId;
         private String title;
-        private String content;
-        private List<AnswerResponse> answers;
+        private String buyer;
+        private LocalDateTime createdAt;
+        private List<AnswerListResponse> answers;
 
-        public static QnAResponse toQnAResponse(Questions question){
-            return QnAResponse.builder()
+        public static QnAListResponse to(Questions question){
+            return QnAListResponse.builder()
                     .questionId(question.getId())
                     .title(question.getTitle())
-                    .content(question.getContent())
+                    .buyer(question.getBuyer().getName())
+                    .createdAt(question.getCreatedAt())
                     .answers(question.getAnswers().stream()
-                            .map(AnswerResponse::toAnswerResponse)
+                            .map(AnswerListResponse::to)
                             .collect(Collectors.toList()))
                     .build();
         }
@@ -32,16 +34,17 @@ public class QnAResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class AnswerResponse{
+    public static class AnswerListResponse{
         private Long answerId;
         private String title;
-        private String content;
-
-        public static AnswerResponse toAnswerResponse(Answers answer){
-            return AnswerResponse.builder()
+        private String seller;
+        private LocalDateTime createdAt;
+        public static AnswerListResponse to(Answers answer){
+            return AnswerListResponse.builder()
                     .answerId(answer.getId())
                     .title(answer.getTitle())
-                    .content(answer.getContent())
+                    .seller(answer.getSeller().getName())
+                    .createdAt(answer.getCreatedAt())
                     .build();
         }
     }

@@ -5,6 +5,10 @@ import lombok.*;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.global.common.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Entity
 @Builder
 @Getter
@@ -30,4 +34,16 @@ public class Answers extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Seller seller;
+
+    @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<AnswerImage> answerImages = new ArrayList<>();
+
+    public void setAnswerImages(List<AnswerImage> answerImages) {
+        this.answerImages = answerImages.stream()
+                .map(answerImage -> {
+                    answerImage.setAnswer(this);
+                    return answerImage;
+                })
+                .collect(Collectors.toList());
+    }
 }

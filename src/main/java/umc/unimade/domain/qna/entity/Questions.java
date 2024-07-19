@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.products.entity.Products;
+import umc.unimade.domain.review.entity.ReviewImage;
 import umc.unimade.global.common.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -36,5 +38,19 @@ public class Questions extends BaseEntity {
     private Buyer buyer;
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<QuestionImage> questionImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Answers> answers = new ArrayList<>();
+
+    public void setQuestionImages(List<QuestionImage> questionImages) {
+        this.questionImages = questionImages.stream()
+                .map(questionImage -> {
+                    questionImage.setQuestion(this);
+                    return questionImage;
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }
