@@ -1,5 +1,5 @@
 package umc.unimade.domain.products.entity;
 
 public enum PickupOption {
-    READY
+    ONLINE, OFFLINE, ONOFFLINE
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.entity.PurchaseForm;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.global.common.BaseEntity;
@@ -44,6 +45,19 @@ public class Products extends BaseEntity {
     @Column(name = "university", nullable = false)
     private String university;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pickup_option", nullable = false)
+    private PickupOption pickupOption;
+
+    @Column(name = "bank_name", nullable = false)
+    private String bankName;
+
+    @Column(name = "account_number", nullable = false)
+    private String accountNumber;
+
+    @Column(name = "account_name", nullable = false)
+    private String accountName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Seller seller;
@@ -69,4 +83,7 @@ public class Products extends BaseEntity {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<FavoriteProduct> favoriteProducts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PurchaseForm> PurchaseForms = new ArrayList<>();
 }
