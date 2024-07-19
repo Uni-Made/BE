@@ -10,6 +10,7 @@ import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
 import umc.unimade.domain.products.entity.Category;
+import umc.unimade.domain.products.entity.Options;
 import umc.unimade.domain.products.entity.ProductRegister;
 import umc.unimade.domain.products.repository.CategoryRepository;
 import umc.unimade.domain.products.repository.OptionsRepository;
@@ -21,7 +22,9 @@ import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.ProductsExceptionHandler;
 import umc.unimade.global.common.exception.UserExceptionHandler;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +84,13 @@ public class ProductsCommandService {
 
         ProductRegister product = request.toEntity(category);
         ProductRegister savedProduct = productRegisterRepository.save(product);
+
+        List<Options> options = request.getOptions().stream()
+                .map(optionRequest -> optionRequest.toEntity(savedProduct))
+                .collect(Collectors.toList());
+
+        optionsRepository.saveAll(options);
+        savedProduct.setOptions(options);
 
         return ApiResponse.onSuccess(savedProduct);
     }

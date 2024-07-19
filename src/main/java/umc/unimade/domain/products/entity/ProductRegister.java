@@ -69,8 +69,15 @@ public class ProductRegister {
     @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProductsImage> productImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Options> options = new ArrayList<>();
+
     @PostPersist
     private void setRegisterStatus() {
         registerStatus = RegisterStatus.PENDING;
+    }
+
+    public void setOptions(List<Options> options) {
+        this.options = options;
     }
 }

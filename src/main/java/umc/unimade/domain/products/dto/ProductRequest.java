@@ -8,6 +8,7 @@ import umc.unimade.domain.products.entity.*;
 import umc.unimade.global.registerStatus.RegisterStatus;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class ProductRequest {
 
@@ -28,6 +29,7 @@ public class ProductRequest {
         private RegisterStatus registerStatus;
 //        private Long sellerId;
         private Long categoryId;
+        private List<OptionRequest> options;
 
         public ProductRegister toEntity(Category category) {
             ProductRegister product = ProductRegister.builder()
