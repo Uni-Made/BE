@@ -1,6 +1,7 @@
 package umc.unimade.domain.qna.dto;
 import lombok.*;
 
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

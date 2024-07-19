@@ -43,8 +43,6 @@ public class Questions extends BaseEntity {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Answers> answers = new ArrayList<>();
 
-
-
     public void setQuestionImages(List<QuestionImage> questionImages) {
         this.questionImages = questionImages.stream()
                 .map(questionImage -> {
@@ -53,4 +51,6 @@ public class Questions extends BaseEntity {
                 })
                 .collect(Collectors.toList());
     }
+
+
 }

@@ -20,4 +20,6 @@ public class QnAQueryService {
                 .map(QuestionResponse::to)
                 .orElseThrow(()-> new QnAExceptionHandler(ErrorCode.QNA_NOT_FOUND));
     }
+
+
 }
