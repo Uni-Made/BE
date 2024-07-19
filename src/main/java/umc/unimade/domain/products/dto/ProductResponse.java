@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.List;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ProductsImage;
+import umc.unimade.domain.qna.dto.QnAListResponse;
 import umc.unimade.domain.review.dto.ReviewListResponse;
 
 import java.time.LocalDate;
@@ -27,7 +28,7 @@ public class ProductResponse {
     private List<OptionResponse> options;
     private String detail;
     private List<ReviewListResponse> reviews;
-    private List<String> questions;
+    private List<QnAListResponse> questions;
 
     public static ProductResponse to(Products product) {
         return ProductResponse.builder()
@@ -52,7 +53,8 @@ public class ProductResponse {
         this.reviews = reviews;
     }
 
-    public void setQuestions(List<String> questions) {
+    public void setQuestions(List<QnAListResponse> questions) {
+
         this.questions = questions;
     }
 }
