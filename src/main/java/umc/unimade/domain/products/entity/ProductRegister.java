@@ -18,7 +18,7 @@ public class ProductRegister {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id", nullable = false)
+    @Column(name = "product_register_id", nullable = false)
     private Long id;
 
     @Column(name = "name", nullable = false)

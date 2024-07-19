@@ -14,7 +14,7 @@ public class SellerRegister {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id", nullable = false)
+    @Column(name = "seller_register_id", nullable = false)
     private Long id;
 
     @Column(name = "name", nullable = false)
