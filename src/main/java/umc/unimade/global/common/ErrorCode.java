@@ -26,7 +26,10 @@ public enum ErrorCode implements BaseErrorCode {
     // 구매자 관련 에러
 
     // 리뷰 관련 에러
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4040", "리뷰를 찾을 수 없습니다.");
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4040", "리뷰를 찾을 수 없습니다."),
+
+    // QnA 관련 에러
+    QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4040", "QNA를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
