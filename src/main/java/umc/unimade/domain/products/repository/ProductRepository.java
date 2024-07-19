@@ -1,4 +1,4 @@
-package umc.unimade.domain.products;
+package umc.unimade.domain.products.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
