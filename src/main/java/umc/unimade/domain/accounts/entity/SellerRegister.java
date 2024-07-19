@@ -41,7 +41,7 @@ public class SellerRegister {
     private Provider provider;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "registerStatus", nullable = false)
     private RegisterStatus registerStatus;
 
     @PostPersist
