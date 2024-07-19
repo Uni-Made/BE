@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.qna.dto.AnswerCreateRequest;
+import umc.unimade.domain.qna.dto.AnswerResponse;
 import umc.unimade.domain.qna.dto.QuestionCreateRequest;
 import umc.unimade.domain.qna.dto.QuestionResponse;
 import umc.unimade.domain.qna.service.QnACommandService;
@@ -63,6 +64,20 @@ public class QnAController {
         try {
             qnaCommandService.createAnswer(questionId, sellerId, answerCreateRequest, answerImages);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (UserExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.SELLER_NOT_FOUND.getCode(), ErrorCode.SELLER_NOT_FOUND.getMessage()));
+        }
+    }
+
+    @Tag(name = "QnA", description = "qna 관련 API")
+    @Operation(summary = "답변 불러오기")
+    @GetMapping("/answer/{answerId}")
+    //To do : user 토큰 추가
+    public ResponseEntity<ApiResponse<AnswerResponse>> getAnswer(@PathVariable Long answerId) {
+        try {
+            return ResponseEntity.ok(ApiResponse.onSuccess(qnaQueryService.getAnswer(answerId)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {
