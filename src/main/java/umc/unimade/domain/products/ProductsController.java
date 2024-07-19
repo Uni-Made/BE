@@ -42,19 +42,16 @@ public class ProductsController {
     }
 
     //To do : buyerId 추후에 토큰으로 변경
-    @Tag(name = "favoriteProduct", description = "상품 찜하기 API")
-    @Operation(summary = "구매자가 상품을 찜하기")
+    @Tag(name = "favoriteProduct", description = "상품 찜하기/취소 API")
+    @Operation(summary = "찜하지 않은 상태라면 찜하기. \n 찜한 상태라면 찜하기 취소")
     @PostMapping("/favorite/{productId}/{buyerId}")
-    public ResponseEntity<ApiResponse<Void>> addFavoriteProduct(@PathVariable Long productId, @PathVariable Long buyerId) {
+    public ResponseEntity<ApiResponse<Void>> toggleFavoriteProduct(@PathVariable Long productId, @PathVariable Long buyerId) {
         try {
-            productsCommandService.addFavoriteProduct(productId, buyerId);
-            return ResponseEntity.ok(ApiResponse.onSuccess(null));
+            return ResponseEntity.ok(productsCommandService.toggleFavoriteProduct(productId, buyerId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
         }
     }
-
-
 }
