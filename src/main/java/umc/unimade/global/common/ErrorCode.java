@@ -15,7 +15,10 @@ public enum ErrorCode implements BaseErrorCode {
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON4003", "금지된 요청입니다."),
 
     // Accounts 관련 에러
-    USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER4000", "사용자가 이미 존재합니다.");
+    USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER4000", "사용자가 이미 존재합니다."),
+
+    // Products 관련 에러
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4040", "해당 제품을 찾을 수 없습니다.");
 
     // 판매자 관련 에러
 
