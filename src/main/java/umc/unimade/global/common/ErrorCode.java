@@ -18,11 +18,14 @@ public enum ErrorCode implements BaseErrorCode {
     USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER4000", "사용자가 이미 존재합니다."),
     BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4040", "구매자를 찾을 수 없습니다."),
     // Products 관련 에러
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4040", "해당 제품을 찾을 수 없습니다.");
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4040", "해당 제품을 찾을 수 없습니다."),
 
     // 판매자 관련 에러
 
     // 구매자 관련 에러
+
+    // 리뷰 관련 에러
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4040", "리뷰를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
