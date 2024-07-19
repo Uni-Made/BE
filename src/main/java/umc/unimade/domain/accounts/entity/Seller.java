@@ -57,4 +57,9 @@ public class Seller extends BaseEntity {
 
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private List<FavoriteSeller> favoriteSellers = new ArrayList<>();
+
+    @PostPersist
+    private void setRole() {
+        role = Role.SELLER;
+    }
 }

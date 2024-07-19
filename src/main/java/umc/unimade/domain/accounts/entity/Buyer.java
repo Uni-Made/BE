@@ -62,4 +62,9 @@ public class Buyer extends BaseEntity {
 
     @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
     private List<FavoriteSeller> favoriteSellers = new ArrayList<>();
+
+    @PostPersist
+    private void setRole() {
+        role = Role.BUYER;
+    }
 }
