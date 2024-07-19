@@ -29,6 +29,7 @@ public class ReviewResponse {
                 .reviewImages(review.getReviewImages().stream()
                         .map(ReviewImage::getImageUrl)
                         .collect(Collectors.toList()))
+                .createdAt(review.getCreatedAt())
                 .build();
     }
 }
