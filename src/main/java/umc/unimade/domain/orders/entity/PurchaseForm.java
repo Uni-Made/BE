@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.products.entity.PickupOption;
+import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.BaseEntity;
 
 import java.util.ArrayList;
@@ -43,6 +44,10 @@ public class PurchaseForm extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Products product;
 
     @OneToMany(mappedBy = "purchaseForm", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Orders> orders = new ArrayList<>();
