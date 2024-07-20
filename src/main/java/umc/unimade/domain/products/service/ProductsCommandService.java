@@ -11,13 +11,13 @@ import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
-import umc.unimade.domain.products.dto.OptionRequest;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
 import umc.unimade.domain.products.entity.*;
 import umc.unimade.domain.products.exception.ProductExceptionHandler;
 import umc.unimade.domain.products.repository.*;
-import umc.unimade.domain.review.entity.ReviewImage;
+import umc.unimade.domain.products.repository.ProductRepository;
+import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.ProductsExceptionHandler;
@@ -41,7 +41,7 @@ public class ProductsCommandService {
     private final ProductRegisterRepository productRegisterRepository;
     private final BuyerRepository buyerRepository;
     private final CategoryRepository categoryRepository;
-    private final OptionsRepository optionsRepository;
+//    private final OptionsRepository optionsRepository;
     private final ProductsImageRepository productsImageRepository;
     private final S3Provider s3Provider;
     private final SellerRepository sellerRepository;
@@ -91,12 +91,12 @@ public class ProductsCommandService {
         ProductRegister savedProduct = productRegisterRepository.save(product);
 
         // 옵션 등록
-        List<Options> options = request.getOptions().stream()
-                .map(optionRequest -> optionRequest.toEntity(savedProduct))
-                .collect(Collectors.toList());
-
-        optionsRepository.saveAll(options);
-        savedProduct.setOptions(options);
+//        List<Options> options = request.getOptions().stream()
+//                .map(optionRequest -> optionRequest.toEntity(savedProduct))
+//                .collect(Collectors.toList());
+//
+//        optionsRepository.saveAll(options);
+//        savedProduct.setOptions(options);
 
         // 사진 등록
         if (images != null && !images.isEmpty()) {

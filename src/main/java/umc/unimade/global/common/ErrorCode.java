@@ -16,22 +16,28 @@ public enum ErrorCode implements BaseErrorCode {
 
     // Accounts 관련 에러
     USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER4000", "사용자가 이미 존재합니다."),
-    BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4040", "구매자를 찾을 수 없습니다."),
 
     // Products 관련 에러
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4000", "해당 제품을 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4000", "해당 카테고리를 찾을 수 없습니다."),
 
+    // Products 관련 에러
+    PRODUCT_STATUS_IS_NOT_PENDING(HttpStatus.BAD_REQUEST, "PRODUCT4001", "대기중인 요청만 처리할 수 있습니다."),
+    PRODUCT_STATUS_IS_NOT_PENDING_OR_HOLD(HttpStatus.BAD_REQUEST, "PRODUCT4002", "대기중 이거나 보류중인 요청만 승인할 수 있습니다."),
+
     // 판매자 관련 에러
-    SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4040", "판매자를 찾을 수 없습니다."),
+    SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER4000", "판매자를 찾을 수 없습니다."),
+    SELLER_STATUS_IS_NOT_PENDING(HttpStatus.BAD_REQUEST, "SELLER4001", "대기중인 요청만 처리할 수 있습니다."),
+    SELLER_STATUS_IS_NOT_PENDING_OR_HOLD(HttpStatus.BAD_REQUEST, "SELLER4002", "대기중 이거나 보류중인 요청만 승인할 수 있습니다."),
 
     // 구매자 관련 에러
+    BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "Buyer4000", "구매자를 찾을 수 없습니다."),
 
     // 리뷰 관련 에러
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4040", "리뷰를 찾을 수 없습니다."),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4000", "리뷰를 찾을 수 없습니다."),
 
     // QnA 관련 에러
-    QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4040", "QNA를 찾을 수 없습니다.");
+    QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4000", "QNA를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

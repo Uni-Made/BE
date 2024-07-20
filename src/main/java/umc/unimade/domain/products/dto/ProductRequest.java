@@ -24,12 +24,12 @@ public class ProductRequest {
         private String university;
         private PickupOption pickupOption;
         private String bankName;
-        private Long accountNumber;
+        private String accountNumber;
         private String accountName;
         private RegisterStatus registerStatus;
         private Long sellerId;
         private Long categoryId;
-        private List<OptionRequest> options;
+//        private List<OptionRequest> options;
 
         public ProductRegister toEntity(Category category, Seller seller) {
             ProductRegister product = ProductRegister.builder()
@@ -65,9 +65,9 @@ public class ProductRequest {
         private String university;
         private PickupOption pickupOption;
         private String bankName;
-        private Long accountNumber;
+        private String accountNumber;
         private String accountName;
         private Long categoryId;
-        private List<OptionRequest> options;
+//        private List<OptionRequest> options;
     }
 }

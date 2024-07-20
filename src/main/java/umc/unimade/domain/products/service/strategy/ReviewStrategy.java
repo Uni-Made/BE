@@ -5,9 +5,8 @@ import lombok.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import umc.unimade.domain.products.dto.ProductResponse;
-import umc.unimade.domain.review.ReviewRepository;
+import umc.unimade.domain.review.repository.ReviewRepository;
 import umc.unimade.domain.review.dto.ReviewListResponse;
-import umc.unimade.domain.review.dto.ReviewResponse;
 import umc.unimade.domain.products.entity.Products;
 
 

@@ -49,7 +49,7 @@ public class ProductRegister {
     private String bankName;
 
     @Column(name = "account_number", nullable = false)
-    private Long accountNumber;
+    private String accountNumber;
 
     @Column(name = "account_name", nullable = false)
     private String accountName;
@@ -57,6 +57,9 @@ public class ProductRegister {
     @Enumerated(EnumType.STRING)
     @Column(name = "registerStatus", nullable = false)
     private RegisterStatus registerStatus;
+
+    @Column(name = "reason")
+    private String reason;  // 거부 or 보류 사유
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
@@ -69,19 +72,27 @@ public class ProductRegister {
     @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProductsImage> productImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Options> options = new ArrayList<>();
+//    @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<Options> options = new ArrayList<>();
 
     @PostPersist
     private void setRegisterStatus() {
         registerStatus = RegisterStatus.PENDING;
     }
 
-    public void setOptions(List<Options> options) {
-        this.options = options;
-    }
+//    public void setOptions(List<Options> options) {
+//        this.options = options;
+//    }
 
     public void setProductImages(List<ProductsImage> productImages) {
         this.productImages = productImages;
+    }
+
+    public void changeStatus(RegisterStatus registerStatus) {
+        this.registerStatus = registerStatus;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

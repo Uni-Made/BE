@@ -29,4 +29,8 @@ public class ProductsImage extends BaseEntity {
     @JoinColumn(name = "product_register_id")
     @JsonIgnore
     private ProductRegister productRegister;
+
+    public void setProduct(Products product) {
+        this.product = product;
+    }
 }

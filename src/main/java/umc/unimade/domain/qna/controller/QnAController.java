@@ -1,4 +1,4 @@
-package umc.unimade.domain.qna;
+package umc.unimade.domain.qna.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

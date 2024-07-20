@@ -40,7 +40,7 @@ public class ProductResponse {
                 .deadline(product.getDeadline())
                 .price(product.getPrice())
                 .productImages(product.getProductImages().stream().map(ProductsImage::getImageUrl).collect(Collectors.toList()))
-                .options(product.getOptions().stream()
+                .options(product.getOptionCategories().stream()
                         .map(OptionResponse::to)
                         .collect(Collectors.toList()))
                 .build();

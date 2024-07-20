@@ -8,7 +8,7 @@ import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
-import umc.unimade.domain.review.ReviewRepository;
+import umc.unimade.domain.review.repository.ReviewRepository;
 import umc.unimade.domain.review.dto.ReviewCreateRequest;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.domain.review.entity.ReviewImage;
