@@ -64,6 +64,8 @@ public class ProductsController extends BaseEntity {
     }
 
     // 상품 등록
+    @Tag(name = "Products")
+    @Operation(summary = "상품 등록", description = "productRegister로 저장")
     @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductRegister>> createProduct(@RequestPart("createProductDto") CreateProductDto request,
                                                                       @RequestPart(name = "image", required = false) List<MultipartFile> images) {
@@ -72,6 +74,8 @@ public class ProductsController extends BaseEntity {
     }
 
     // 상품 수정
+    @Tag(name = "Products")
+    @Operation(summary = "상품 수정", description = "product 수정")
     @PutMapping("/{productId}")
     public ResponseEntity<ApiResponse<Products>> updateProduct(@PathVariable Long productId,
                                                                @RequestBody UpdateProductDto request) {
@@ -80,6 +84,8 @@ public class ProductsController extends BaseEntity {
     }
 
     // 상품 삭제
+    @Tag(name = "Products")
+    @Operation(summary = "상품 삭제")
     @DeleteMapping("/{productId}")
     public ApiResponse<Object> deleteProduct(@PathVariable Long productId) {
         productsCommandService.deleteProduct(productId);
