@@ -8,7 +8,7 @@ import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
-import umc.unimade.domain.products.ProductRepository;
+import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.qna.dto.AnswerCreateRequest;
 import umc.unimade.domain.qna.dto.QuestionCreateRequest;

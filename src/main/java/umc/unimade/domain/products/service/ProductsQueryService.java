@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.unimade.domain.products.ProductRepository;
+import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ViewType;

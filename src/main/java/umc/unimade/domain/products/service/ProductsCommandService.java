@@ -1,6 +1,5 @@
 package umc.unimade.domain.products.service;
 
-import io.netty.util.internal.ObjectPool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +8,7 @@ import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
-import umc.unimade.domain.products.ProductRepository;
+import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;

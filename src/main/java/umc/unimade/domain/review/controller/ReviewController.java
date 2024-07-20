@@ -1,4 +1,4 @@
-package umc.unimade.domain.review;
+package umc.unimade.domain.review.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

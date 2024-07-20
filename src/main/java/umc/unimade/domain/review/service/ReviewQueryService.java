@@ -3,10 +3,9 @@ package umc.unimade.domain.review.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.unimade.domain.review.ReviewRepository;
+import umc.unimade.domain.review.repository.ReviewRepository;
 import umc.unimade.domain.review.dto.ReviewResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
 import umc.unimade.global.common.exception.ReviewExceptionHandler;
 
 @Service
