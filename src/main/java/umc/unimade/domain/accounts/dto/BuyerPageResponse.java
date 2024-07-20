@@ -20,7 +20,7 @@ public class BuyerPageResponse {
     private List<FavoriteProductResponse> favoriteProducts;
     private List<FavoriteSellerResponse> favoriteSellers;
 
-    public static BuyerPageResponse to(Buyer buyer,List<FavoriteProductResponse> favoriteProducts, List<FavoriteSellerResponse> favoriteSellers) {
+    public static BuyerPageResponse from(Buyer buyer,List<FavoriteProductResponse> favoriteProducts, List<FavoriteSellerResponse> favoriteSellers) {
         return BuyerPageResponse.builder()
                 .buyerId(buyer.getId())
                 .name(buyer.getName())

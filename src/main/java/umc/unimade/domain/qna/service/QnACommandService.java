@@ -19,14 +19,12 @@ import umc.unimade.domain.qna.entity.QuestionImage;
 import umc.unimade.domain.qna.repository.AnswersRespository;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
-import umc.unimade.global.common.exception.QnAExceptionHandler;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
+import umc.unimade.domain.qna.exception.QnAExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.util.s3.S3Provider;
-import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,33 +42,14 @@ public class QnACommandService {
         Products product = findProductById(productId);
         Buyer buyer = findBuyerById(buyerId);
 
-        Questions question = Questions.builder()
-                .title(questionCreateRequest.getTitle())
-                .content(questionCreateRequest.getContent())
-                .product(product)
-                .buyer(buyer)
-                .build();
+        Questions question = questionCreateRequest.toEntity(product, buyer);
+        List<QuestionImage> questionImages = questionCreateRequest.toQuestionImages(images, s3Provider, buyerId, question);
 
-        if (images != null && !images.isEmpty()) {
-            List<QuestionImage> questionImages = images.stream()
-                    .map(image -> {
-                        String imageUrl = s3Provider.uploadFile(image,
-                                S3UploadRequest.builder()
-                                        .userId(buyerId)
-                                        //To do : 디렉토리 생성하면 dirName "question"으로 수정하기
-                                        .dirName("review")
-                                        .build());
-                        return QuestionImage.builder()
-                                .imageUrl(imageUrl)
-                                .question(question)
-                                .build();
-                    })
-                    .collect(Collectors.toList());
+        if (questionImages != null) {
             question.setQuestionImages(questionImages);
         }
+
         questionsRepository.save(question);
-
-
     }
 
     @Transactional
@@ -78,28 +57,10 @@ public class QnACommandService {
         Questions question = findQuestionById(questionId);
         Seller seller = findSellerById(sellerId);
 
-        Answers answer = Answers.builder()
-                .title(answerCreateRequest.getTitle())
-                .content(answerCreateRequest.getContent())
-                .seller(seller)
-                .question(question)
-                .build();
+        Answers answer = answerCreateRequest.toEntity(seller, question);
+        List<AnswerImage> answerImages = answerCreateRequest.toAnswerImages(images, s3Provider, sellerId, answer);
 
-        if (images != null && !images.isEmpty()) {
-            List<AnswerImage> answerImages = images.stream()
-                    .map(image -> {
-                        String imageUrl = s3Provider.uploadFile(image,
-                                S3UploadRequest.builder()
-                                        .userId(sellerId)
-                                        //To do : 디렉토리 생성하면 dirName "question"으로 수정하기
-                                        .dirName("review")
-                                        .build());
-                        return AnswerImage.builder()
-                                .imageUrl(imageUrl)
-                                .answer(answer)
-                                .build();
-                    })
-                    .collect(Collectors.toList());
+        if (answerImages != null) {
             answer.setAnswerImages(answerImages);
         }
         answersRespository.save(answer);

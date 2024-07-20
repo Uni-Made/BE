@@ -13,13 +13,11 @@ import umc.unimade.domain.review.dto.ReviewCreateRequest;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.domain.review.entity.ReviewImage;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.util.s3.S3Provider;
-import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,26 +31,9 @@ public class ReviewCommandService {
     public void createReview(Long productId, Long buyerId, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
         Products product = findProductById(productId);
         Buyer buyer = findBuyerById(buyerId);
-        Review review = Review.builder()
-                .title(reviewCreateRequest.getTitle())
-                .content(reviewCreateRequest.getContent())
-                .product(product)
-                .buyer(buyer)
-                .build();
-        if (images != null && !images.isEmpty()) {
-            List<ReviewImage> reviewImages = images.stream()
-                    .map(image -> {
-                        String imageUrl = s3Provider.uploadFile(image,
-                                S3UploadRequest.builder()
-                                        .userId(buyerId)
-                                        .dirName("review")
-                                        .build());
-                        return ReviewImage.builder()
-                                .imageUrl(imageUrl)
-                                .review(review)
-                                .build();
-                    })
-                    .collect(Collectors.toList());
+        Review review = reviewCreateRequest.toEntity(product, buyer);
+        List<ReviewImage> reviewImages = reviewCreateRequest.toReviewImages(images, s3Provider, buyerId, review);
+        if (reviewImages != null) {
             review.setReviewImages(reviewImages);
         }
         reviewRepository.save(review);

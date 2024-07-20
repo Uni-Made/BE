@@ -20,10 +20,12 @@ import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.util.s3.S3Provider;
 import umc.unimade.global.util.s3.dto.S3UploadRequest;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +70,12 @@ public class ProductsCommandService {
 
 
     private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId).orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
+        return buyerRepository.findById(buyerId)
+                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
     private Products findProductById(Long productId){
-        return productRepository.findById(productId).orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
     }
     private Optional<FavoriteProduct> findFavoriteProduct(Products product, Buyer buyer) {
         return favoriteProductRepository.findByProductAndBuyer(product, buyer);

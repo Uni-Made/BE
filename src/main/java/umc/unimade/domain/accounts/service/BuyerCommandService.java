@@ -11,7 +11,7 @@ import umc.unimade.domain.favorite.entity.FavoriteSeller;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.util.Optional;
 
@@ -44,11 +44,13 @@ public class BuyerCommandService {
     }
 
     private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId).orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
+        return buyerRepository.findById(buyerId)
+                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
 
     private Seller findSellerById(Long sellerId) {
-        return sellerRepository.findById(sellerId).orElseThrow(() -> new UserExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
+        return sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
     }
 
     private Optional<FavoriteSeller> findFavoriteSeller(Seller seller,Buyer buyer) {

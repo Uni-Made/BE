@@ -10,8 +10,8 @@ import umc.unimade.domain.products.dto.ProductResponse;
 public class DetailStrategy implements ProductStrategy{
     @Override
     public ProductResponse loadProduct(Products product, PageRequest pageRequest){
-        ProductResponse response = ProductResponse.to(product);
-        ProductDetailResponse detailResponse = ProductDetailResponse.to(product);
+        ProductResponse response = ProductResponse.from(product);
+        ProductDetailResponse detailResponse = ProductDetailResponse.from(product);
         response.setDetail(detailResponse.getDetail());
         return response;
 

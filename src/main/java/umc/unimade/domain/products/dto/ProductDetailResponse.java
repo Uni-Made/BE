@@ -10,7 +10,7 @@ import umc.unimade.domain.products.entity.Products;
 public class ProductDetailResponse {
     private String detail;
 
-    public static ProductDetailResponse to(Products product){
+    public static ProductDetailResponse from(Products product){
         return ProductDetailResponse.builder()
                 .detail(product.getContent())
                 .build();

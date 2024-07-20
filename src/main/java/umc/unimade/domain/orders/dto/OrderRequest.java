@@ -53,27 +53,31 @@ public class OrderRequest {
         private List<Long> optionValueIds;
         private int count;
 
-        public OrderItem toEntity(Orders order, Products product) {
-
-            OrderItem orderItem = OrderItem.builder()
-                    .order(order)
-                    .product(product)
-                    .count(this.count)
-                    .build();
-
-            List<OrderOption> orderOptions = this.optionValueIds.stream()
-                    .map(optionValueId -> {
-                        OptionValue optionValue = OptionValue.builder().id(optionValueId).build();
-                        return OrderOption.builder()
-                                .orderItem(orderItem)
-                                .optionValue(optionValue)
-                                .build();
-                    })
+        public List<OrderOption> toOrderOptions(OrderItem orderItem, List<OptionValue> optionValues) {
+            return optionValues.stream()
+                    .map(optionValue -> OrderOption.builder()
+                            .orderItem(orderItem)
+                            .optionValue(optionValue)
+                            .build())
                     .collect(Collectors.toList());
-
-            orderItem.setOrderOptions(orderOptions);
-
-            return orderItem;
         }
+    }
+
+    public Orders toOrders(Products product, Buyer buyer, PurchaseForm purchaseForm) {
+        return Orders.builder()
+                .product(product)
+                .buyer(buyer)
+                .purchaseForm(purchaseForm)
+                .build();
+    }
+
+    public List<OrderItem> toOrderItems(Orders order, Products product) {
+        return this.orderOptions.stream()
+                .map(option -> OrderItem.builder()
+                        .order(order)
+                        .product(product)
+                        .count(option.getCount())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

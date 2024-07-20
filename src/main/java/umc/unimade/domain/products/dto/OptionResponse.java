@@ -11,7 +11,7 @@ public class OptionResponse {
     private String name;
 
 
-    public static OptionResponse to(OptionCategory option){
+    public static OptionResponse from(OptionCategory option){
         return OptionResponse.builder()
                 .optionId(option.getId())
                 .name(option.getName())

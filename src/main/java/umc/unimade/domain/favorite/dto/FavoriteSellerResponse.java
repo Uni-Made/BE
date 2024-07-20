@@ -12,7 +12,7 @@ public class FavoriteSellerResponse {
     private String name;
     private String profileImage;
 
-    public static FavoriteSellerResponse to(FavoriteSeller favoriteSeller){
+    public static FavoriteSellerResponse from(FavoriteSeller favoriteSeller){
         return FavoriteSellerResponse.builder()
                 .id(favoriteSeller.getId())
                 .sellerId(favoriteSeller.getSeller().getId())

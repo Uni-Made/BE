@@ -16,7 +16,7 @@ import umc.unimade.domain.qna.service.QnACommandService;
 import umc.unimade.domain.qna.service.QnAQueryService;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.util.List;
 

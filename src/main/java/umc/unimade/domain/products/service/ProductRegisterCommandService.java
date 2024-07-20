@@ -11,7 +11,7 @@ import umc.unimade.domain.products.entity.ProductsImage;
 import umc.unimade.domain.products.repository.ProductRegisterRepository;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.global.registerStatus.RegisterStatus;
 
 import java.util.List;

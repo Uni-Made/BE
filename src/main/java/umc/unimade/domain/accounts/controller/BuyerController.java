@@ -11,7 +11,7 @@ import umc.unimade.domain.accounts.service.BuyerCommandService;
 import umc.unimade.domain.accounts.service.BuyerQueryService;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 @RestController
 @RequestMapping("/api/buyer")

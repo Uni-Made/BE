@@ -9,7 +9,7 @@ import umc.unimade.domain.favorite.dto.FavoriteSellerResponse;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,15 +24,16 @@ public class BuyerQueryService {
     public BuyerPageResponse getBuyerPage(Long buyerId){
         Buyer buyer = findBuyerById(buyerId);
         List<FavoriteProductResponse> favoriteProducts = favoriteProductRepository.findTop4ByBuyerOrderByCreatedAtDesc(buyer).stream()
-                .map(FavoriteProductResponse::to)
+                .map(FavoriteProductResponse::from)
                 .collect(Collectors.toList());
         List<FavoriteSellerResponse> favoriteSellers = favoriteSellerRepository.findTop4ByBuyerOrderByCreatedAtDesc(buyer).stream()
-                .map(FavoriteSellerResponse::to)
+                .map(FavoriteSellerResponse::from)
                 .collect(Collectors.toList());
-        return BuyerPageResponse.to(buyer, favoriteProducts, favoriteSellers);
+        return BuyerPageResponse.from(buyer, favoriteProducts, favoriteSellers);
     }
 
     private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId).orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
+        return buyerRepository.findById(buyerId)
+                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
 }

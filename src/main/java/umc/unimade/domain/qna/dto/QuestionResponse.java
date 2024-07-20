@@ -23,7 +23,7 @@ public class QuestionResponse {
     private List<String> questionImages;
     private LocalDateTime createdAt;
 
-    public static QuestionResponse to(Questions question){
+    public static QuestionResponse from(Questions question){
         return QuestionResponse.builder()
                 .questionId(question.getId())
                 .buyer(question.getBuyer().getName())

@@ -14,7 +14,7 @@ import umc.unimade.domain.review.service.ReviewCommandService;
 import umc.unimade.domain.review.service.ReviewQueryService;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.util.List;
 

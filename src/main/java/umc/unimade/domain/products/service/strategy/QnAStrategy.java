@@ -18,10 +18,10 @@ public class QnAStrategy implements ProductStrategy{
 
     @Override
     public ProductResponse loadProduct(Products product, PageRequest pageRequest) {
-        ProductResponse response = ProductResponse.to(product);
+        ProductResponse response = ProductResponse.from(product);
         List<QnAListResponse> questions = questionsRepository.findByProductId(product.getId(), pageRequest)
                 .getContent().stream()
-                .map(QnAListResponse::to)
+                .map(QnAListResponse::from)
                 .collect(Collectors.toList());
         response.setQuestions(questions);
         return response;
