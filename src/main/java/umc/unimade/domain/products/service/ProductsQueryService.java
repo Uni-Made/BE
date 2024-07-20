@@ -34,6 +34,7 @@ public class ProductsQueryService {
     }
 
     private Products findProductById(Long productId){
-        return productRepository.findById(productId).orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
     }
 }
