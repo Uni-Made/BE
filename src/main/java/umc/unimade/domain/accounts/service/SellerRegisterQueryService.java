@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.dto.SellerRegisterResponse;
 import umc.unimade.domain.accounts.dto.SellerRegistersResponse;
-import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.entity.SellerRegister;
 import umc.unimade.domain.accounts.exception.SellerExceptionHandler;
 import umc.unimade.domain.accounts.repository.SellerRegisterRepository;
