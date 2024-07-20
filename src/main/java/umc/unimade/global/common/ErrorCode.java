@@ -17,11 +17,13 @@ public enum ErrorCode implements BaseErrorCode {
     // Accounts 관련 에러
     USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER4000", "사용자가 이미 존재합니다."),
     BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4040", "구매자를 찾을 수 없습니다."),
-    SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4040", "판매자를 찾을 수 없습니다."),
+
     // Products 관련 에러
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4040", "해당 제품을 찾을 수 없습니다."),
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4000", "해당 제품을 찾을 수 없습니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4000", "해당 카테고리를 찾을 수 없습니다."),
 
     // 판매자 관련 에러
+    SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4040", "판매자를 찾을 수 없습니다."),
 
     // 구매자 관련 에러
 

@@ -15,6 +15,7 @@ import umc.unimade.domain.products.dto.OptionRequest;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
 import umc.unimade.domain.products.entity.*;
+import umc.unimade.domain.products.exception.ProductExceptionHandler;
 import umc.unimade.domain.products.repository.*;
 import umc.unimade.domain.review.entity.ReviewImage;
 import umc.unimade.global.common.ApiResponse;
@@ -82,10 +83,9 @@ public class ProductsCommandService {
     public ApiResponse<ProductRegister> createProduct(CreateProductDto request, List<MultipartFile> images) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 // TODO 에러 핸들러
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
-
+                .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
         Seller seller = sellerRepository.findById(request.getSellerId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid seller ID"));
+                .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
 
         ProductRegister product = request.toEntity(category, seller);
         ProductRegister savedProduct = productRegisterRepository.save(product);
@@ -122,10 +122,10 @@ public class ProductsCommandService {
     @Transactional
     public ApiResponse<Products> updateProduct(Long productId, UpdateProductDto request) {
         Products product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+                .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));;
 
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+                .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
 
         product.updateProduct(request, category);
 
@@ -138,7 +138,7 @@ public class ProductsCommandService {
     public void deleteProduct(Long productId) {
 
         Products product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+                .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
 
         productRepository.deleteById(productId);
     }
