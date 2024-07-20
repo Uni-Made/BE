@@ -1,4 +1,4 @@
-package umc.unimade.domain.review;
+package umc.unimade.domain.review.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

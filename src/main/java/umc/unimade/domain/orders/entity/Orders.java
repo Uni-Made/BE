@@ -17,9 +17,6 @@ public class Orders extends BaseEntity {
     @Column(name = "order_id", nullable = false)
     private Long id;
 
-    @Column(name = "count", nullable = false)
-    private Long count;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private OrderStatus status;
@@ -31,4 +28,6 @@ public class Orders extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Products product;
+
+    //주문 내용을 추가하고 싶음
 }
