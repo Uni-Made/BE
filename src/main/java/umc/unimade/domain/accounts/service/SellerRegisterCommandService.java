@@ -3,7 +3,7 @@ package umc.unimade.domain.accounts.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.unimade.domain.accounts.dto.AdminSellerRegisterRequest;
+import umc.unimade.domain.accounts.dto.AdminRegisterRequest;
 import umc.unimade.domain.accounts.dto.AdminSellerRegisterResponse;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.entity.SellerRegister;
@@ -28,7 +28,7 @@ public class SellerRegisterCommandService {
 
         if (!sellerRegister.getRegisterStatus().equals(RegisterStatus.PENDING) &&
                 !sellerRegister.getRegisterStatus().equals(RegisterStatus.HOLD)) {
-            throw new SellerExceptionHandler(ErrorCode.STATUS_IS_NOT_PENDING_OR_HOLD);
+            throw new SellerExceptionHandler(ErrorCode.SELLER_STATUS_IS_NOT_PENDING_OR_HOLD);
         }
 
         Seller seller = convertToSeller(sellerRegister);
@@ -39,13 +39,13 @@ public class SellerRegisterCommandService {
         return AdminSellerRegisterResponse.of(sellerRegister, seller);
     }
 
-    public AdminSellerRegisterResponse rejectOrHoldSeller(Long sellerRegisterId, RegisterStatus registerStatus, AdminSellerRegisterRequest request) {
+    public AdminSellerRegisterResponse rejectOrHoldSeller(Long sellerRegisterId, RegisterStatus registerStatus, AdminRegisterRequest request) {
 
         SellerRegister sellerRegister = sellerRegisterRepository.findById(sellerRegisterId)
                 .orElseThrow(() -> new SellerExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
 
         if (!sellerRegister.getRegisterStatus().equals(RegisterStatus.PENDING)) {
-            throw new SellerExceptionHandler(ErrorCode.STATUS_IS_NOT_PENDING);
+            throw new SellerExceptionHandler(ErrorCode.SELLER_STATUS_IS_NOT_PENDING);
         }
 
         sellerRegister.changeStatus(registerStatus);

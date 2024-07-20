@@ -57,6 +57,9 @@ public class ProductRegister {
     @Column(name = "registerStatus", nullable = false)
     private RegisterStatus registerStatus;
 
+    @Column(name = "reason")
+    private String reason;  // 거부 or 보류 사유
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
@@ -67,5 +70,13 @@ public class ProductRegister {
     @PostPersist
     private void setRegisterStatus() {
         registerStatus = RegisterStatus.PENDING;
+    }
+
+    public void changeStatus(RegisterStatus registerStatus) {
+        this.registerStatus = registerStatus;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

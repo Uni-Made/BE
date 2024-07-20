@@ -27,4 +27,8 @@ public class ProductsImage extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_register_id")
     private ProductRegister productRegister;
+
+    public void setProduct(Products product) {
+        this.product = product;
+    }
 }
