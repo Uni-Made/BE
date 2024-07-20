@@ -15,13 +15,14 @@ public class OrderResponse {
     private String buyerName;
     private Long totalPrice;
 
-    public static OrderResponse fromOrder(Products products, Orders order, Long totalPrice) {
+    public static OrderResponse from(Orders order, Products product, Long totalPrice) {
         return OrderResponse.builder()
-                .bankName(products.getBankName())
-                .accountNumber(products.getAccountNumber())
-                .accountName(products.getAccountName())
-                .buyerName(order.getPurchaseForm().getName())
+                .bankName(product.getBankName())
+                .accountNumber(product.getAccountNumber())
+                .accountName(product.getAccountName())
+                .buyerName(order.getBuyer().getName())
                 .totalPrice(totalPrice)
                 .build();
     }
+
 }

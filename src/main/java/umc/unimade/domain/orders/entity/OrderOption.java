@@ -25,7 +25,4 @@ public class OrderOption extends BaseEntity {
     @JoinColumn(name = "option_value_id", nullable = false)
     private OptionValue optionValue;
 
-    public void setOrderItem(OrderItem orderItem) {
-        this.orderItem = orderItem;
-    }
 }

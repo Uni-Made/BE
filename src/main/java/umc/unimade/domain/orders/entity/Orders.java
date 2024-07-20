@@ -2,6 +2,7 @@ package umc.unimade.domain.orders.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.BaseEntity;
 
@@ -17,9 +18,14 @@ public class Orders extends BaseEntity {
     @Column(name = "order_id", nullable = false)
     private Long id;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.PENDING;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "buyer_id")
+    private Buyer buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_id")
@@ -29,5 +35,4 @@ public class Orders extends BaseEntity {
     @JoinColumn(name = "product_id")
     private Products product;
 
-    //주문 내용을 추가하고 싶음
 }
