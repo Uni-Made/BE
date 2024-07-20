@@ -24,10 +24,10 @@ public class BuyerQueryService {
     public BuyerPageResponse getBuyerPage(Long buyerId){
         Buyer buyer = findBuyerById(buyerId);
         List<FavoriteProductResponse> favoriteProducts = favoriteProductRepository.findTop4ByBuyerOrderByCreatedAtDesc(buyer).stream()
-                .map(FavoriteProductResponse::to)
+                .map(FavoriteProductResponse::from)
                 .collect(Collectors.toList());
         List<FavoriteSellerResponse> favoriteSellers = favoriteSellerRepository.findTop4ByBuyerOrderByCreatedAtDesc(buyer).stream()
-                .map(FavoriteSellerResponse::to)
+                .map(FavoriteSellerResponse::from)
                 .collect(Collectors.toList());
         return BuyerPageResponse.to(buyer, favoriteProducts, favoriteSellers);
     }

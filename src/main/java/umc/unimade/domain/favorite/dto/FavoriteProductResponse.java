@@ -18,7 +18,7 @@ public class FavoriteProductResponse {
     private String sellerName;
 
 
-    public static FavoriteProductResponse to(FavoriteProduct favoriteProduct){
+    public static FavoriteProductResponse from(FavoriteProduct favoriteProduct){
         Products product = favoriteProduct.getProduct();
         return FavoriteProductResponse.builder()
                 .id(favoriteProduct.getId())
