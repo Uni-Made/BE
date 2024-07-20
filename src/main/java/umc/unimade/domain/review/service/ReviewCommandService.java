@@ -33,26 +33,9 @@ public class ReviewCommandService {
     public void createReview(Long productId, Long buyerId, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
         Products product = findProductById(productId);
         Buyer buyer = findBuyerById(buyerId);
-        Review review = Review.builder()
-                .title(reviewCreateRequest.getTitle())
-                .content(reviewCreateRequest.getContent())
-                .product(product)
-                .buyer(buyer)
-                .build();
-        if (images != null && !images.isEmpty()) {
-            List<ReviewImage> reviewImages = images.stream()
-                    .map(image -> {
-                        String imageUrl = s3Provider.uploadFile(image,
-                                S3UploadRequest.builder()
-                                        .userId(buyerId)
-                                        .dirName("review")
-                                        .build());
-                        return ReviewImage.builder()
-                                .imageUrl(imageUrl)
-                                .review(review)
-                                .build();
-                    })
-                    .collect(Collectors.toList());
+        Review review = reviewCreateRequest.toEntity(product, buyer);
+        List<ReviewImage> reviewImages = reviewCreateRequest.toReviewImages(images, s3Provider, buyerId, review);
+        if (reviewImages != null) {
             review.setReviewImages(reviewImages);
         }
         reviewRepository.save(review);

@@ -21,7 +21,7 @@ public class QnAStrategy implements ProductStrategy{
         ProductResponse response = ProductResponse.from(product);
         List<QnAListResponse> questions = questionsRepository.findByProductId(product.getId(), pageRequest)
                 .getContent().stream()
-                .map(QnAListResponse::to)
+                .map(QnAListResponse::from)
                 .collect(Collectors.toList());
         response.setQuestions(questions);
         return response;
