@@ -78,4 +78,11 @@ public class ProductsController extends BaseEntity {
         ApiResponse<Products> updatedProduct = productsCommandService.updateProduct(productId, request);
         return ResponseEntity.ok(updatedProduct);
     }
+
+    // 상품 삭제
+    @DeleteMapping("/{productId}")
+    public ApiResponse<Object> deleteProduct(@PathVariable Long productId) {
+        productsCommandService.deleteProduct(productId);
+        return ApiResponse.noContent();
+    }
 }

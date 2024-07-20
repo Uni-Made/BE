@@ -133,4 +133,13 @@ public class ProductsCommandService {
 
         return ApiResponse.onSuccess(productRepository.save(product));
     }
+
+    // 상품 삭제
+    public void deleteProduct(Long productId) {
+
+        Products product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+
+        productRepository.deleteById(productId);
+    }
 }
