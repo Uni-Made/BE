@@ -1,6 +1,6 @@
 package umc.unimade.domain.products.dto;
 import lombok.*;
-import umc.unimade.domain.products.entity.Options;
+import umc.unimade.domain.products.entity.OptionCategory;
 
 @Getter
 @AllArgsConstructor
@@ -9,13 +9,12 @@ import umc.unimade.domain.products.entity.Options;
 public class OptionResponse {
     private Long optionId;
     private String name;
-    private String value;
 
-    public static OptionResponse to(Options option){
+
+    public static OptionResponse to(OptionCategory option){
         return OptionResponse.builder()
                 .optionId(option.getId())
                 .name(option.getName())
-                .value(option.getValue())
                 .build();
     }
 }
