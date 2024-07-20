@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class AdminSellerRegisterRequest {
+public class AdminRegisterRequest {
 
     @Schema(description = "사유", example = "이상한데요")
     private String reason;
