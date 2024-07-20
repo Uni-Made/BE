@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
+import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
@@ -39,7 +41,7 @@ public class ProductsCommandService {
     private final OptionsRepository optionsRepository;
     private final ProductsImageRepository productsImageRepository;
     private final S3Provider s3Provider;
-//    private final SellerRepository sellerRepository;
+    private final SellerRepository sellerRepository;
 
     @Transactional
     public ApiResponse<Void> toggleFavoriteProduct(Long productId, Long buyerId) {
@@ -80,10 +82,10 @@ public class ProductsCommandService {
                 // TODO 에러 핸들러
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
 
-//        Seller seller = sellerRepository.findById(request.getSellerId())
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid seller ID"));
+        Seller seller = sellerRepository.findById(request.getSellerId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid seller ID"));
 
-        ProductRegister product = request.toEntity(category);
+        ProductRegister product = request.toEntity(category, seller);
         ProductRegister savedProduct = productRegisterRepository.save(product);
 
         // 옵션 등록
@@ -100,7 +102,7 @@ public class ProductsCommandService {
                     .map(image -> {
                         String imageUrl = s3Provider.uploadFile(image,
                                 S3UploadRequest.builder()
-//                                        .sellerId(seller.getid())
+                                        .userId(seller.getId())
                                         .dirName("product")
                                         .build());
                         return ProductsImage.builder()

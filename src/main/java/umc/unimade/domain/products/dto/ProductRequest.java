@@ -27,11 +27,11 @@ public class ProductRequest {
         private Long accountNumber;
         private String accountName;
         private RegisterStatus registerStatus;
-//        private Long sellerId;
+        private Long sellerId;
         private Long categoryId;
         private List<OptionRequest> options;
 
-        public ProductRegister toEntity(Category category) {
+        public ProductRegister toEntity(Category category, Seller seller) {
             ProductRegister product = ProductRegister.builder()
                     .name(name)
                     .content(content)
@@ -44,7 +44,7 @@ public class ProductRequest {
                     .accountNumber(accountNumber)
                     .accountName(accountName)
                     .registerStatus(registerStatus)
-//                    .seller(seller)
+                    .seller(seller)
                     .category(category)
                     .build();
 
