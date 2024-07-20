@@ -30,7 +30,7 @@ public class ProductResponse {
     private List<ReviewListResponse> reviews;
     private List<QnAListResponse> questions;
 
-    public static ProductResponse to(Products product) {
+    public static ProductResponse from(Products product) {
         return ProductResponse.builder()
                 .productId(product.getId())
                 .sellerId(product.getSeller().getId())
@@ -41,7 +41,7 @@ public class ProductResponse {
                 .price(product.getPrice())
                 .productImages(product.getProductImages().stream().map(ProductsImage::getImageUrl).collect(Collectors.toList()))
                 .options(product.getOptionCategories().stream()
-                        .map(OptionResponse::to)
+                        .map(OptionResponse::from)
                         .collect(Collectors.toList()))
                 .build();
     }

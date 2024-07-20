@@ -20,7 +20,7 @@ public class AnswerResponse {
     private List<String> answerImages;
     private LocalDateTime createdAt;
 
-    public static AnswerResponse to(Answers answer){
+    public static AnswerResponse from(Answers answer){
         return AnswerResponse.builder()
                 .answerId(answer.getId())
                 .seller(answer.getSeller().getName())

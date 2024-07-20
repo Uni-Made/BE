@@ -18,7 +18,7 @@ public class ReviewQueryService {
     @Transactional
     public ReviewResponse getReview(Long reviewId){
         return reviewRepository.findById(reviewId)
-                .map(ReviewResponse::to)
+                .map(ReviewResponse::from)
                 .orElseThrow(() -> new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_FOUND));
     }
 }

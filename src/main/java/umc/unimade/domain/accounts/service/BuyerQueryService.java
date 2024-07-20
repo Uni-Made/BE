@@ -29,7 +29,7 @@ public class BuyerQueryService {
         List<FavoriteSellerResponse> favoriteSellers = favoriteSellerRepository.findTop4ByBuyerOrderByCreatedAtDesc(buyer).stream()
                 .map(FavoriteSellerResponse::from)
                 .collect(Collectors.toList());
-        return BuyerPageResponse.to(buyer, favoriteProducts, favoriteSellers);
+        return BuyerPageResponse.from(buyer, favoriteProducts, favoriteSellers);
     }
 
     private Buyer findBuyerById(Long buyerId) {

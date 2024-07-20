@@ -20,7 +20,7 @@ public class ReviewResponse {
     private List<String> reviewImages;
     private LocalDateTime createdAt;
 
-    public static ReviewResponse to(Review review){
+    public static ReviewResponse from(Review review){
         return ReviewResponse.builder()
                 .reviewId(review.getId())
                 .buyer(review.getBuyer().getName())

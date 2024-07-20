@@ -18,7 +18,7 @@ public class QnAListResponse {
         private LocalDateTime createdAt;
         private List<AnswerListResponse> answers;
 
-        public static QnAListResponse to(Questions question){
+        public static QnAListResponse from(Questions question){
             return QnAListResponse.builder()
                     .questionId(question.getId())
                     .title(question.getTitle())

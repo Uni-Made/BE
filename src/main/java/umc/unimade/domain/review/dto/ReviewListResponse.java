@@ -21,7 +21,7 @@ public class ReviewListResponse {
     private String title;
     private LocalDateTime createdAt;
 
-    public static ReviewListResponse to(Review review){
+    public static ReviewListResponse from(Review review){
         return ReviewListResponse.builder()
                 .reviewId(review.getId())
                 .buyer(review.getBuyer().getName())

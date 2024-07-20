@@ -20,14 +20,14 @@ public class QnAQueryService {
     @Transactional
     public QuestionResponse getQuestion(Long questionId){
         return questionsRepository.findById(questionId)
-                .map(QuestionResponse::to)
+                .map(QuestionResponse::from)
                 .orElseThrow(()-> new QnAExceptionHandler(ErrorCode.QNA_NOT_FOUND));
     }
 
     @Transactional
     public AnswerResponse getAnswer(Long answerId){
         return answersRespository.findById(answerId)
-                .map(AnswerResponse::to)
+                .map(AnswerResponse::from)
                 .orElseThrow(()-> new QnAExceptionHandler(ErrorCode.QNA_NOT_FOUND));
     }
 }

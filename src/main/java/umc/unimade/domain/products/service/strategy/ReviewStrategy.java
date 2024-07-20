@@ -20,10 +20,10 @@ public class ReviewStrategy implements ProductStrategy {
 
     @Override
     public ProductResponse loadProduct(Products product, PageRequest pageRequest) {
-        ProductResponse response = ProductResponse.to(product);
+        ProductResponse response = ProductResponse.from(product);
         List<ReviewListResponse> reviews = reviewRepository.findByProductId(product.getId(), pageRequest)
                 .getContent().stream()
-                .map(ReviewListResponse::to)
+                .map(ReviewListResponse::from)
                 .collect(Collectors.toList());
         response.setReviews(reviews);
         return response;
