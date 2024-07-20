@@ -10,7 +10,7 @@ import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.qna.repository.AnswersRespository;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.QnAExceptionHandler;
+import umc.unimade.domain.qna.exception.QnAExceptionHandler;
 
 @Service
 @Transactional(readOnly = true)

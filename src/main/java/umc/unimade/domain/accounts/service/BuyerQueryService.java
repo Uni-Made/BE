@@ -9,7 +9,7 @@ import umc.unimade.domain.favorite.dto.FavoriteSellerResponse;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +33,7 @@ public class BuyerQueryService {
     }
 
     private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId).orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
+        return buyerRepository.findById(buyerId)
+                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
 }

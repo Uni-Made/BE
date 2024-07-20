@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.orders.dto.OrderRequest;
 import umc.unimade.domain.orders.dto.OrderResponse;
 import umc.unimade.domain.orders.service.OrderCommandService;
-import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 
 @RestController
 @RequestMapping("/api/orders")

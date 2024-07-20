@@ -12,8 +12,8 @@ import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.util.Optional;
 

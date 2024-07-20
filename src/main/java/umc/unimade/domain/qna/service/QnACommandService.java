@@ -19,14 +19,12 @@ import umc.unimade.domain.qna.entity.QuestionImage;
 import umc.unimade.domain.qna.repository.AnswersRespository;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
-import umc.unimade.global.common.exception.QnAExceptionHandler;
-import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
+import umc.unimade.domain.qna.exception.QnAExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.util.s3.S3Provider;
-import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

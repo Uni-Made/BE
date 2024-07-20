@@ -10,7 +10,7 @@ import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ViewType;
 import umc.unimade.domain.products.service.strategy.ProductStrategy;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.global.common.exception.ProductsExceptionHandler;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 
 import java.util.Map;
 
