@@ -9,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
+import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
 import umc.unimade.domain.products.entity.ProductRegister;
+import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ViewType;
 import umc.unimade.domain.products.service.ProductsCommandService;
 import umc.unimade.domain.products.service.ProductsQueryService;
@@ -67,5 +69,13 @@ public class ProductsController extends BaseEntity {
                                                                       @RequestPart(name = "image", required = false) List<MultipartFile> images) {
         ApiResponse<ProductRegister> createdProduct = productsCommandService.createProduct(request, images);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+    }
+
+    // 상품 수정
+    @PutMapping("/{productId}")
+    public ResponseEntity<ApiResponse<Products>> updateProduct(@PathVariable Long productId,
+                                                               @RequestBody UpdateProductDto request) {
+        ApiResponse<Products> updatedProduct = productsCommandService.updateProduct(productId, request);
+        return ResponseEntity.ok(updatedProduct);
     }
 }

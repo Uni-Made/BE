@@ -11,6 +11,8 @@ import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
+import umc.unimade.domain.products.dto.OptionRequest;
+import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
 import umc.unimade.domain.products.entity.*;
 import umc.unimade.domain.products.repository.*;
@@ -114,5 +116,21 @@ public class ProductsCommandService {
             savedProduct.setProductImages(productsImages);
         }
         return ApiResponse.onSuccess(savedProduct);
+    }
+
+    // 상품 수정
+    @Transactional
+    public ApiResponse<Products> updateProduct(Long productId, UpdateProductDto request) {
+        Products product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+
+        product.updateProduct(request, category);
+
+        // TODO - 옵션 수정 구현
+
+        return ApiResponse.onSuccess(productRepository.save(product));
     }
 }

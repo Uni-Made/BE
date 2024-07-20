@@ -51,4 +51,23 @@ public class ProductRequest {
             return product;
         }
     }
+
+    // 수정 dto
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateProductDto {
+        private String name;
+        private String content;
+        private Long price;
+        private LocalDate deadline;
+        private ProductStatus status;
+        private String university;
+        private PickupOption pickupOption;
+        private String bankName;
+        private Long accountNumber;
+        private String accountName;
+        private Long categoryId;
+        private List<OptionRequest> options;
+    }
 }
