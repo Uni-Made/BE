@@ -3,25 +3,24 @@ package umc.unimade.domain.products.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
-import umc.unimade.domain.products.entity.Category;
-import umc.unimade.domain.products.entity.Options;
-import umc.unimade.domain.products.entity.ProductRegister;
-import umc.unimade.domain.products.repository.CategoryRepository;
-import umc.unimade.domain.products.repository.OptionsRepository;
-import umc.unimade.domain.products.repository.ProductRepository;
-import umc.unimade.domain.products.entity.Products;
-import umc.unimade.domain.products.repository.ProductRegisterRepository;
+import umc.unimade.domain.products.entity.*;
+import umc.unimade.domain.products.repository.*;
+import umc.unimade.domain.review.entity.ReviewImage;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.ProductsExceptionHandler;
 import umc.unimade.global.common.exception.UserExceptionHandler;
+import umc.unimade.global.util.s3.S3Provider;
+import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +37,8 @@ public class ProductsCommandService {
     private final BuyerRepository buyerRepository;
     private final CategoryRepository categoryRepository;
     private final OptionsRepository optionsRepository;
+    private final ProductsImageRepository productsImageRepository;
+    private final S3Provider s3Provider;
 //    private final SellerRepository sellerRepository;
 
     @Transactional
@@ -74,7 +75,7 @@ public class ProductsCommandService {
     // 상품 등록
     // TODO - seller 추가
     @Transactional
-    public ApiResponse<ProductRegister> createProduct(CreateProductDto request) {
+    public ApiResponse<ProductRegister> createProduct(CreateProductDto request, List<MultipartFile> images) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 // TODO 에러 핸들러
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
@@ -85,6 +86,7 @@ public class ProductsCommandService {
         ProductRegister product = request.toEntity(category);
         ProductRegister savedProduct = productRegisterRepository.save(product);
 
+        // 옵션 등록
         List<Options> options = request.getOptions().stream()
                 .map(optionRequest -> optionRequest.toEntity(savedProduct))
                 .collect(Collectors.toList());
@@ -92,6 +94,23 @@ public class ProductsCommandService {
         optionsRepository.saveAll(options);
         savedProduct.setOptions(options);
 
+        // 사진 등록
+        if (images != null && !images.isEmpty()) {
+            List<ProductsImage> productsImages = images.stream()
+                    .map(image -> {
+                        String imageUrl = s3Provider.uploadFile(image,
+                                S3UploadRequest.builder()
+//                                        .sellerId(seller.getid())
+                                        .dirName("product")
+                                        .build());
+                        return ProductsImage.builder()
+                                .imageUrl(imageUrl)
+                                .productRegister(savedProduct)
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+            savedProduct.setProductImages(productsImages);
+        }
         return ApiResponse.onSuccess(savedProduct);
     }
 }

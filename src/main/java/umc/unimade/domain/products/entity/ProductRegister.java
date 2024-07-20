@@ -80,4 +80,8 @@ public class ProductRegister {
     public void setOptions(List<Options> options) {
         this.options = options;
     }
+
+    public void setProductImages(List<ProductsImage> productImages) {
+        this.productImages = productImages;
+    }
 }

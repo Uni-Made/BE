@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.products.dto.ProductResponse;
-import umc.unimade.domain.products.dto.ProductRequest;
+import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
 import umc.unimade.domain.products.entity.ProductRegister;
 import umc.unimade.domain.products.entity.ViewType;
 import umc.unimade.domain.products.service.ProductsCommandService;
@@ -19,6 +21,7 @@ import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.ProductsExceptionHandler;
 import umc.unimade.global.common.exception.UserExceptionHandler;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -59,9 +62,10 @@ public class ProductsController extends BaseEntity {
     }
 
     // 상품 등록
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<ProductRegister>> createProduct(@RequestBody ProductRequest.CreateProductDto request) {
-        ApiResponse<ProductRegister> createdProduct = productsCommandService.createProduct(request);
+    @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ApiResponse<ProductRegister>> createProduct(@RequestPart("createProductDto") CreateProductDto request,
+                                                                      @RequestPart(name = "image", required = false) List<MultipartFile> images) {
+        ApiResponse<ProductRegister> createdProduct = productsCommandService.createProduct(request, images);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 }

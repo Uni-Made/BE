@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
-import umc.unimade.domain.products.ProductRepository;
+import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.review.ReviewRepository;
 import umc.unimade.domain.review.dto.ReviewCreateRequest;
