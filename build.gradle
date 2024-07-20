@@ -13,6 +13,10 @@ java {
 	}
 }
 
+compileJava {
+	options.compilerArgs << '-parameters'
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
