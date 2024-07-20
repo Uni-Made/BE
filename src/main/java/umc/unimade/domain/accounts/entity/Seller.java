@@ -1,8 +1,10 @@
 package umc.unimade.domain.accounts.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.domain.favorite.entity.FavoriteSeller;
+import umc.unimade.domain.products.entity.ProductRegister;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.qna.entity.Answers;
 import umc.unimade.global.common.BaseEntity;
@@ -51,6 +53,10 @@ public class Seller extends BaseEntity {
 
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private List<Products> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ProductRegister> productRegister = new ArrayList<>();
 
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private List<Answers> answers = new ArrayList<>();

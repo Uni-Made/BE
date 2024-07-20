@@ -1,11 +1,13 @@
 package umc.unimade.domain.products.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.entity.PurchaseForm;
+import umc.unimade.domain.products.dto.ProductRequest;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.global.common.BaseEntity;
@@ -60,10 +62,12 @@ public class Products extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
+    @JsonIgnore
     private Seller seller;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -86,4 +90,18 @@ public class Products extends BaseEntity {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PurchaseForm> PurchaseForms = new ArrayList<>();
+
+    public void updateProduct(ProductRequest.UpdateProductDto request, Category category) {
+        this.name = request.getName();
+        this.content = request.getContent();
+        this.price = request.getPrice();
+        this.deadline = request.getDeadline();
+        this.status = request.getStatus();
+        this.university = request.getUniversity();
+        this.pickupOption = request.getPickupOption();
+        this.bankName = request.getBankName();
+        this.accountNumber = request.getAccountNumber();
+        this.accountName = request.getAccountName();
+        this.category = category;
+    }
 }
