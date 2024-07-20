@@ -2,6 +2,7 @@ package umc.unimade.domain.products.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.global.registerStatus.RegisterStatus;
 
 import java.time.LocalDate;
@@ -61,15 +62,30 @@ public class ProductRegister {
     private String reason;  // 거부 or 보류 사유
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
     @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProductsImage> productImages = new ArrayList<>();
 
+//    @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<Options> options = new ArrayList<>();
+
     @PostPersist
     private void setRegisterStatus() {
         registerStatus = RegisterStatus.PENDING;
+    }
+
+//    public void setOptions(List<Options> options) {
+//        this.options = options;
+//    }
+
+    public void setProductImages(List<ProductsImage> productImages) {
+        this.productImages = productImages;
     }
 
     public void changeStatus(RegisterStatus registerStatus) {

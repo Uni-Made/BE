@@ -1,5 +1,6 @@
 package umc.unimade.domain.products.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.global.common.BaseEntity;
@@ -26,6 +27,7 @@ public class ProductsImage extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "product_register_id")
+    @JsonIgnore
     private ProductRegister productRegister;
 
     public void setProduct(Products product) {
