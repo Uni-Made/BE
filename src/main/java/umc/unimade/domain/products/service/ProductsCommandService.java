@@ -86,7 +86,6 @@ public class ProductsCommandService {
     @Transactional
     public ApiResponse<ProductRegister> createProduct(CreateProductDto request, List<MultipartFile> images) {
         Category category = categoryRepository.findById(request.getCategoryId())
-                // TODO 에러 핸들러
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
         Seller seller = sellerRepository.findById(request.getSellerId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
@@ -94,13 +93,26 @@ public class ProductsCommandService {
         ProductRegister product = request.toEntity(category, seller);
         ProductRegister savedProduct = productRegisterRepository.save(product);
 
-        // 옵션 등록
-//        List<Options> options = request.getOptions().stream()
-//                .map(optionRequest -> optionRequest.toEntity(savedProduct))
-//                .collect(Collectors.toList());
-//
-//        optionsRepository.saveAll(options);
-//        savedProduct.setOptions(options);
+        // 옵션 카테고리 및 옵션 밸류 등록
+        if (request.getOptions() != null && !request.getOptions().isEmpty()) {
+            List<OptionCategory> optionCategories = request.getOptions().stream()
+                    .map(optionCategoryRequest -> {
+                        OptionCategory optionCategory = OptionCategory.builder()
+                                .name(optionCategoryRequest.getName())
+                                .productRegister(savedProduct)
+                                .build();
+                        List<OptionValue> optionValues = optionCategoryRequest.getValues().stream()
+                                .map(value -> OptionValue.builder()
+                                        .value(value)
+                                        .category(optionCategory)
+                                        .build())
+                                .collect(Collectors.toList());
+                        optionCategory.setValues(optionValues);
+                        return optionCategory;
+                    })
+                    .collect(Collectors.toList());
+            savedProduct.setOptionCategories(optionCategories);
+        }
 
         // 사진 등록
         if (images != null && !images.isEmpty()) {

@@ -29,7 +29,7 @@ public class ProductRequest {
         private RegisterStatus registerStatus;
         private Long sellerId;
         private Long categoryId;
-//        private List<OptionRequest> options;
+        private List<OptionCategoryRequest> options;
 
         public ProductRegister toEntity(Category category, Seller seller) {
             ProductRegister product = ProductRegister.builder()

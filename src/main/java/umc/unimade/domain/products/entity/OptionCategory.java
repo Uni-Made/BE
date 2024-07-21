@@ -1,5 +1,6 @@
 package umc.unimade.domain.products.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.global.common.BaseEntity;
@@ -28,4 +29,13 @@ public class OptionCategory extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Products product;
+
+    @ManyToOne
+    @JoinColumn(name = "product_register_id")
+    @JsonIgnore
+    private ProductRegister productRegister;
+
+    public void setValues(List<OptionValue> values) {
+        this.values = values;
+    }
 }
