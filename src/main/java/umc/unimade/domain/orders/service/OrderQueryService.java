@@ -3,9 +3,14 @@ package umc.unimade.domain.orders.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.orders.dto.OrderVerificationRequest;
 import umc.unimade.domain.orders.dto.OrderVerificationResponse;
+import umc.unimade.domain.orders.dto.SellerOrderResponse;
+import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.exception.SellerExceptionhandler;
 import umc.unimade.domain.orders.repository.OptionValueRepository;
+import umc.unimade.domain.orders.repository.OrderRepository;
 import umc.unimade.domain.products.entity.OptionValue;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
@@ -22,6 +27,8 @@ public class OrderQueryService {
 
     private final OptionValueRepository optionValueRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final SellerRepository sellerRepository;
 
     public OrderVerificationResponse verifyOrder(Long productId, OrderVerificationRequest request){
         Products product = findProductById(productId);
@@ -47,4 +54,17 @@ public class OrderQueryService {
                 .mapToLong(option -> product.getPrice() * option.getCount())
                 .sum();
     }
+
+    // 판매자 - 구매 요청 확인(조회)
+    public List<SellerOrderResponse> getOrdersBySellerId(Long sellerId) {
+        sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new SellerExceptionhandler(ErrorCode.SELLER_NOT_FOUND));
+
+        List<Orders> orders = orderRepository.findOrdersBySellerId(sellerId);
+
+        return orders.stream()
+                .map(SellerOrderResponse::from)
+                .collect(Collectors.toList());
+    }
+
 }
