@@ -71,4 +71,5 @@ public class Buyer extends BaseEntity {
     private void setRole() {
         role = Role.BUYER;
     }
+
 }

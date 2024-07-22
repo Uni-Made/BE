@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.orders.dto.OrderRequest;
 import umc.unimade.domain.orders.dto.OrderResponse;
 import umc.unimade.domain.orders.dto.OrderVerificationRequest;
@@ -46,6 +47,18 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (ProductsExceptionHandler e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.PRODUCT_NOT_FOUND.getCode(), ErrorCode.PRODUCT_NOT_FOUND.getMessage()));
+        }
+    }
+
+    @Operation(summary = "대기 중일때 입금 정보 안내")
+    @GetMapping("/{orderId}/banking-info")
+    public ResponseEntity<ApiResponse<OrderResponse>>getBankingInfo(@PathVariable Long orderId){
+        try{
+            return ResponseEntity.ok(ApiResponse.onSuccess(orderQueryService.getBankingInfo(orderId)));
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (UserExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.ORDER_NOT_FOUND.getCode(), ErrorCode.ORDER_NOT_FOUND.getMessage()));
         }
     }
 }
