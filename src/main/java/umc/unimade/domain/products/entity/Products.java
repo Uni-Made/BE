@@ -7,6 +7,7 @@ import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.entity.PurchaseForm;
+import umc.unimade.domain.products.dto.OptionCategoryRequest;
 import umc.unimade.domain.products.dto.ProductRequest;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.review.entity.Review;
@@ -15,6 +16,7 @@ import umc.unimade.global.common.BaseEntity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -103,5 +105,27 @@ public class Products extends BaseEntity {
         this.accountNumber = request.getAccountNumber();
         this.accountName = request.getAccountName();
         this.category = category;
+    }
+
+    public void updateOptionCategories(List<OptionCategoryRequest> optionRequests) {
+        this.optionCategories.clear();
+
+        List<OptionCategory> newOptionCategories = optionRequests.stream()
+                .map(optionRequest -> {
+                    OptionCategory optionCategory = OptionCategory.builder()
+                            .name(optionRequest.getName())
+                            .product(this)
+                            .build();
+                    optionCategory.setValues(optionRequest.getValues().stream()
+                            .map(value -> OptionValue.builder()
+                                    .value(value)
+                                    .category(optionCategory)
+                                    .build())
+                            .collect(Collectors.toList()));
+                    return optionCategory;
+                })
+                .collect(Collectors.toList());
+
+        this.optionCategories.addAll(newOptionCategories);
     }
 }

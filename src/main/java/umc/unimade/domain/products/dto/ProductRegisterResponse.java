@@ -32,6 +32,7 @@ public class ProductRegisterResponse {
     private String reason;
     private Long categoryId;
     private List<ProductsImageDTO> productImages;
+    private List<OptionCategoryResponse> optionCategories;
 
     public static ProductRegisterResponse from(ProductRegister productRegister) {
         return ProductRegisterResponse.builder()
@@ -51,6 +52,9 @@ public class ProductRegisterResponse {
                 .categoryId(productRegister.getCategory().getId())
                 .productImages(productRegister.getProductImages().stream()
                         .map(ProductsImageDTO::from)
+                        .collect(Collectors.toList()))
+                .optionCategories(productRegister.getOptionCategories().stream()
+                        .map(OptionCategoryResponse::from)
                         .collect(Collectors.toList()))
                 .build();
     }

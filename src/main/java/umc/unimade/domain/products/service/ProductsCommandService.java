@@ -11,8 +11,11 @@ import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
+import umc.unimade.domain.orders.repository.OptionValueRepository;
+import umc.unimade.domain.products.dto.ProductRegisterResponse;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
+import umc.unimade.domain.products.dto.ProductUpdateResponse;
 import umc.unimade.domain.products.entity.*;
 import umc.unimade.domain.products.exception.ProductExceptionHandler;
 import umc.unimade.domain.products.repository.*;
@@ -27,7 +30,6 @@ import umc.unimade.global.util.s3.S3Provider;
 import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,7 +45,8 @@ public class ProductsCommandService {
     private final ProductRegisterRepository productRegisterRepository;
     private final BuyerRepository buyerRepository;
     private final CategoryRepository categoryRepository;
-//    private final OptionsRepository optionsRepository;
+    private final OptionCategoryRepository optionCategoryRepository;
+    private final OptionValueRepository optionValueRepository;
     private final ProductsImageRepository productsImageRepository;
     private final S3Provider s3Provider;
     private final SellerRepository sellerRepository;
@@ -84,9 +87,8 @@ public class ProductsCommandService {
     // 상품 등록
     // TODO - seller 추가
     @Transactional
-    public ApiResponse<ProductRegister> createProduct(CreateProductDto request, List<MultipartFile> images) {
+    public ApiResponse<ProductRegisterResponse> createProduct(CreateProductDto request, List<MultipartFile> images) {
         Category category = categoryRepository.findById(request.getCategoryId())
-                // TODO 에러 핸들러
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
         Seller seller = sellerRepository.findById(request.getSellerId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
@@ -94,13 +96,26 @@ public class ProductsCommandService {
         ProductRegister product = request.toEntity(category, seller);
         ProductRegister savedProduct = productRegisterRepository.save(product);
 
-        // 옵션 등록
-//        List<Options> options = request.getOptions().stream()
-//                .map(optionRequest -> optionRequest.toEntity(savedProduct))
-//                .collect(Collectors.toList());
-//
-//        optionsRepository.saveAll(options);
-//        savedProduct.setOptions(options);
+        // 옵션 카테고리 및 옵션 밸류 등록
+        if (request.getOptions() != null && !request.getOptions().isEmpty()) {
+            List<OptionCategory> optionCategories = request.getOptions().stream()
+                    .map(optionCategoryRequest -> {
+                        OptionCategory optionCategory = OptionCategory.builder()
+                                .name(optionCategoryRequest.getName())
+                                .productRegister(savedProduct)
+                                .build();
+                        List<OptionValue> optionValues = optionCategoryRequest.getValues().stream()
+                                .map(value -> OptionValue.builder()
+                                        .value(value)
+                                        .category(optionCategory)
+                                        .build())
+                                .collect(Collectors.toList());
+                        optionCategory.setValues(optionValues);
+                        return optionCategory;
+                    })
+                    .collect(Collectors.toList());
+            savedProduct.setOptionCategories(optionCategories);
+        }
 
         // 사진 등록
         if (images != null && !images.isEmpty()) {
@@ -119,12 +134,13 @@ public class ProductsCommandService {
                     .collect(Collectors.toList());
             savedProduct.setProductImages(productsImages);
         }
-        return ApiResponse.onSuccess(savedProduct);
+        ProductRegisterResponse response = ProductRegisterResponse.from(savedProduct);
+        return ApiResponse.onSuccess(response);
     }
 
     // 상품 수정
     @Transactional
-    public ApiResponse<Products> updateProduct(Long productId, UpdateProductDto request) {
+    public ApiResponse<ProductUpdateResponse> updateProduct(Long productId, UpdateProductDto request) {
         Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));;
 
@@ -133,9 +149,18 @@ public class ProductsCommandService {
 
         product.updateProduct(request, category);
 
-        // TODO - 옵션 수정 구현
+        List<Long> categoryIds = product.getOptionCategories().stream()
+                .map(OptionCategory::getId)
+                .collect(Collectors.toList());
 
-        return ApiResponse.onSuccess(productRepository.save(product));
+        optionValueRepository.deleteByCategoryId(categoryIds);
+        optionCategoryRepository.deleteByProductId(productId);
+
+        product.updateOptionCategories(request.getOptions());
+        productRepository.save(product);
+
+        ProductUpdateResponse response = ProductUpdateResponse.from(product);
+        return ApiResponse.onSuccess(response);
     }
 
     // 상품 삭제
