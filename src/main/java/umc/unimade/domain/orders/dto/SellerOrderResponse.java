@@ -28,7 +28,7 @@ public class SellerOrderResponse { // 특정 판매자에게 온 구매 요청 �
     private String productName;
     private LocalDateTime createdAt;
     private String orderStatus;
-    // TODO -수령완료 상태
+    private String receiveStatus;
 
     public static SellerOrderResponse from(Orders order) {
         return SellerOrderResponse.builder()
@@ -38,7 +38,7 @@ public class SellerOrderResponse { // 특정 판매자에게 온 구매 요청 �
                 .productName(order.getProduct().getName())
                 .createdAt(order.getCreatedAt())
                 .orderStatus(order.getStatus().toString())
-                // TODO -수령완료 상태
+                .receiveStatus(order.getReceiveStatus().toString())
                 .build();
     }
 }

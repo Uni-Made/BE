@@ -23,6 +23,11 @@ public class Orders extends BaseEntity {
     @Column(name = "status")
     private OrderStatus status = OrderStatus.PENDING;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "receipt_status")
+    private ReceiveStatus receiveStatus = ReceiveStatus.NOT_RECEIVED;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
@@ -34,5 +39,4 @@ public class Orders extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Products product;
-
 }
