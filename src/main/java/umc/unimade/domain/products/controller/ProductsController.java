@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
+import umc.unimade.domain.products.dto.ProductRegisterResponse;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
@@ -67,9 +68,9 @@ public class ProductsController extends BaseEntity {
     @Tag(name = "Products")
     @Operation(summary = "상품 등록", description = "productRegister로 저장")
     @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiResponse<ProductRegister>> createProduct(@RequestPart("createProductDto") CreateProductDto request,
-                                                                      @RequestPart(name = "image", required = false) List<MultipartFile> images) {
-        ApiResponse<ProductRegister> createdProduct = productsCommandService.createProduct(request, images);
+    public ResponseEntity<ApiResponse<ProductRegisterResponse>> createProduct(@RequestPart("createProductDto") CreateProductDto request,
+                                                                              @RequestPart(name = "image", required = false) List<MultipartFile> images) {
+        ApiResponse<ProductRegisterResponse> createdProduct = productsCommandService.createProduct(request, images);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 

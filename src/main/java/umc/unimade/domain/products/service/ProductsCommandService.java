@@ -11,6 +11,7 @@ import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
+import umc.unimade.domain.products.dto.ProductRegisterResponse;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
 import umc.unimade.domain.products.entity.*;
@@ -84,7 +85,7 @@ public class ProductsCommandService {
     // 상품 등록
     // TODO - seller 추가
     @Transactional
-    public ApiResponse<ProductRegister> createProduct(CreateProductDto request, List<MultipartFile> images) {
+    public ApiResponse<ProductRegisterResponse> createProduct(CreateProductDto request, List<MultipartFile> images) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
         Seller seller = sellerRepository.findById(request.getSellerId())
@@ -131,7 +132,8 @@ public class ProductsCommandService {
                     .collect(Collectors.toList());
             savedProduct.setProductImages(productsImages);
         }
-        return ApiResponse.onSuccess(savedProduct);
+        ProductRegisterResponse response = ProductRegisterResponse.from(savedProduct);
+        return ApiResponse.onSuccess(response);
     }
 
     // 상품 수정
