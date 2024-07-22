@@ -35,6 +35,10 @@ public class OptionCategory extends BaseEntity {
     @JsonIgnore
     private ProductRegister productRegister;
 
+    public void setProduct(Products product) {
+        this.product = product;
+    }
+
     public void setValues(List<OptionValue> values) {
         this.values = values;
     }

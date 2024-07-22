@@ -11,9 +11,11 @@ import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
+import umc.unimade.domain.orders.repository.OptionValueRepository;
 import umc.unimade.domain.products.dto.ProductRegisterResponse;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
+import umc.unimade.domain.products.dto.ProductUpdateResponse;
 import umc.unimade.domain.products.entity.*;
 import umc.unimade.domain.products.exception.ProductExceptionHandler;
 import umc.unimade.domain.products.repository.*;
@@ -28,7 +30,6 @@ import umc.unimade.global.util.s3.S3Provider;
 import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,7 +45,8 @@ public class ProductsCommandService {
     private final ProductRegisterRepository productRegisterRepository;
     private final BuyerRepository buyerRepository;
     private final CategoryRepository categoryRepository;
-//    private final OptionsRepository optionsRepository;
+    private final OptionCategoryRepository optionCategoryRepository;
+    private final OptionValueRepository optionValueRepository;
     private final ProductsImageRepository productsImageRepository;
     private final S3Provider s3Provider;
     private final SellerRepository sellerRepository;
@@ -138,7 +140,7 @@ public class ProductsCommandService {
 
     // 상품 수정
     @Transactional
-    public ApiResponse<Products> updateProduct(Long productId, UpdateProductDto request) {
+    public ApiResponse<ProductUpdateResponse> updateProduct(Long productId, UpdateProductDto request) {
         Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));;
 
@@ -147,9 +149,18 @@ public class ProductsCommandService {
 
         product.updateProduct(request, category);
 
-        // TODO - 옵션 수정 구현
+        List<Long> categoryIds = product.getOptionCategories().stream()
+                .map(OptionCategory::getId)
+                .collect(Collectors.toList());
 
-        return ApiResponse.onSuccess(productRepository.save(product));
+        optionValueRepository.deleteByCategoryId(categoryIds);
+        optionCategoryRepository.deleteByProductId(productId);
+
+        product.updateOptionCategories(request.getOptions());
+        productRepository.save(product);
+
+        ProductUpdateResponse response = ProductUpdateResponse.from(product);
+        return ApiResponse.onSuccess(response);
     }
 
     // 상품 삭제

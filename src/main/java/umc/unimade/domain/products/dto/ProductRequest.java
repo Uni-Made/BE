@@ -67,7 +67,8 @@ public class ProductRequest {
         private String bankName;
         private String accountNumber;
         private String accountName;
+        private RegisterStatus registerStatus;
         private Long categoryId;
-//        private List<OptionRequest> options;
+        private List<OptionCategoryRequest> options;
     }
 }
