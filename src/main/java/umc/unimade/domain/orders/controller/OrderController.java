@@ -66,7 +66,6 @@ public class OrderController {
         List<SellerOrderResponse> orders = orderQueryService.getOrdersBySellerId(sellerId, pageRequest);
         return ResponseEntity.ok(orders);
     }
-}
 
     @Operation(summary = "대기 중일때 입금 정보 안내")
     @GetMapping("/{orderId}/banking-info")
