@@ -3,9 +3,14 @@ package umc.unimade.domain.orders.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.unimade.domain.orders.dto.OrderResponse;
 import umc.unimade.domain.orders.dto.OrderVerificationRequest;
 import umc.unimade.domain.orders.dto.OrderVerificationResponse;
+import umc.unimade.domain.orders.entity.OrderStatus;
+import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OptionValueRepository;
+import umc.unimade.domain.orders.repository.OrderRepository;
 import umc.unimade.domain.products.entity.OptionValue;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
@@ -22,6 +27,7 @@ public class OrderQueryService {
 
     private final OptionValueRepository optionValueRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
 
     public OrderVerificationResponse verifyOrder(Long productId, OrderVerificationRequest request){
         Products product = findProductById(productId);
@@ -38,6 +44,17 @@ public class OrderQueryService {
         return OrderVerificationResponse.from(orderOptionResponses, totalPrice);
     }
 
+    public OrderResponse getBankingInfo(Long orderId){
+        Orders order = findOrderById(orderId);
+        if(order.getStatus() == OrderStatus.PENDING){
+            return OrderResponse.from(order,order.getProduct(),order.getTotalPrice());
+        }else {
+            throw new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND);
+        }
+    }
+
+
+
     private Products findProductById(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
@@ -46,5 +63,11 @@ public class OrderQueryService {
         return orderOptions.stream()
                 .mapToLong(option -> product.getPrice() * option.getCount())
                 .sum();
+    }
+
+    private Orders findOrderById(Long orderId){
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
+
     }
 }
