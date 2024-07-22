@@ -18,7 +18,7 @@ public class Orders extends BaseEntity {
     @Column(name = "order_id", nullable = false)
     private Long id;
 
-    @Column(name = "total_price", nullable = false)
+    @Column(name = "total_price")
     private Long totalPrice;
 
     @Builder.Default

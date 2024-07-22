@@ -58,9 +58,9 @@ public class BuyerController {
             @RequestParam(required = false) Long cursor,
             @RequestParam int pageSize) {
         try {
-            CursorPageRequest request = new CursorPageRequest(cursor, pageSize);
-            BuyerOrderHistoryResponse response = buyerQueryService.getOrderHistory(buyerId, request);
-            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getOrderHistory(buyerId, request)));
+//            CursorPageRequest request = new CursorPageRequest(cursor, pageSize);
+//            BuyerOrderHistoryResponse response = buyerQueryService.getOrderHistory(buyerId, cursor, pageSize);
+            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getOrderHistory(buyerId, cursor, pageSize)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {

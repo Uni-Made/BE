@@ -1,6 +1,7 @@
 package umc.unimade.domain.accounts.service;
 import lombok.*;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.dto.BuyerOrderHistoryResponse;
@@ -39,11 +40,13 @@ public class BuyerQueryService {
                 .collect(Collectors.toList());
         return BuyerPageResponse.from(buyer, favoriteProducts, favoriteSellers);
     }
-    public BuyerOrderHistoryResponse getOrderHistory(Long buyerId, CursorPageRequest request){
-        List<Orders> orders = orderRepository.findOrdersByBuyerIdWithCursorPagination(buyerId, request.getCursor(), request.getPageSize());
+
+    public BuyerOrderHistoryResponse getOrderHistory(Long buyerId, Long cursor, Integer pageSize){
+        Pageable pageable = PageRequest.of(0, pageSize);
+        List<Orders> orders = orderRepository.findOrdersByBuyerIdWithCursorPagination(buyerId, cursor, pageable);
 
         Long nextCursor = orders.isEmpty() ? null : orders.get(orders.size() - 1).getId();
-        boolean isLast = orders.size() < request.getPageSize();
+        boolean isLast = orders.size() < pageSize;
         return BuyerOrderHistoryResponse.from(orders, nextCursor, isLast);
     }
 

@@ -48,7 +48,6 @@ public class OrderCommandService {
         List<OrderItem> orderItems = orderRequest.toOrderItems(order, product);
         orderItemRepository.saveAll(orderItems);
 
-
         // OptionValue 조회 및 OrderOption 저장
         List<OrderOption> orderOptions = orderItems.stream()
                 .flatMap(orderItem -> {
@@ -59,6 +58,7 @@ public class OrderCommandService {
                 .collect(Collectors.toList());
 
         orderOptionRepository.saveAll(orderOptions);
+
         // 총 가격 계산 및 Orders 엔티티 업데이트
         Long totalPrice = orderItems.stream()
                 .mapToLong(item -> product.getPrice() * item.getCount())
