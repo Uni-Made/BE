@@ -18,6 +18,9 @@ public class Orders extends BaseEntity {
     @Column(name = "order_id", nullable = false)
     private Long id;
 
+    @Column(name = "total_price")
+    private Long totalPrice;
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -39,4 +42,8 @@ public class Orders extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Products product;
+
+    public void setTotalPrice(Long totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 }

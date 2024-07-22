@@ -4,6 +4,8 @@ package umc.unimade.domain.products.dto;
 
 import lombok.*;
 import java.util.List;
+
+import umc.unimade.domain.products.entity.Category;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ProductsImage;
 import umc.unimade.domain.qna.dto.QnAListResponse;
@@ -22,9 +24,11 @@ public class ProductResponse {
     private String sellerName;
     private String university;
     private String productName;
+    private Category category;
     private LocalDate deadline;
     private Long price;
     private List<String> productImages;
+    private Integer favoriteCount;
     private List<OptionResponse> options;
     private String detail;
     private List<ReviewListResponse> reviews;
@@ -37,9 +41,11 @@ public class ProductResponse {
                 .sellerName(product.getSeller().getName())
                 .university(product.getUniversity())
                 .productName(product.getName())
+                .category(product.getCategory())
                 .deadline(product.getDeadline())
                 .price(product.getPrice())
                 .productImages(product.getProductImages().stream().map(ProductsImage::getImageUrl).collect(Collectors.toList()))
+                .favoriteCount(product.getFavoriteProducts().size())
                 .options(product.getOptionCategories().stream()
                         .map(OptionResponse::from)
                         .collect(Collectors.toList()))
