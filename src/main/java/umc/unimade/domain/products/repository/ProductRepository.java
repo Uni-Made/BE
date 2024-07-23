@@ -8,6 +8,7 @@ import umc.unimade.domain.products.entity.Products;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Products, Long> {
-    List<Products> findTop4BySellerIdAndStatusOrderByCreatedAtDesc(Long sellerId,  ProductStatus status);
+public interface ProductRepository extends JpaRepository<Products, Long>, ProductsRepositoryCustom {
+    List<Products> findTop4BySellerIdAndStatusOrderByCreatedAtDesc(Long sellerId, ProductStatus status);
+
 }

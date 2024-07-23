@@ -14,8 +14,7 @@ import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
 import umc.unimade.domain.products.dto.ProductUpdateResponse;
-import umc.unimade.domain.products.entity.ProductRegister;
-import umc.unimade.domain.products.entity.Products;
+import umc.unimade.domain.products.dto.ProductsListResponse;
 import umc.unimade.domain.products.entity.ViewType;
 import umc.unimade.domain.products.service.ProductsCommandService;
 import umc.unimade.domain.products.service.ProductsQueryService;
@@ -65,6 +64,28 @@ public class ProductsController extends BaseEntity {
         }
     }
 
+    @Tag(name = "Products")
+    @Operation(summary = "판매 상품 목록 가져오기 + 필터링 ")
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<ProductsListResponse>> findProductsByFilters(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
+        try {
+            ProductsListResponse response = productsQueryService.findProductsByFilters(category, keyword, minPrice, maxPrice, sort, cursor, pageSize);
+            return ResponseEntity.ok(ApiResponse.onSuccess(response));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (ProductsExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.PRODUCT_NOT_FOUND.getCode(), ErrorCode.PRODUCT_NOT_FOUND.getMessage()));
+        }
+    }
+
     // 상품 등록
     @Tag(name = "Products")
     @Operation(summary = "상품 등록", description = "productRegister로 저장")
@@ -93,4 +114,6 @@ public class ProductsController extends BaseEntity {
         productsCommandService.deleteProduct(productId);
         return ApiResponse.noContent();
     }
+
+
 }
