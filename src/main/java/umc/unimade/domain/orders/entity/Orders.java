@@ -46,4 +46,12 @@ public class Orders extends BaseEntity {
     public void setTotalPrice(Long totalPrice) {
         this.totalPrice = totalPrice;
     }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public void setReceiveStatus(ReceiveStatus receiveStatus) {
+        this.receiveStatus = receiveStatus;
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.orders.dto.*;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.orders.dto.OrderRequest;
@@ -16,6 +17,8 @@ import umc.unimade.domain.orders.dto.OrderVerificationResponse;
 import umc.unimade.domain.orders.service.OrderCommandService;
 import umc.unimade.domain.orders.service.OrderQueryService;
 import umc.unimade.domain.products.entity.ViewType;
+import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
@@ -56,6 +59,19 @@ public class OrderController {
         }
     }
 
+    @Tag(name = "Order", description = "구매 관련 API")
+    @Operation(summary = "대기 중일때 입금 정보 안내")
+    @GetMapping("/{orderId}/banking-info")
+    public ResponseEntity<ApiResponse<OrderResponse>>getBankingInfo(@PathVariable Long orderId){
+        try{
+            return ResponseEntity.ok(ApiResponse.onSuccess(orderQueryService.getBankingInfo(orderId)));
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (UserExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.ORDER_NOT_FOUND.getCode(), ErrorCode.ORDER_NOT_FOUND.getMessage()));
+        }
+    }
+
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "특정 판매자에게 온 구매 요청 보기")
     @GetMapping("/{sellerId}")
@@ -67,15 +83,21 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @Operation(summary = "대기 중일때 입금 정보 안내")
-    @GetMapping("/{orderId}/banking-info")
-    public ResponseEntity<ApiResponse<OrderResponse>>getBankingInfo(@PathVariable Long orderId){
-        try{
-            return ResponseEntity.ok(ApiResponse.onSuccess(orderQueryService.getBankingInfo(orderId)));
-        }catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
-        } catch (UserExceptionHandler e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.ORDER_NOT_FOUND.getCode(), ErrorCode.ORDER_NOT_FOUND.getMessage()));
-        }
+    @Tag(name = "Seller", description = "판매자 관련 API")
+    @Operation(summary = "주문 상태 변경하기(PENDING,PAID,RECEIVED)")
+    @PutMapping("/orderStatus/{orderId}")
+    public ResponseEntity<SellerOrderResponse> changeOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatus status) {
+        Orders order = orderCommandService.changeOrderStatus(orderId, status);
+        SellerOrderResponse updatedOrder = SellerOrderResponse.from(order);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
+    @Tag(name = "Seller", description = "판매자 관련 API")
+    @Operation(summary = "수령 상태 변경하기(NOT_RECEIVED, RECEIVED)")
+    @PutMapping("/receiveStatus/{orderId}")
+    public ResponseEntity<SellerOrderResponse> changeReceiveStatus(@PathVariable Long orderId) {
+        Orders order = orderCommandService.changeReceiveStatus(orderId);
+        SellerOrderResponse updatedOrder = SellerOrderResponse.from(order);
+        return ResponseEntity.ok(updatedOrder);
     }
 }

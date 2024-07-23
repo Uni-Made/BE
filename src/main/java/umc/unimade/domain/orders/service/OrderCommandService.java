@@ -8,6 +8,7 @@ import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.orders.dto.OrderRequest;
 import umc.unimade.domain.orders.dto.OrderResponse;
 import umc.unimade.domain.orders.entity.*;
+import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.*;
 import umc.unimade.domain.products.entity.OptionValue;
 import umc.unimade.domain.products.repository.ProductRepository;
@@ -78,4 +79,27 @@ public class OrderCommandService {
                 .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
+    // 주문 상태 변경 PENDING,PAID,RECEIVED
+    @Transactional
+    public Orders changeOrderStatus(Long orderId, OrderStatus status) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
+        order.setStatus(status);
+        return orderRepository.save(order);
+    }
+
+    // 수령 상태 변경 NOT_RECEIVED, RECEIVED
+    @Transactional
+    public Orders changeReceiveStatus(Long orderId) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
+
+        if (order.getStatus() == OrderStatus.PENDING) {
+            throw new OrderExceptionHandler(ErrorCode.STATUS_IS_PENDING);
+        }
+
+        order.setStatus(OrderStatus.RECEIVED);
+        order.setReceiveStatus(ReceiveStatus.RECEIVED);
+        return orderRepository.save(order);
+    }
 }
