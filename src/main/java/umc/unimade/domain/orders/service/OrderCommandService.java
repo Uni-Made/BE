@@ -2,6 +2,7 @@ package umc.unimade.domain.orders.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
@@ -17,6 +18,7 @@ import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,5 +103,17 @@ public class OrderCommandService {
         order.setStatus(OrderStatus.RECEIVED);
         order.setReceiveStatus(ReceiveStatus.RECEIVED);
         return orderRepository.save(order);
+    }
+
+    // 구매폼 작성 후 3일 이후 미입금 시 구매 취소
+    @Scheduled(cron = "0 0 0 * * *") // 0시 0분 0초
+    @Transactional
+    public void cancelOldOrders() {
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3); // 지금으로부터 3일 전 날짜 찾기
+        List<Orders> Orders = orderRepository.findOrdersCreatedBefore(threeDaysAgo, OrderStatus.PENDING); // 3일 전
+        for (Orders order : Orders) {
+            order.setStatus(OrderStatus.CANCELLED);
+            orderRepository.save(order);
+        }
     }
 }
