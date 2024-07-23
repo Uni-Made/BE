@@ -28,24 +28,4 @@ public class QuestionCreateRequest {
                 .buyer(buyer)
                 .build();
     }
-
-    public List<QuestionImage> toQuestionImages(List<MultipartFile> images, S3Provider s3Provider, Long buyerId, Questions question) {
-        if (images == null || images.isEmpty()) {
-            return null;
-        }
-        return images.stream()
-                .map(image -> {
-                    String imageUrl = s3Provider.uploadFile(image,
-                            S3UploadRequest.builder()
-                                    .userId(buyerId)
-                                    .dirName("question")
-                                    .build());
-                    return QuestionImage.builder()
-                            .imageUrl(imageUrl)
-                            .question(question)
-                            .build();
-                })
-                .collect(Collectors.toList());
-    }
-
 }

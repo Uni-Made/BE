@@ -31,23 +31,4 @@ public class AnswerCreateRequest {
                 .question(question)
                 .build();
     }
-
-    public List<AnswerImage> toAnswerImages(List<MultipartFile> images, S3Provider s3Provider, Long sellerId, Answers answer) {
-        if (images == null || images.isEmpty()) {
-            return null;
-        }
-        return images.stream()
-                .map(image -> {
-                    String imageUrl = s3Provider.uploadFile(image,
-                            S3UploadRequest.builder()
-                                    .userId(sellerId)
-                                    .dirName("answer")
-                                    .build());
-                    return AnswerImage.builder()
-                            .imageUrl(imageUrl)
-                            .answer(answer)
-                            .build();
-                })
-                .collect(Collectors.toList());
-    }
 }
