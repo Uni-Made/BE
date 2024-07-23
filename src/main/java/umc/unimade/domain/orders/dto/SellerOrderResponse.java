@@ -34,7 +34,7 @@ public class SellerOrderResponse { // 특정 판매자에게 온 구매 요청 �
         return SellerOrderResponse.builder()
                 .sellerId(order.getProduct().getSeller().getId())
                 .orderId(order.getId())
-                .productImage(order.getProduct().getProductImages().get(0).getImageUrl()) // assuming the first image is the main one
+                .productImage(order.getProduct().getProductImages().isEmpty() ? null : order.getProduct().getProductImages().get(0).getImageUrl())
                 .productName(order.getProduct().getName())
                 .createdAt(order.getCreatedAt())
                 .orderStatus(order.getStatus().toString())
