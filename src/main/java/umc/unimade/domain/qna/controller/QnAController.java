@@ -31,9 +31,9 @@ public class QnAController {
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "질문 생성")
     @PostMapping(value = "/question/{productId}/{buyerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<Void>> createQuestion(@PathVariable Long productId, @PathVariable Long buyerId, @RequestPart("questionCreateRequest") QuestionCreateRequest questionCreateRequest, @RequestPart(value = "questionImages", required = false) List<MultipartFile> questionImages) {
+    public ResponseEntity<ApiResponse<Void>> createQuestion(@PathVariable Long productId, @PathVariable Long buyerId, @RequestPart("questionCreateRequest") QuestionCreateRequest questionCreateRequest) {
         try {
-            qnaCommandService.createQuestion(productId, buyerId, questionCreateRequest, questionImages);
+            qnaCommandService.createQuestion(productId, buyerId, questionCreateRequest);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
@@ -59,10 +59,10 @@ public class QnAController {
     //To do : QnA DIR 생성
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "답변 생성")
-    @PostMapping(value = "/answer/{questionId}/{sellerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<Void>> createAnswer(@PathVariable Long questionId, @PathVariable Long sellerId, @RequestPart("answerCreateRequest") AnswerCreateRequest answerCreateRequest, @RequestPart(value = "answerImages", required = false) List<MultipartFile> answerImages) {
+    @PostMapping(value = "/answer/{questionId}/{sellerId}")
+    public ResponseEntity<ApiResponse<Void>> createAnswer(@PathVariable Long questionId, @PathVariable Long sellerId, @RequestPart("answerCreateRequest") AnswerCreateRequest answerCreateRequest) {
         try {
-            qnaCommandService.createAnswer(questionId, sellerId, answerCreateRequest, answerImages);
+            qnaCommandService.createAnswer(questionId, sellerId, answerCreateRequest);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
