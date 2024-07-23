@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Products, Long>, ProductsRepositoryCustom {
     List<Products> findTop4BySellerIdAndStatusOrderByCreatedAtDesc(Long sellerId, ProductStatus status);
+
 }
