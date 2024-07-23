@@ -39,4 +39,4 @@ out/
 application.yml
 application-*.yml
 
-.generated
+.generated/
