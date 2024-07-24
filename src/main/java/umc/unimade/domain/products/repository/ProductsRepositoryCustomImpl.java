@@ -66,7 +66,7 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
         }
         switch (sort) {
             case "favorite":
-                return favoriteProduct.id.count().desc(); // 제품에 대한 좋아요 수 기준 내림차순 정렬
+                return favoriteProduct.id.count().desc();
             case "latest":
                 return products.createdAt.desc();
             case "deadline":
