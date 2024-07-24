@@ -30,7 +30,7 @@ public class QnAController {
     //To do : QnA DIR 생성
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "질문 생성")
-    @PostMapping(value = "/question/{productId}/{buyerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/question/{productId}/{buyerId}")
     public ResponseEntity<ApiResponse<Void>> createQuestion(@PathVariable Long productId, @PathVariable Long buyerId, @RequestPart("questionCreateRequest") QuestionCreateRequest questionCreateRequest) {
         try {
             qnaCommandService.createQuestion(productId, buyerId, questionCreateRequest);
