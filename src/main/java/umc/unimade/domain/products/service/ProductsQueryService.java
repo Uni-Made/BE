@@ -26,14 +26,13 @@ public class ProductsQueryService {
     private final Map<String, ProductStrategy> strategyMap;
 
     @Transactional
-    public ProductResponse getProduct(Long productId, ViewType viewType, PageRequest pageRequest){
+    public ProductResponse getProduct(Long productId, ViewType viewType, Long cursor, int pageSize){
         Products product = findProductById(productId);
-
         ProductStrategy strategy = strategyMap.get(viewType.name().toLowerCase() + "Strategy");
         if (strategy == null) {
             throw new IllegalArgumentException("Invalid view type");
         }
-        return strategy.loadProduct(product, pageRequest);
+        return strategy.loadProduct(product, cursor, pageSize);
     }
 
     @Transactional
