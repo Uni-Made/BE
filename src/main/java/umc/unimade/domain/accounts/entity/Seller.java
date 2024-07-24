@@ -33,6 +33,9 @@ public class Seller extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
@@ -51,6 +54,9 @@ public class Seller extends BaseEntity {
     @Column(name = "provider")
     private Provider provider;
 
+    @Column(name = "is_login")
+    private Boolean isLogin;
+
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private List<Products> products = new ArrayList<>();
 
@@ -67,5 +73,27 @@ public class Seller extends BaseEntity {
     @PostPersist
     private void setRole() {
         role = Role.SELLER;
+    }
+
+    @Builder
+    public Seller(String name, String email, String password, Gender gender, Role role, String refreshToken) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.refreshToken = refreshToken;
+        this.gender = gender;
+        this.role = role;
+        this.provider = Provider.NORMAL;
+        this.isLogin = false;
+    }
+
+    public void login(String refreshToken) {
+        this.isLogin = true;
+        this.refreshToken = refreshToken;
+    }
+
+    public void logout() {
+        this.isLogin = false;
+        this.refreshToken = null;
     }
 }
