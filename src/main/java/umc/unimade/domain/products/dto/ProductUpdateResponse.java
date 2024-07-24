@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.unimade.domain.products.entity.PickupOption;
 import umc.unimade.domain.products.entity.ProductRegister;
-import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ProductStatus;
 import umc.unimade.global.registerStatus.RegisterStatus;
 
