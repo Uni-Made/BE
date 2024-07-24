@@ -36,33 +36,19 @@ public class QnACommandService {
     private final S3Provider s3Provider;
     private final AnswersRespository answersRespository;
 
-    //To do : question에도 사진 포함하기
     @Transactional
-    public void createQuestion(Long productId, Long buyerId, QuestionCreateRequest questionCreateRequest,List<MultipartFile> images) {
+    public void createQuestion(Long productId, Long buyerId, QuestionCreateRequest questionCreateRequest) {
         Products product = findProductById(productId);
         Buyer buyer = findBuyerById(buyerId);
-
         Questions question = questionCreateRequest.toEntity(product, buyer);
-        List<QuestionImage> questionImages = questionCreateRequest.toQuestionImages(images, s3Provider, buyerId, question);
-
-        if (questionImages != null) {
-            question.setQuestionImages(questionImages);
-        }
-
         questionsRepository.save(question);
     }
 
     @Transactional
-    public void createAnswer(Long questionId,Long sellerId, AnswerCreateRequest answerCreateRequest, List<MultipartFile> images){
+    public void createAnswer(Long questionId,Long sellerId, AnswerCreateRequest answerCreateRequest){
         Questions question = findQuestionById(questionId);
         Seller seller = findSellerById(sellerId);
-
         Answers answer = answerCreateRequest.toEntity(seller, question);
-        List<AnswerImage> answerImages = answerCreateRequest.toAnswerImages(images, s3Provider, sellerId, answer);
-
-        if (answerImages != null) {
-            answer.setAnswerImages(answerImages);
-        }
         answersRespository.save(answer);
     }
 

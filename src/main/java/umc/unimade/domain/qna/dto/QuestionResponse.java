@@ -20,7 +20,6 @@ public class QuestionResponse {
     private String buyer;
     private String title;
     private String content;
-    private List<String> questionImages;
     private LocalDateTime createdAt;
 
     public static QuestionResponse from(Questions question){
@@ -29,9 +28,6 @@ public class QuestionResponse {
                 .buyer(question.getBuyer().getName())
                 .title(question.getTitle())
                 .content(question.getContent())
-                .questionImages(question.getQuestionImages().stream()
-                        .map(QuestionImage::getImageUrl)
-                        .collect(Collectors.toList()))
                 .createdAt(question.getCreatedAt())
                 .build();
     }

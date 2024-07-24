@@ -38,10 +38,10 @@ public class ProductsController extends BaseEntity {
     @GetMapping("/{productId}")
     //To do : 토큰 구현 시 user 정보 추가
     public ResponseEntity<ApiResponse<ProductResponse>> getProductDetails
-            (@PathVariable Long productId , @RequestParam ViewType viewType, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+            (@PathVariable Long productId , @RequestParam ViewType viewType, @RequestParam(required = false) Long cursor,
+             @RequestParam(defaultValue = "10") int pageSize) {
         try {
-            PageRequest pageRequest = PageRequest.of(page, size);
-            return ResponseEntity.ok(ApiResponse.onSuccess(productsQueryService.getProduct(productId, viewType, pageRequest)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(productsQueryService.getProduct(productId, viewType, cursor, pageSize)));
         }
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
@@ -51,7 +51,7 @@ public class ProductsController extends BaseEntity {
     }
 
     //To do : buyerId 추후에 토큰으로 변경
-    @Tag(name = "favoriteProduct", description = "상품 찜하기/취소 API")
+    @Tag(name = "FavoriteProduct")
     @Operation(summary = "찜하지 않은 상태라면 찜하기. \n 찜한 상태라면 찜하기 취소")
     @PostMapping("/favorite/{productId}/{buyerId}")
     public ResponseEntity<ApiResponse<Void>> toggleFavoriteProduct(@PathVariable Long productId, @PathVariable Long buyerId) {

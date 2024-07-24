@@ -31,8 +31,8 @@ public class ProductResponse {
     private Integer favoriteCount;
     private List<OptionResponse> options;
     private String detail;
-    private List<ReviewListResponse> reviews;
-    private List<QnAListResponse> questions;
+    private ReviewListResponse reviews;
+    private QnAListResponse questions;
 
     public static ProductResponse from(Products product) {
         return ProductResponse.builder()
@@ -55,14 +55,15 @@ public class ProductResponse {
         this.detail = detail;
     }
 
-    public void setReviews(List<ReviewListResponse> reviews) {
+    public void setReviews(ReviewListResponse reviews) {
         this.reviews = reviews;
     }
 
-    public void setQuestions(List<QnAListResponse> questions) {
-
+    public void setQuestions(QnAListResponse questions) {
         this.questions = questions;
     }
+
+
 }
 
 

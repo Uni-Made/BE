@@ -9,7 +9,7 @@ import umc.unimade.domain.products.dto.ProductResponse;
 @Component("detailStrategy")
 public class DetailStrategy implements ProductStrategy{
     @Override
-    public ProductResponse loadProduct(Products product, PageRequest pageRequest){
+    public ProductResponse loadProduct(Products product, Long cursor, int pageSize){
         ProductResponse response = ProductResponse.from(product);
         ProductDetailResponse detailResponse = ProductDetailResponse.from(product);
         response.setDetail(detailResponse.getDetail());
