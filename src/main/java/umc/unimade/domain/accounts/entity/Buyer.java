@@ -31,8 +31,8 @@ public class Buyer extends BaseEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "refresh_token", columnDefinition = "TEXT")
+    private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
@@ -51,6 +51,12 @@ public class Buyer extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "provider")
     private Provider provider;
+
+    @Column(name = "is_login")
+    private Boolean isLogin;
+
+    @Column(name = "social_id")
+    private String socialId;
 
     @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
@@ -72,4 +78,29 @@ public class Buyer extends BaseEntity {
         role = Role.BUYER;
     }
 
+
+    //-----------------------------------------------
+
+    @Builder
+    public Buyer(String name, String email, String refreshToken, Gender gender, String phone, String profileImage, Provider provider, String socialId) {
+        this.name = name;
+        this.email = email;
+        this.refreshToken = refreshToken;
+        this.gender = gender;
+        this.phone = phone;
+        this.profileImage = profileImage;
+        this.role = Role.BUYER;
+        this.provider = provider;
+        this.socialId = socialId;
+    }
+
+    public void login(String refreshToken) {
+        this.isLogin = true;
+        this.refreshToken = refreshToken;
+    }
+
+    public void logout() {
+        this.refreshToken = null;
+        this.isLogin = false;
+    }
 }
