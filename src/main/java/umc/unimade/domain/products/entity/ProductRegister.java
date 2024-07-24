@@ -61,6 +61,12 @@ public class ProductRegister {
     @Column(name = "reason")
     private String reason;  // 거부 or 보류 사유
 
+    @Column(name = "type")
+    private RegisterType type;  // 등록 요청 or 수정 요청
+
+    @Column(name = "product_id")
+    private Long productId;  // 수정 승인시 product와 연결하기 위한 값
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Seller seller;
@@ -94,5 +100,9 @@ public class ProductRegister {
 
     public void setOptionCategories(List<OptionCategory> optionCategories) {
         this.optionCategories = optionCategories;
+    }
+
+    public void setProductId(Long id) {
+        productId = id;
     }
 }
