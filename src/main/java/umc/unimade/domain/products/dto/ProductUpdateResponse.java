@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.unimade.domain.products.entity.PickupOption;
+import umc.unimade.domain.products.entity.ProductRegister;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ProductStatus;
 import umc.unimade.global.registerStatus.RegisterStatus;
@@ -33,9 +34,10 @@ public class ProductUpdateResponse {
     private RegisterStatus registerStatus;
     private String reason;
     private Long categoryId;
+    private List<ProductsImageDTO> productImages;
     private List<OptionCategoryResponse> optionCategories;
 
-    public static ProductUpdateResponse from(Products product) {
+    public static ProductUpdateResponse from(ProductRegister product) {
         return ProductUpdateResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -49,6 +51,9 @@ public class ProductUpdateResponse {
                 .accountNumber(product.getAccountNumber())
                 .accountName(product.getAccountName())
                 .categoryId(product.getCategory().getId())
+                .productImages(product.getProductImages().stream()
+                        .map(ProductsImageDTO::from)
+                        .collect(Collectors.toList()))
                 .optionCategories(product.getOptionCategories().stream()
                         .map(OptionCategoryResponse::from)
                         .collect(Collectors.toList()))

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ProductRegisterResponse {
 
-    private Long id;
+    private Long productRegisterId;
     private String name;
     private String content;
     private Long price;
@@ -29,6 +29,7 @@ public class ProductRegisterResponse {
     private String accountNumber;
     private String accountName;
     private RegisterStatus registerStatus;
+    private RegisterType registerType;
     private String reason;
     private Long categoryId;
     private List<ProductsImageDTO> productImages;
@@ -36,7 +37,7 @@ public class ProductRegisterResponse {
 
     public static ProductRegisterResponse from(ProductRegister productRegister) {
         return ProductRegisterResponse.builder()
-                .id(productRegister.getId())
+                .productRegisterId(productRegister.getId())
                 .name(productRegister.getName())
                 .content(productRegister.getContent())
                 .price(productRegister.getPrice())
@@ -48,6 +49,7 @@ public class ProductRegisterResponse {
                 .accountNumber(productRegister.getAccountNumber())
                 .accountName(productRegister.getAccountName())
                 .registerStatus(productRegister.getRegisterStatus())
+                .registerType(productRegister.getType())
                 .reason(productRegister.getReason())
                 .categoryId(productRegister.getCategory().getId())
                 .productImages(productRegister.getProductImages().stream()

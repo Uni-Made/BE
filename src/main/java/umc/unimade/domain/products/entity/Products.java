@@ -7,8 +7,6 @@ import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.entity.PurchaseForm;
-import umc.unimade.domain.products.dto.OptionCategoryRequest;
-import umc.unimade.domain.products.dto.ProductRequest;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.global.common.BaseEntity;
@@ -16,7 +14,6 @@ import umc.unimade.global.common.BaseEntity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -75,10 +72,10 @@ public class Products extends BaseEntity {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Orders> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductsImage> productImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OptionCategory> optionCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -93,39 +90,25 @@ public class Products extends BaseEntity {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PurchaseForm> PurchaseForms = new ArrayList<>();
 
-    public void updateProduct(ProductRequest.UpdateProductDto request, Category category) {
-        this.name = request.getName();
-        this.content = request.getContent();
-        this.price = request.getPrice();
-        this.deadline = request.getDeadline();
-        this.status = request.getStatus();
-        this.university = request.getUniversity();
-        this.pickupOption = request.getPickupOption();
-        this.bankName = request.getBankName();
-        this.accountNumber = request.getAccountNumber();
-        this.accountName = request.getAccountName();
-        this.category = category;
+    public void updateProduct(ProductRegister productRegister) {
+        this.name = productRegister.getName();
+        this.content = productRegister.getContent();
+        this.price = productRegister.getPrice();
+        this.deadline = productRegister.getDeadline();
+        this.status = productRegister.getStatus();
+        this.university = productRegister.getUniversity();
+        this.pickupOption = productRegister.getPickupOption();
+        this.bankName = productRegister.getBankName();
+        this.accountNumber = productRegister.getAccountNumber();
+        this.accountName = productRegister.getAccountName();
+        this.category = productRegister.getCategory();
     }
 
-    public void updateOptionCategories(List<OptionCategoryRequest> optionRequests) {
-        this.optionCategories.clear();
+    public void setOptionCategories(List<OptionCategory> optionCategories) {
+        this.optionCategories = optionCategories;
+    }
 
-        List<OptionCategory> newOptionCategories = optionRequests.stream()
-                .map(optionRequest -> {
-                    OptionCategory optionCategory = OptionCategory.builder()
-                            .name(optionRequest.getName())
-                            .product(this)
-                            .build();
-                    optionCategory.setValues(optionRequest.getValues().stream()
-                            .map(value -> OptionValue.builder()
-                                    .value(value)
-                                    .category(optionCategory)
-                                    .build())
-                            .collect(Collectors.toList()));
-                    return optionCategory;
-                })
-                .collect(Collectors.toList());
-
-        this.optionCategories.addAll(newOptionCategories);
+    public void setProductImages(List<ProductsImage> productImages) {
+        this.productImages = productImages;
     }
 }

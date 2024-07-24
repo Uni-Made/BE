@@ -32,7 +32,8 @@ public class ProductRequest {
         private List<OptionCategoryRequest> options;
 
         public ProductRegister toEntity(Category category, Seller seller) {
-            ProductRegister product = ProductRegister.builder()
+
+            return ProductRegister.builder()
                     .name(name)
                     .content(content)
                     .price(price)
@@ -44,11 +45,10 @@ public class ProductRequest {
                     .accountNumber(accountNumber)
                     .accountName(accountName)
                     .registerStatus(registerStatus)
+                    .type(RegisterType.REGISTER)
                     .seller(seller)
                     .category(category)
                     .build();
-
-            return product;
         }
     }
 
@@ -68,7 +68,29 @@ public class ProductRequest {
         private String accountNumber;
         private String accountName;
         private RegisterStatus registerStatus;
+        private Long sellerId;
         private Long categoryId;
         private List<OptionCategoryRequest> options;
+
+        public ProductRegister toEntity(Category category, Seller seller, Long productId) {
+
+            return ProductRegister.builder()
+                    .name(name)
+                    .content(content)
+                    .price(price)
+                    .deadline(deadline)
+                    .status(status)
+                    .university(university)
+                    .pickupOption(pickupOption)
+                    .bankName(bankName)
+                    .accountNumber(accountNumber)
+                    .accountName(accountName)
+                    .registerStatus(registerStatus)
+                    .type(RegisterType.UPDATE)
+                    .seller(seller)
+                    .category(category)
+                    .productId(productId)
+                    .build();
+        }
     }
 }

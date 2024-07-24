@@ -9,8 +9,5 @@ import umc.unimade.domain.products.entity.OptionCategory;
 
 @Repository
 public interface OptionCategoryRepository extends JpaRepository<OptionCategory, Long> {
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM OptionCategory oCategory WHERE oCategory.product.id = :productId")
-    void deleteByProductId(Long productId);
+    void deleteAllByProductId(Long id);
 }

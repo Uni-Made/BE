@@ -23,7 +23,7 @@ public class OptionCategory extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OptionValue> values = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -99,10 +99,11 @@ public class ProductsController extends BaseEntity {
     // 상품 수정
     @Tag(name = "Products")
     @Operation(summary = "상품 수정", description = "product 수정")
-    @PutMapping("/{productId}")
+    @PutMapping(value = "/{productId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@PathVariable Long productId,
-                                                                            @RequestBody UpdateProductDto request) {
-        ApiResponse<ProductUpdateResponse> updatedProduct = productsCommandService.updateProduct(productId, request);
+                                                                            @RequestPart("updateProductDto") UpdateProductDto request,
+                                                                            @RequestPart(name = "image", required = false) List<MultipartFile> images) {
+        ApiResponse<ProductUpdateResponse> updatedProduct = productsCommandService.updateProduct(productId, request, images);
         return ResponseEntity.ok(updatedProduct);
     }
 
