@@ -12,7 +12,9 @@ import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.favorite.dto.FavoriteProductResponse;
 import umc.unimade.domain.favorite.dto.FavoriteProductsListResponse;
 import umc.unimade.domain.favorite.dto.FavoriteSellerResponse;
+import umc.unimade.domain.favorite.dto.FavoriteSellersListResponse;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
+import umc.unimade.domain.favorite.entity.FavoriteSeller;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
 import umc.unimade.domain.orders.entity.Orders;
@@ -73,7 +75,19 @@ public class BuyerQueryService {
     }
 
     // 찜한 메이더 더보기
+    public FavoriteSellersListResponse getFavoriteSellersList(Long buyerId, Long cursor, int pageSize){
+        Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<FavoriteSeller> favoriteSellers;
+        if (cursor == null){
+            favoriteSellers = favoriteSellerRepository.findByBuyerIdOrderByCreatedAtDesc(buyerId, pageable);
+        }else {
+            favoriteSellers = favoriteSellerRepository.findByBuyerIdAndIdLessThanOrderByCreatedAtDesc(buyerId, cursor, pageable);
+        }
+        Long nextCursor = favoriteSellers.isEmpty() ? null : favoriteSellers.get(favoriteSellers.size() - 1).getId();
+        Boolean isLast = favoriteSellers.size() < pageSize;
 
+        return FavoriteSellersListResponse.from(favoriteSellers, nextCursor, isLast);
+    }
 
     private Buyer findBuyerById(Long buyerId) {
         return buyerRepository.findById(buyerId)
