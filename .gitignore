@@ -40,4 +40,4 @@ application.yml
 application-*.yml
 
 
-!**/src/main/**/generated/
+**/src/main/generated/**
