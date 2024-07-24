@@ -39,5 +39,4 @@ out/
 application.yml
 application-*.yml
 
-
 **/src/main/generated/**
