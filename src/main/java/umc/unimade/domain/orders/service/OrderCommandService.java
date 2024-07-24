@@ -36,6 +36,10 @@ public class OrderCommandService {
 
     @Transactional
     public OrderResponse createOrder(Long productId, Long buyerId, OrderRequest orderRequest) {
+        if (!orderRequest.getPurchaseForm().getIsAgree()) {
+            throw new OrderExceptionHandler(ErrorCode.ORDER_AGREEMENT_REQUIRED);
+        }
+
         Buyer buyer = findBuyerById(buyerId);
         Products product = findProductById(productId);
 

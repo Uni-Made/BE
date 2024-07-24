@@ -16,17 +16,38 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class ReviewListResponse {
-    private Long reviewId;
-    private String buyer;
-    private String title;
-    private LocalDateTime createdAt;
+    private List<ReviewInfo> reviewsList;
+    private Long nextCursor;
+    private Boolean isLast;
 
-    public static ReviewListResponse from(Review review){
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ReviewInfo {
+        private Long reviewId;
+        private String buyer;
+        private String title;
+        private LocalDateTime createdAt;
+
+        public static ReviewInfo from(Review review) {
+            return ReviewInfo.builder()
+                    .reviewId(review.getId())
+                    .buyer(review.getBuyer().getName())
+                    .title(review.getTitle())
+                    .createdAt(review.getCreatedAt())
+                    .build();
+        }
+    }
+
+    public static ReviewListResponse from(List<Review> reviewsList, Long nextCursor, Boolean isLast) {
+        List<ReviewInfo> reviews = reviewsList.stream()
+                .map(ReviewInfo::from)
+                .collect(Collectors.toList());
         return ReviewListResponse.builder()
-                .reviewId(review.getId())
-                .buyer(review.getBuyer().getName())
-                .title(review.getTitle())
-                .createdAt(review.getCreatedAt())
+                .reviewsList(reviews)
+                .nextCursor(nextCursor)
+                .isLast(isLast)
                 .build();
     }
 }

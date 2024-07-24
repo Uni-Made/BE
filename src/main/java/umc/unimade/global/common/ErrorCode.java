@@ -27,7 +27,8 @@ public enum ErrorCode implements BaseErrorCode {
 
     // Order 관련 에러
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER4000", "구매 내역을 찾을 수 없습니다."),
-    STATUS_IS_PENDING(HttpStatus.BAD_REQUEST, "ORDERT4001", "아직 입금되지 않은 대기 중 상태입니다."),
+    STATUS_IS_PENDING(HttpStatus.BAD_REQUEST, "ORDER4001", "아직 입금되지 않은 대기 중 상태입니다."),
+    ORDER_AGREEMENT_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4001","동의가 필요합니다."),
 
     // 판매자 관련 에러
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER4000", "판매자를 찾을 수 없습니다."),
