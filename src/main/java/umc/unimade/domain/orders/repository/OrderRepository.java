@@ -14,6 +14,9 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 
     @Query("SELECT o FROM Orders o WHERE o.product.seller.id = :sellerId")
     List<Orders> findOrdersBySellerId(Long sellerId, Pageable pageable);
+
+    @Query("SELECT o FROM Orders o WHERE o.product.id = :productId")
+    List<Orders> findOrdersByProductId(Long productId, Pageable pageable);
   
     @Query("SELECT o FROM Orders o WHERE o.buyer.id = :buyerId AND (:cursor IS NULL OR o.id < :cursor) ORDER BY o.id DESC")
     List<Orders> findOrdersByBuyerIdWithCursorPagination(@Param("buyerId") Long buyerId, @Param("cursor") Long cursor, Pageable pageable);

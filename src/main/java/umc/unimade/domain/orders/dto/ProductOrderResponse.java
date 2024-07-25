@@ -8,21 +8,13 @@ import umc.unimade.domain.orders.entity.Orders;
 
 import java.time.LocalDateTime;
 
-/*
-상품 사진
- 상품명
- 구매요청일
- 입금확인(구매_주문상태): 대기중/입금완료/수령완료
- 수력확인: 수령대기/수령완료 -> 입금완료인 경우만 수령완료로 변경 가능
- */
-
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SellerOrderResponse { // 특정 판매자에게 온 구매 요청 확인
+public class ProductOrderResponse { // 특정 상품의 온 구매 요청 확인
 
-    private Long sellerId;
+    private Long productId;
     private Long orderId;
     private String productImage;
     private String productName;
@@ -30,9 +22,9 @@ public class SellerOrderResponse { // 특정 판매자에게 온 구매 요청 �
     private String orderStatus;
     private String receiveStatus;
 
-    public static SellerOrderResponse from(Orders order) {
-        return SellerOrderResponse.builder()
-                .sellerId(order.getProduct().getSeller().getId())
+    public static ProductOrderResponse from(Orders order) {
+        return ProductOrderResponse.builder()
+                .productId(order.getProduct().getId())
                 .orderId(order.getId())
                 .productImage(order.getProduct().getProductImages().isEmpty() ? null : order.getProduct().getProductImages().get(0).getImageUrl())
                 .productName(order.getProduct().getName())

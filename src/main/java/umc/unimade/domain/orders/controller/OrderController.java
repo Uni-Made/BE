@@ -74,12 +74,23 @@ public class OrderController {
 
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "특정 판매자에게 온 구매 요청 보기")
-    @GetMapping("/{sellerId}")
+    @GetMapping("/seller/{sellerId}")
     public ResponseEntity<List<SellerOrderResponse>> getOrdersBySellerId(@PathVariable Long sellerId,
                                                                          @RequestParam(name = "page", defaultValue = "0") int page,
                                                                          @RequestParam(name = "size", defaultValue = "10") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         List<SellerOrderResponse> orders = orderQueryService.getOrdersBySellerId(sellerId, pageRequest);
+        return ResponseEntity.ok(orders);
+    }
+
+    @Tag(name = "Order", description = "판매자 관련 API")
+    @Operation(summary = "특정 상품의 구매 요청 보기")
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<List<ProductOrderResponse>> getOrdersByProductId(@PathVariable Long productId,
+                                                                         @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                         @RequestParam(name = "size", defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<ProductOrderResponse> orders = orderQueryService.getOrdersByProductId(productId, pageRequest);
         return ResponseEntity.ok(orders);
     }
 
