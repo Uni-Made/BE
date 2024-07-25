@@ -111,4 +111,8 @@ public class Products extends BaseEntity {
     public void setProductImages(List<ProductsImage> productImages) {
         this.productImages = productImages;
     }
+
+    public void setStatus(ProductStatus status) {
+        this.status = status;
+    }
 }

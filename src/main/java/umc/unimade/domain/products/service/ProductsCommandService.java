@@ -1,6 +1,7 @@
 package umc.unimade.domain.products.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -176,5 +177,18 @@ public class ProductsCommandService {
                     .collect(Collectors.toList());
             product.setProductImages(productsImages);
         }
+    }
+
+    // 상품 deadline 지나면 soldout으로 status 변경
+    @Scheduled(cron = "0 0 0 * * *") // 0시 0분 0초
+    @Transactional
+    public void updateProductStatus() {
+        List<Products> expiredProducts = productRepository.findExpiredProducts(ProductStatus.SELLING);
+
+        for (Products product : expiredProducts) {
+            product.setStatus(ProductStatus.SOLDOUT);
+        }
+
+         productRepository.saveAll(expiredProducts);
     }
 }
