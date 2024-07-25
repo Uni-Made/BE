@@ -5,16 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.repository.SellerRepository;
-import umc.unimade.domain.orders.dto.OrderVerificationRequest;
-import umc.unimade.domain.orders.dto.OrderVerificationResponse;
-import umc.unimade.domain.orders.dto.SellerOrderResponse;
+import umc.unimade.domain.orders.dto.*;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.exception.SellerExceptionhandler;
-import umc.unimade.domain.orders.dto.OrderResponse;
 import umc.unimade.domain.orders.dto.OrderVerificationRequest;
 import umc.unimade.domain.orders.dto.OrderVerificationResponse;
 import umc.unimade.domain.orders.entity.OrderStatus;
-import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OptionValueRepository;
 import umc.unimade.domain.orders.repository.OrderRepository;
@@ -73,7 +69,7 @@ public class OrderQueryService {
                 .sum();
     }
 
-    // 판매자 - 구매 요청 확인(조회)
+    // 특정 판매자의 구매 요청 확인(조회)
     public List<SellerOrderResponse> getOrdersBySellerId(Long sellerId, Pageable pageable) {
         sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new SellerExceptionhandler(ErrorCode.SELLER_NOT_FOUND));
@@ -82,6 +78,18 @@ public class OrderQueryService {
 
         return orders.stream()
                 .map(SellerOrderResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    // 특정 상품의 구매 요청 확인(조회)
+    public List<ProductOrderResponse> getOrdersByProductId(Long productId, Pageable pageable) {
+        productRepository.findById(productId)
+            .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+
+        List<Orders> orders = orderRepository.findOrdersByProductId(productId, pageable);
+
+        return orders.stream()
+                .map(ProductOrderResponse::from)
                 .collect(Collectors.toList());
     }
 
