@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.accounts.dto.BuyerOrderHistoryResponse;
 import umc.unimade.domain.accounts.dto.BuyerPageResponse;
+import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.service.BuyerCommandService;
 import umc.unimade.domain.accounts.service.BuyerQueryService;
 import umc.unimade.domain.favorite.dto.FavoriteProductsListResponse;
@@ -71,12 +73,13 @@ public class BuyerController {
 
     @Tag(name = "FavoriteProduct")
     @Operation(summary = "찜한 상품 더보기")
-    @GetMapping("/{buyerId}/favorite-products")
-    public ResponseEntity<ApiResponse<FavoriteProductsListResponse>> getFavoriteProductsList(@PathVariable Long buyerId,
-                                                                                             @RequestParam(required = false) Long cursor,
-                                                                                             @RequestParam int pageSize) {
+    @GetMapping("/favorite-products")
+    public ResponseEntity<ApiResponse<FavoriteProductsListResponse>> getFavoriteProductsList(@RequestParam(required = false) Long cursor,
+                                                                                             @RequestParam int pageSize,
+                                                                                             @AuthenticationPrincipal Buyer currentBuyer
+    ) {
         try {
-            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getFavoriteProdutsList(buyerId, cursor, pageSize)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getFavoriteProdutsList(currentBuyer, cursor, pageSize)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {

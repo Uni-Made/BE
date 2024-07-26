@@ -57,15 +57,17 @@ public class BuyerQueryService {
     }
 
     // 찜한 상품 더보기
-    public FavoriteProductsListResponse getFavoriteProdutsList(Long buyerId,Long cursor, int pageSize){
+    public FavoriteProductsListResponse getFavoriteProdutsList(Buyer currentBuyer,Long cursor, int pageSize){
+        Buyer buyer = findBuyerById(currentBuyer.getId());
+
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         List<FavoriteProduct> favoriteProducts;
 
         if (cursor == null) {
-            favoriteProducts = favoriteProductRepository.findByBuyerIdOrderByCreatedAtDesc(buyerId, pageable);
+            favoriteProducts = favoriteProductRepository.findByBuyerOrderByCreatedAtDesc(buyer, pageable);
         } else {
-            favoriteProducts = favoriteProductRepository.findByBuyerIdAndIdLessThanOrderByCreatedAtDesc(buyerId, cursor, pageable);
+            favoriteProducts = favoriteProductRepository.findByBuyerAndIdLessThanOrderByCreatedAtDesc(buyer, cursor, pageable);
         }
 
         Long nextCursor = favoriteProducts.isEmpty() ? null : favoriteProducts.get(favoriteProducts.size() - 1).getId();
