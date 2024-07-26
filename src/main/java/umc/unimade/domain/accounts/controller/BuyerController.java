@@ -32,10 +32,10 @@ public class BuyerController {
 
     @Tag(name = "FavoriteSeller")
     @Operation(summary = "찜하지 않은 상태라면 찜하기. \n 찜한 상태라면 찜하기 취소")
-    @PostMapping("/favorite/{sellerId}/{buyerId}")
-    public ResponseEntity<ApiResponse<Void>> toggleFavoriteSeller(@PathVariable Long sellerId, @PathVariable Long buyerId) {
+    @PostMapping("/favorite/{sellerId}")
+    public ResponseEntity<ApiResponse<Void>> toggleFavoriteSeller(@AuthenticationPrincipal Buyer currentBuyer,@PathVariable Long sellerId) {
         try {
-            return ResponseEntity.ok(buyerCommandService.toggleFavoriteSeller(sellerId, buyerId));
+            return ResponseEntity.ok(buyerCommandService.toggleFavoriteSeller(sellerId, currentBuyer));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {
@@ -45,10 +45,10 @@ public class BuyerController {
 
     @Tag(name = "Buyer", description = "구매자 관련 API")
     @Operation(summary = "구매자 마이페이지에서 찜한 상품과 메이더를 보여준다.")
-    @GetMapping("/myPage/{buyerId}")
-    public ResponseEntity<ApiResponse<BuyerPageResponse>> getBuyerPage(@PathVariable Long buyerId) {
+    @GetMapping("/myPage")
+    public ResponseEntity<ApiResponse<BuyerPageResponse>> getBuyerPage(@AuthenticationPrincipal Buyer currentBuyer) {
         try {
-            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getBuyerPage(buyerId)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getBuyerPage(currentBuyer)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {
@@ -89,12 +89,12 @@ public class BuyerController {
 
     @Tag(name = "FavoriteSeller")
     @Operation(summary = "찜한 메이더 더보기")
-    @GetMapping("/{buyerId}/favorite-sellers")
-    public ResponseEntity<ApiResponse<FavoriteSellersListResponse>> getFavoriteSellersList(@PathVariable Long buyerId,
+    @GetMapping("/favorite-sellers")
+    public ResponseEntity<ApiResponse<FavoriteSellersListResponse>> getFavoriteSellersList(@AuthenticationPrincipal Buyer currentBuyer,
                                                                                             @RequestParam(required = false) Long cursor,
                                                                                             @RequestParam int pageSize) {
         try {
-            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getFavoriteSellersList(buyerId, cursor, pageSize)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getFavoriteSellersList(currentBuyer, cursor, pageSize)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {

@@ -35,8 +35,7 @@ public class BuyerQueryService {
     private final OrderRepository orderRepository;
 
     // 구매자 마이페이지
-    public BuyerPageResponse getBuyerPage(Long buyerId){
-        Buyer buyer = findBuyerById(buyerId);
+    public BuyerPageResponse getBuyerPage(Buyer buyer){
         List<FavoriteProductResponse> favoriteProducts = favoriteProductRepository.findTop4ByBuyerOrderByCreatedAtDesc(buyer).stream()
                 .map(FavoriteProductResponse::from)
                 .collect(Collectors.toList());
@@ -77,13 +76,13 @@ public class BuyerQueryService {
     }
 
     // 찜한 메이더 더보기
-    public FavoriteSellersListResponse getFavoriteSellersList(Long buyerId, Long cursor, int pageSize){
+    public FavoriteSellersListResponse getFavoriteSellersList(Buyer buyer, Long cursor, int pageSize){
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
         List<FavoriteSeller> favoriteSellers;
         if (cursor == null){
-            favoriteSellers = favoriteSellerRepository.findByBuyerIdOrderByCreatedAtDesc(buyerId, pageable);
+            favoriteSellers = favoriteSellerRepository.findByBuyerOrderByCreatedAtDesc(buyer, pageable);
         }else {
-            favoriteSellers = favoriteSellerRepository.findByBuyerIdAndIdLessThanOrderByCreatedAtDesc(buyerId, cursor, pageable);
+            favoriteSellers = favoriteSellerRepository.findByBuyerAndIdLessThanOrderByCreatedAtDesc(buyer, cursor, pageable);
         }
         Long nextCursor = favoriteSellers.isEmpty() ? null : favoriteSellers.get(favoriteSellers.size() - 1).getId();
         Boolean isLast = favoriteSellers.size() < pageSize;
