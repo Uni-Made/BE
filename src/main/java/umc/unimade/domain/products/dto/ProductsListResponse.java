@@ -23,6 +23,7 @@ public class ProductsListResponse {
         private Long productId;
         private String name;
         private Long price;
+        private String imgUrl;
         private Long sellerId;
         private String sellerName;
 
@@ -31,6 +32,7 @@ public class ProductsListResponse {
                     .productId(product.getId())
                     .name(product.getName())
                     .price(product.getPrice())
+                    .imgUrl(product.getProductImages().get(0).getImageUrl())
                     .sellerId(product.getSeller().getId())
                     .sellerName(product.getSeller().getName())
                     .build();
