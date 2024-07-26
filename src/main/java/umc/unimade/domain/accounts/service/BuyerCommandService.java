@@ -15,6 +15,8 @@ import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.util.Optional;
 
+import static umc.unimade.domain.accounts.entity.QBuyer.buyer;
+
 @Service
 @RequiredArgsConstructor
 public class BuyerCommandService {
@@ -24,9 +26,8 @@ public class BuyerCommandService {
     private final FavoriteSellerRepository favoriteSellerRepository;
 
     @Transactional
-    public ApiResponse<Void> toggleFavoriteSeller(Long sellerId,Long buyerId){
+    public ApiResponse<Void> toggleFavoriteSeller(Long sellerId, Buyer buyer){
         Seller seller = findSellerById(sellerId);
-        Buyer buyer = findBuyerById(buyerId);
         Optional<FavoriteSeller> existingFavorite = findFavoriteSeller(seller,buyer);
 
         if(existingFavorite.isPresent()){

@@ -35,12 +35,10 @@ public class OrderCommandService {
     private final OrderItemRepository orderItemRepository;
 
     @Transactional
-    public OrderResponse createOrder(Long productId, Long buyerId, OrderRequest orderRequest) {
+    public OrderResponse createOrder(Long productId, Buyer buyer, OrderRequest orderRequest) {
         if (!orderRequest.getPurchaseForm().getIsAgree()) {
             throw new OrderExceptionHandler(ErrorCode.ORDER_AGREEMENT_REQUIRED);
         }
-
-        Buyer buyer = findBuyerById(buyerId);
         Products product = findProductById(productId);
 
         // PurchaseForm 엔티티 생성 및 저장

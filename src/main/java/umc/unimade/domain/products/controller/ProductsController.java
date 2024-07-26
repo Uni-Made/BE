@@ -6,9 +6,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
+import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.products.dto.ProductRegisterResponse;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductResponse;
@@ -36,10 +38,10 @@ public class ProductsController extends BaseEntity {
     @Tag(name = "Products", description = "판매 상품 관련 API")
     @Operation(summary = "판매 상품 정보 가져오기")
     @GetMapping("/{productId}")
-    //To do : 토큰 구현 시 user 정보 추가
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductDetails
-            (@PathVariable Long productId , @RequestParam ViewType viewType, @RequestParam(required = false) Long cursor,
-             @RequestParam(defaultValue = "10") int pageSize) {
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductDetails (@PathVariable Long productId ,
+                                                                           @RequestParam ViewType viewType,
+                                                                           @RequestParam(required = false) Long cursor,
+                                                                           @RequestParam(defaultValue = "10") int pageSize) {
         try {
             return ResponseEntity.ok(ApiResponse.onSuccess(productsQueryService.getProduct(productId, viewType, cursor, pageSize)));
         }
@@ -50,13 +52,12 @@ public class ProductsController extends BaseEntity {
         }
     }
 
-    //To do : buyerId 추후에 토큰으로 변경
     @Tag(name = "FavoriteProduct")
     @Operation(summary = "찜하지 않은 상태라면 찜하기. \n 찜한 상태라면 찜하기 취소")
-    @PostMapping("/favorite/{productId}/{buyerId}")
-    public ResponseEntity<ApiResponse<Void>> toggleFavoriteProduct(@PathVariable Long productId, @PathVariable Long buyerId) {
+    @PostMapping("/favorite/{productId}")
+    public ResponseEntity<ApiResponse<Void>> toggleFavoriteProduct(@AuthenticationPrincipal Buyer currentBuyer, @PathVariable Long productId) {
         try {
-            return ResponseEntity.ok(productsCommandService.toggleFavoriteProduct(productId, buyerId));
+            return ResponseEntity.ok(productsCommandService.toggleFavoriteProduct(productId, currentBuyer));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {

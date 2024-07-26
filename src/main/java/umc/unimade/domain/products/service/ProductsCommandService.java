@@ -48,9 +48,8 @@ public class ProductsCommandService {
     private final SellerRepository sellerRepository;
 
     @Transactional
-    public ApiResponse<Void> toggleFavoriteProduct(Long productId, Long buyerId) {
+    public ApiResponse<Void> toggleFavoriteProduct(Long productId, Buyer buyer) {
         Products product = findProductById(productId);
-        Buyer buyer = findBuyerById(buyerId);
         Optional<FavoriteProduct> existingFavorite = findFavoriteProduct(product,buyer);
 
         if (existingFavorite.isPresent()) {

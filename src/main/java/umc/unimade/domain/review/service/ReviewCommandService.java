@@ -28,11 +28,10 @@ public class ReviewCommandService {
     private final S3Provider s3Provider;
 
     @Transactional
-    public void createReview(Long productId, Long buyerId, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
+    public void createReview(Long productId, Buyer buyer, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
         Products product = findProductById(productId);
-        Buyer buyer = findBuyerById(buyerId);
         Review review = reviewCreateRequest.toEntity(product, buyer);
-        List<ReviewImage> reviewImages = reviewCreateRequest.toReviewImages(images, s3Provider, buyerId, review);
+        List<ReviewImage> reviewImages = reviewCreateRequest.toReviewImages(images, s3Provider, buyer.getId(), review);
         if (reviewImages != null) {
             review.setReviewImages(reviewImages);
         }

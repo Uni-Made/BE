@@ -17,9 +17,9 @@ public interface FavoriteSellerRepository extends JpaRepository<FavoriteSeller, 
 
     List<FavoriteSeller> findTop4ByBuyerOrderByCreatedAtDesc(Buyer buyer);
 
-    @Query("SELECT fs FROM FavoriteSeller fs WHERE fs.buyer.id = :buyerId ORDER BY fs.createdAt DESC")
-    List<FavoriteSeller> findByBuyerIdOrderByCreatedAtDesc(Long buyerId, Pageable pageable);
+    @Query("SELECT fs FROM FavoriteSeller fs WHERE fs.buyer = :buyer ORDER BY fs.createdAt DESC")
+    List<FavoriteSeller> findByBuyerOrderByCreatedAtDesc(Buyer buyer, Pageable pageable);
 
-    @Query("SELECT fs FROM FavoriteSeller fs WHERE fs.buyer.id = :buyerId AND fs.id < :cursor ORDER BY fs.createdAt DESC")
-    List<FavoriteSeller> findByBuyerIdAndIdLessThanOrderByCreatedAtDesc(Long buyerId, Long cursor, Pageable pageable);
+    @Query("SELECT fs FROM FavoriteSeller fs WHERE fs.buyer = :buyer AND fs.id < :cursor ORDER BY fs.createdAt DESC")
+    List<FavoriteSeller> findByBuyerAndIdLessThanOrderByCreatedAtDesc(Buyer buyer, Long cursor, Pageable pageable);
 }
