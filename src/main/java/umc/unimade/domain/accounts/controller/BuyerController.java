@@ -57,13 +57,13 @@ public class BuyerController {
     }
     @Tag(name = "Buyer", description = "구매자 관련 API")
     @Operation(summary = "구매 내역 리스트")
-    @GetMapping("/history/{buyerId}")
+    @GetMapping("/history")
     public ResponseEntity<ApiResponse<BuyerOrderHistoryResponse>> getOrderHistory(
-            @RequestParam Long buyerId,
+            @AuthenticationPrincipal Buyer currentBuyer,
             @RequestParam(required = false) Long cursor,
             @RequestParam int pageSize) {
         try {
-            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getOrderHistory(buyerId, cursor, pageSize)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getOrderHistory(currentBuyer, cursor, pageSize)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {
@@ -74,9 +74,9 @@ public class BuyerController {
     @Tag(name = "FavoriteProduct")
     @Operation(summary = "찜한 상품 더보기")
     @GetMapping("/favorite-products")
-    public ResponseEntity<ApiResponse<FavoriteProductsListResponse>> getFavoriteProductsList(@RequestParam(required = false) Long cursor,
-                                                                                             @RequestParam int pageSize,
-                                                                                             @AuthenticationPrincipal Buyer currentBuyer
+    public ResponseEntity<ApiResponse<FavoriteProductsListResponse>> getFavoriteProductsList(@AuthenticationPrincipal Buyer currentBuyer,
+                                                                                             @RequestParam(required = false) Long cursor,
+                                                                                             @RequestParam int pageSize
     ) {
         try {
             return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getFavoriteProdutsList(currentBuyer, cursor, pageSize)));

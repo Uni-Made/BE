@@ -47,9 +47,9 @@ public class BuyerQueryService {
     }
 
     // 구매 내역
-    public BuyerOrderHistoryResponse getOrderHistory(Long buyerId, Long cursor, Integer pageSize){
+    public BuyerOrderHistoryResponse getOrderHistory(Buyer buyer, Long cursor, Integer pageSize){
         Pageable pageable = PageRequest.of(0, pageSize);
-        List<Orders> orders = orderRepository.findOrdersByBuyerIdWithCursorPagination(buyerId, cursor, pageable);
+        List<Orders> orders = orderRepository.findOrdersByBuyerWithCursorPagination(buyer, cursor, pageable);
 
         Long nextCursor = orders.isEmpty() ? null : orders.get(orders.size() - 1).getId();
         boolean isLast = orders.size() < pageSize;
