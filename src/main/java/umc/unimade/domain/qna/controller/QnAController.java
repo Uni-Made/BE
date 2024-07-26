@@ -6,8 +6,11 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import umc.unimade.domain.accounts.entity.Buyer;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.qna.dto.AnswerCreateRequest;
 import umc.unimade.domain.qna.dto.AnswerResponse;
 import umc.unimade.domain.qna.dto.QuestionCreateRequest;
@@ -27,13 +30,14 @@ public class QnAController {
     private final QnACommandService qnaCommandService;
     private final QnAQueryService qnaQueryService;
 
-    //To do : QnA DIR 생성
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "질문 생성")
-    @PostMapping(value = "/question/{productId}/{buyerId}")
-    public ResponseEntity<ApiResponse<Void>> createQuestion(@PathVariable Long productId, @PathVariable Long buyerId, @RequestPart("questionCreateRequest") QuestionCreateRequest questionCreateRequest) {
+    @PostMapping(value = "/question/{productId}")
+    public ResponseEntity<ApiResponse<Void>> createQuestion(@AuthenticationPrincipal Buyer currentBuyer,
+                                                            @PathVariable Long productId,
+                                                            @RequestPart("questionCreateRequest") QuestionCreateRequest questionCreateRequest) {
         try {
-            qnaCommandService.createQuestion(productId, buyerId, questionCreateRequest);
+            qnaCommandService.createQuestion(productId, currentBuyer, questionCreateRequest);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
@@ -56,13 +60,12 @@ public class QnAController {
         }
     }
 
-    //To do : QnA DIR 생성
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "답변 생성")
-    @PostMapping(value = "/answer/{questionId}/{sellerId}")
-    public ResponseEntity<ApiResponse<Void>> createAnswer(@PathVariable Long questionId, @PathVariable Long sellerId, @RequestPart("answerCreateRequest") AnswerCreateRequest answerCreateRequest) {
+    @PostMapping(value = "/answer/{questionId}")
+    public ResponseEntity<ApiResponse<Void>> createAnswer(@PathVariable Long questionId, @AuthenticationPrincipal Seller currentSeller, @RequestPart("answerCreateRequest") AnswerCreateRequest answerCreateRequest) {
         try {
-            qnaCommandService.createAnswer(questionId, sellerId, answerCreateRequest);
+            qnaCommandService.createAnswer(questionId, currentSeller, answerCreateRequest);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));

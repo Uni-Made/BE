@@ -37,17 +37,15 @@ public class QnACommandService {
     private final AnswersRespository answersRespository;
 
     @Transactional
-    public void createQuestion(Long productId, Long buyerId, QuestionCreateRequest questionCreateRequest) {
+    public void createQuestion(Long productId, Buyer buyer, QuestionCreateRequest questionCreateRequest) {
         Products product = findProductById(productId);
-        Buyer buyer = findBuyerById(buyerId);
         Questions question = questionCreateRequest.toEntity(product, buyer);
         questionsRepository.save(question);
     }
 
     @Transactional
-    public void createAnswer(Long questionId,Long sellerId, AnswerCreateRequest answerCreateRequest){
+    public void createAnswer(Long questionId, Seller seller , AnswerCreateRequest answerCreateRequest){
         Questions question = findQuestionById(questionId);
-        Seller seller = findSellerById(sellerId);
         Answers answer = answerCreateRequest.toEntity(seller, question);
         answersRespository.save(answer);
     }

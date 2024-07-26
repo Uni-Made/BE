@@ -6,8 +6,10 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.review.dto.ReviewCreateRequest;
 import umc.unimade.domain.review.dto.ReviewResponse;
 import umc.unimade.domain.review.service.ReviewCommandService;
@@ -27,12 +29,13 @@ public class ReviewController {
 
     @Tag(name = "Review", description = "리뷰 관련 API")
     @Operation(summary = "리뷰 생성")
-    @PostMapping(value = "/{productId}/{buyerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<Void>> createReview(@PathVariable Long productId, @PathVariable Long buyerId,
+    @PostMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<Void>> createReview(@PathVariable Long productId,
+                                                          @AuthenticationPrincipal Buyer currentBuyer,
                                                           @RequestPart("reviewCreateRequest") ReviewCreateRequest reviewCreateRequest,
                                                           @RequestPart(value = "reviewImages", required = false) List<MultipartFile> reviewImages) {
         try {
-            reviewCommandService.createReview(productId, buyerId, reviewCreateRequest, reviewImages);
+            reviewCommandService.createReview(productId, currentBuyer, reviewCreateRequest, reviewImages);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
