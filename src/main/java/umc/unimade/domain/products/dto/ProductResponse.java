@@ -24,7 +24,8 @@ public class ProductResponse {
     private String sellerName;
     private String university;
     private String productName;
-    private Category category;
+    private Long categoryId;
+    private String categoryName;
     private LocalDate deadline;
     private Long price;
     private List<String> productImages;
@@ -41,7 +42,8 @@ public class ProductResponse {
                 .sellerName(product.getSeller().getName())
                 .university(product.getUniversity())
                 .productName(product.getName())
-                .category(product.getCategory())
+                .categoryId(product.getCategory().getId())
+                .categoryName(product.getCategory().getName())
                 .deadline(product.getDeadline())
                 .price(product.getPrice())
                 .productImages(product.getProductImages().stream().map(ProductsImage::getImageUrl).collect(Collectors.toList()))
