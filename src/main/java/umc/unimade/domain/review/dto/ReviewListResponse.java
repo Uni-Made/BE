@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.unimade.domain.review.entity.Review;
-import umc.unimade.domain.review.entity.ReviewImage;
 
 import java.time.LocalDateTime;
 import java.util.List;

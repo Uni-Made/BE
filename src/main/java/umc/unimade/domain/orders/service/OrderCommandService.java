@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.entity.Buyer;
-import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.orders.dto.OrderRequest;
 import umc.unimade.domain.orders.dto.OrderResponse;
 import umc.unimade.domain.orders.entity.*;
@@ -16,7 +15,6 @@ import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
-import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +26,6 @@ public class OrderCommandService {
 
     private final OrderRepository orderRepository;
     private final OrderOptionRepository orderOptionRepository;
-    private final BuyerRepository buyerRepository;
     private final PurchaseFormRepository purchaseFormRepository;
     private final ProductRepository productRepository;
     private final OptionValueRepository optionValueRepository;
@@ -74,10 +71,6 @@ public class OrderCommandService {
         return OrderResponse.from(order, product, totalPrice);
     }
 
-    private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId)
-                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
-    }
     private Products findProductById(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));

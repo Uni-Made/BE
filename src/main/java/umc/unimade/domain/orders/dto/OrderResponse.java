@@ -1,5 +1,4 @@
 package umc.unimade.domain.orders.dto;
-import jakarta.persistence.criteria.Order;
 import lombok.*;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.products.entity.Products;

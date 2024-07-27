@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
@@ -25,7 +24,6 @@ import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
-import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.util.s3.S3Provider;
 import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
@@ -42,7 +40,6 @@ public class ProductsCommandService {
     private final FavoriteProductRepository favoriteProductRepository;
     private final ProductRepository productRepository;
     private final ProductRegisterRepository productRegisterRepository;
-    private final BuyerRepository buyerRepository;
     private final CategoryRepository categoryRepository;
     private final S3Provider s3Provider;
     private final SellerRepository sellerRepository;
@@ -65,12 +62,6 @@ public class ProductsCommandService {
         }
     }
 
-
-
-    private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId)
-                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
-    }
     private Products findProductById(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));

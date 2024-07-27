@@ -5,7 +5,6 @@ package umc.unimade.domain.products.dto;
 import lombok.*;
 import java.util.List;
 
-import umc.unimade.domain.products.entity.Category;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ProductsImage;
 import umc.unimade.domain.qna.dto.QnAListResponse;
