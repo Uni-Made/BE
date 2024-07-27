@@ -32,7 +32,7 @@ public class BuyerController {
     @Tag(name = "FavoriteSeller")
     @Operation(summary = "찜하지 않은 상태라면 찜하기. \n 찜한 상태라면 찜하기 취소")
     @PostMapping("/favorite/{sellerId}")
-    public ResponseEntity<ApiResponse<Void>> toggleFavoriteSeller(@AuthenticationPrincipal Buyer currentBuyer,@PathVariable Long sellerId) {
+    public ResponseEntity<ApiResponse<Void>> toggleFavoriteSeller( @AuthenticationPrincipal Buyer currentBuyer, @PathVariable Long sellerId) {
         try {
             return ResponseEntity.ok(buyerCommandService.toggleFavoriteSeller(sellerId, currentBuyer));
         } catch (IllegalArgumentException e) {

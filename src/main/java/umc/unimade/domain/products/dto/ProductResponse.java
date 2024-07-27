@@ -2,6 +2,7 @@ package umc.unimade.domain.products.dto;
 
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import java.util.List;
 
@@ -13,10 +14,14 @@ import umc.unimade.domain.review.dto.ReviewListResponse;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
+
+
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductResponse {
     private Long productId;
     private Long sellerId;
@@ -34,7 +39,7 @@ public class ProductResponse {
     private ReviewListResponse reviews;
     private QnAListResponse questions;
 
-    public static ProductResponse from(Products product) {
+    public static ProductResponse baseResponse (Products product){
         return ProductResponse.builder()
                 .productId(product.getId())
                 .sellerId(product.getSeller().getId())
@@ -52,6 +57,26 @@ public class ProductResponse {
                         .collect(Collectors.toList()))
                 .build();
     }
+
+    public static ProductResponse toDetail(Products product) {
+        ProductResponse response = baseResponse(product);
+        response.setDetail(product.getContent());
+        return response;
+    }
+
+    public static ProductResponse toReview(Products product,ReviewListResponse reviews) {
+        ProductResponse response = baseResponse(product);
+        response.setReviews(reviews);
+        return response;
+    }
+
+    public static ProductResponse toQnA(Products product,QnAListResponse questions) {
+        ProductResponse response = baseResponse(product);
+        response.setQuestions(questions);
+        return response;
+    }
+
+
     public void setDetail(String detail) {
         this.detail = detail;
     }
@@ -63,6 +88,10 @@ public class ProductResponse {
     public void setQuestions(QnAListResponse questions) {
         this.questions = questions;
     }
+
+
+
+
 
 
 }
