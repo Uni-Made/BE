@@ -24,6 +24,7 @@ public class QnAListResponse {
         private Long questionId;
         private String title;
         private String buyer;
+        private Boolean isPrivate;
         private LocalDateTime createdAt;
         private List<AnswerInfo> answers;
 
@@ -32,6 +33,7 @@ public class QnAListResponse {
                     .questionId(question.getId())
                     .title(question.getTitle())
                     .buyer(question.getBuyer().getName())
+                    .isPrivate(question.isPrivate())
                     .createdAt(question.getCreatedAt())
                     .answers(question.getAnswers().stream()
                             .map(AnswerInfo::from)
