@@ -21,7 +21,7 @@ import umc.unimade.global.registerStatus.RegisterStatus;
 @Tag(name = "Admin_Product", description = "관리자-상품 관련 API")
 @RequestMapping("/admin/product")
 @RestController
-public class ProductRegisterController {  // TODO: 필터체인에 /admin으로 접근시 ROlE이 ADMIN인지 확인 넣기
+public class ProductRegisterController {
 
     private final ProductRegisterCommandService productRegisterCommandService;
     private final ProductRegisterQueryService productRegisterQueryService;
