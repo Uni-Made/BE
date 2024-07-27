@@ -24,4 +24,5 @@ public interface BuyerRepository extends JpaRepository<Buyer, Long> {
     Buyer findBySocialIdAndProvider(String socialId, Provider provider);
 
     Optional<Buyer> findBySocialId(String socialId);
+
 }

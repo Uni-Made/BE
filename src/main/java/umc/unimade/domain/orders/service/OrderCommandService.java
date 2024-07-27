@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.entity.Buyer;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
+import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.orders.dto.OrderRequest;
 import umc.unimade.domain.orders.dto.OrderResponse;
 import umc.unimade.domain.orders.entity.*;
@@ -30,12 +32,15 @@ public class OrderCommandService {
     private final ProductRepository productRepository;
     private final OptionValueRepository optionValueRepository;
     private final OrderItemRepository orderItemRepository;
+    private final BuyerRepository buyerRepository;
 
     @Transactional
-    public OrderResponse createOrder(Long productId, Buyer buyer, OrderRequest orderRequest) {
+    public OrderResponse createOrder(Long productId, Long buyerId, OrderRequest orderRequest) {
         if (!orderRequest.getPurchaseForm().getIsAgree()) {
             throw new OrderExceptionHandler(ErrorCode.ORDER_AGREEMENT_REQUIRED);
         }
+
+        Buyer buyer = findBuyerById(buyerId);
         Products product = findProductById(productId);
 
         // PurchaseForm 엔티티 생성 및 저장
@@ -71,6 +76,10 @@ public class OrderCommandService {
         return OrderResponse.from(order, product, totalPrice);
     }
 
+    private Buyer findBuyerById(Long buyerId) {
+        return buyerRepository.findById(buyerId)
+                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
+    }
     private Products findProductById(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
