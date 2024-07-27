@@ -28,6 +28,9 @@ public class Questions extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column (name = "is_private",nullable = false)
+    private boolean isPrivate = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Products product;
