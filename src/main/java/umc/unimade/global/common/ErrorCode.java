@@ -16,10 +16,11 @@ public enum ErrorCode implements BaseErrorCode {
 
     // Accounts 관련 에러
     USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER4000", "사용자가 이미 존재합니다."),
+    ACCESS_DENIED(HttpStatus.BAD_REQUEST, "USER4001", "관리자만 접근할 수 있습니다."),
 
     // Products 관련 에러
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4000", "해당 제품을 찾을 수 없습니다."),
-    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4000", "해당 카테고리를 찾을 수 없습니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4001", "해당 카테고리를 찾을 수 없습니다."),
 
     // Products 관련 에러
     PRODUCT_STATUS_IS_NOT_PENDING(HttpStatus.BAD_REQUEST, "PRODUCT4001", "대기중인 요청만 처리할 수 있습니다."),
@@ -28,7 +29,7 @@ public enum ErrorCode implements BaseErrorCode {
     // Order 관련 에러
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER4000", "구매 내역을 찾을 수 없습니다."),
     STATUS_IS_PENDING(HttpStatus.BAD_REQUEST, "ORDER4001", "아직 입금되지 않은 대기 중 상태입니다."),
-    ORDER_AGREEMENT_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4001","동의가 필요합니다."),
+    ORDER_AGREEMENT_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","동의가 필요합니다."),
 
     // 판매자 관련 에러
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER4000", "판매자를 찾을 수 없습니다."),
