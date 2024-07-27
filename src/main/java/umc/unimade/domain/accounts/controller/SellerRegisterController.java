@@ -20,7 +20,7 @@ import umc.unimade.global.registerStatus.RegisterStatus;
 @Tag(name = "Admin_Seller", description = "관리자-판매자 관련 API")
 @RequestMapping("/admin/seller")
 @RestController
-public class SellerRegisterController {  // TODO: 필터체인에 /admin으로 접근시 ROlE이 ADMIN인지 확인 넣기
+public class SellerRegisterController {
 
     private final SellerRegisterCommandService sellerRegisterCommandService;
     private final SellerRegisterQueryService sellerRegisterQueryService;
