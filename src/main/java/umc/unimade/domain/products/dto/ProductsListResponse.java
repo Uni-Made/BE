@@ -32,7 +32,7 @@ public class ProductsListResponse {
                     .productId(product.getId())
                     .name(product.getName())
                     .price(product.getPrice())
-                    .imgUrl(product.getProductImages().get(0).getImageUrl())
+                    .imgUrl(product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getImageUrl())
                     .sellerId(product.getSeller().getId())
                     .sellerName(product.getSeller().getName())
                     .build();

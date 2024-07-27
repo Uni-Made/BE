@@ -2,7 +2,6 @@ package umc.unimade.domain.products.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -78,8 +77,7 @@ public class ProductsController extends BaseEntity {
             @RequestParam(defaultValue = "10") int pageSize) {
 
         try {
-            ProductsListResponse response = productsQueryService.findProductsByFilters(category, keyword, minPrice, maxPrice, sort, cursor, pageSize);
-            return ResponseEntity.ok(ApiResponse.onSuccess(response));
+            return ResponseEntity.ok(ApiResponse.onSuccess(productsQueryService.findProductsByFilters(category, keyword, minPrice, maxPrice, sort, cursor, pageSize)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (ProductsExceptionHandler e) {

@@ -57,8 +57,6 @@ public class ReviewController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
             }
     }
-
-
 }
 
 

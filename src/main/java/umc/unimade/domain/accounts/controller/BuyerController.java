@@ -15,7 +15,6 @@ import umc.unimade.domain.accounts.service.BuyerQueryService;
 import umc.unimade.domain.favorite.dto.FavoriteProductsListResponse;
 import umc.unimade.domain.favorite.dto.FavoriteSellersListResponse;
 import umc.unimade.global.common.ApiResponse;
-import umc.unimade.global.common.CursorPageRequest;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 

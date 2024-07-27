@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteSeller;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
@@ -15,13 +14,11 @@ import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
 import java.util.Optional;
 
-import static umc.unimade.domain.accounts.entity.QBuyer.buyer;
 
 @Service
 @RequiredArgsConstructor
 public class BuyerCommandService {
 
-    private final BuyerRepository buyerRepository;
     private final SellerRepository sellerRepository;
     private final FavoriteSellerRepository favoriteSellerRepository;
 
@@ -42,11 +39,6 @@ public class BuyerCommandService {
             return ApiResponse.SUCCESS_LIKE();
         }
 
-    }
-
-    private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId)
-                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
 
     private Seller findSellerById(Long sellerId) {

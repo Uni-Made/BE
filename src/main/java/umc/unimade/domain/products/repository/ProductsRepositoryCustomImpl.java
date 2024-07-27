@@ -64,15 +64,11 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
         if (sort == null || sort.isEmpty()) {
             sort = "favorite";
         }
-        switch (sort) {
-            case "favorite":
-                return favoriteProduct.id.count().desc();
-            case "latest":
-                return products.createdAt.desc();
-            case "deadline":
-                return products.deadline.asc();
-            default:
-                return products.id.desc();
-        }
+        return switch (sort) {
+            case "favorite" -> favoriteProduct.id.count().desc();
+            case "latest" -> products.createdAt.desc();
+            case "deadline" -> products.deadline.asc();
+            default -> products.id.desc();
+        };
     }
 }

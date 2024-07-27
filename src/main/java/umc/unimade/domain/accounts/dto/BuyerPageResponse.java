@@ -4,8 +4,6 @@ import lombok.*;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.favorite.dto.FavoriteProductResponse;
 import umc.unimade.domain.favorite.dto.FavoriteSellerResponse;
-import umc.unimade.domain.favorite.entity.FavoriteProduct;
-import umc.unimade.domain.favorite.entity.FavoriteSeller;
 
 import java.util.List;
 

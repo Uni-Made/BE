@@ -1,12 +1,9 @@
 package umc.unimade.domain.qna.dto;
 
 import lombok.*;
-import umc.unimade.domain.qna.entity.AnswerImage;
 import umc.unimade.domain.qna.entity.Answers;
-
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Getter
 @AllArgsConstructor
