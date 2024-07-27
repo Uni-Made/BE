@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.accounts.entity.Buyer;
+import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.orders.dto.*;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.orders.dto.OrderRequest;
@@ -31,13 +32,14 @@ import java.util.List;
 public class OrderController {
     private final OrderCommandService orderCommandService;
     private final OrderQueryService orderQueryService;
+    private final BuyerRepository buyerRepository;
 
     @Tag(name = "Order", description = "구매 관련 API")
     @Operation(summary = "상품 구매하기")
-    @PostMapping("/{productId}")
-    public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@AuthenticationPrincipal Buyer currentBuyer, @PathVariable Long productId,  @RequestBody OrderRequest orderRequest){
+    @PostMapping("/{productId}/{buyerId}")
+    public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@PathVariable Long productId, @PathVariable Long buyerId, @RequestBody OrderRequest orderRequest){
         try {
-            return ResponseEntity.ok(ApiResponse.onSuccess(orderCommandService.createOrder(productId, currentBuyer, orderRequest)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(orderCommandService.createOrder(productId, buyerId, orderRequest)));
         }
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
