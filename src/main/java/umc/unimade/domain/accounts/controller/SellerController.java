@@ -37,8 +37,8 @@ public class SellerController {
     @GetMapping("/myPage/sellingProducts/{sellerId}")
     public ResponseEntity<Page<MyPageProductResponse>> getSellingProductsList(@PathVariable Long sellerId,
                                                                               @RequestParam(name = "page", defaultValue = "0") int page,
-                                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size); // TODO - 커서로 변경
+                                                                              @RequestParam(name = "size", defaultValue = "12") int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<MyPageProductResponse> response = sellerQueryService.getSellingProductsList(sellerId, pageable);
         return ResponseEntity.ok(response);
     }
@@ -48,8 +48,8 @@ public class SellerController {
     @GetMapping("/myPage/soldoutProducts/{sellerId}")
     public ResponseEntity<Page<MyPageProductResponse>> getSoldoutProductsList(@PathVariable Long sellerId,
                                                                               @RequestParam(name = "page", defaultValue = "0") int page,
-                                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size); // TODO - 커서로 변경
+                                                                              @RequestParam(name = "size", defaultValue = "12") int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<MyPageProductResponse> response = sellerQueryService.getSoldoutProductsList(sellerId, pageable);
         return ResponseEntity.ok(response);
     }
@@ -62,7 +62,7 @@ public class SellerController {
                                                                       @RequestParam(name = "page", defaultValue = "0") int page,
                                                                       @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        Pageable pageable = PageRequest.of(page, size); // TODO - 커서로 변경
+        Pageable pageable = PageRequest.of(page, size);
         SellerPageResponse sellerPage = sellerQueryService.getSellerPage(sellerId, sort, pageable);
         return ResponseEntity.ok(sellerPage);
     }

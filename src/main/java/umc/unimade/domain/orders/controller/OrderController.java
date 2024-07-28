@@ -3,7 +3,9 @@ package umc.unimade.domain.orders.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.*;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -77,22 +79,22 @@ public class OrderController {
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "특정 판매자에게 온 구매 요청 보기")
     @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<List<SellerOrderResponse>> getOrdersBySellerId(@PathVariable Long sellerId,
+    public ResponseEntity<Page<SellerOrderResponse>> getOrdersBySellerId(@PathVariable Long sellerId,
                                                                          @RequestParam(name = "page", defaultValue = "0") int page,
                                                                          @RequestParam(name = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size); // TODO - 커서로 변경
-        List<SellerOrderResponse> orders = orderQueryService.getOrdersBySellerId(sellerId, pageRequest);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SellerOrderResponse> orders = orderQueryService.getOrdersBySellerId(sellerId, pageable);
         return ResponseEntity.ok(orders);
     }
 
     @Tag(name = "Order", description = "판매자 관련 API")
     @Operation(summary = "특정 상품의 구매 요청 보기")
     @GetMapping("/product/{productId}")
-    public ResponseEntity<List<ProductOrderResponse>> getOrdersByProductId(@PathVariable Long productId,
+    public ResponseEntity<Page<ProductOrderResponse>> getOrdersByProductId(@PathVariable Long productId,
                                                                          @RequestParam(name = "page", defaultValue = "0") int page,
                                                                          @RequestParam(name = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        List<ProductOrderResponse> orders = orderQueryService.getOrdersByProductId(productId, pageRequest);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductOrderResponse> orders = orderQueryService.getOrdersByProductId(productId, pageable);
         return ResponseEntity.ok(orders);
     }
 
