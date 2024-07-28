@@ -2,6 +2,7 @@ package umc.unimade.domain.qna.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +33,10 @@ public class QnAController {
 
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "질문 생성")
-    @PostMapping(value = "/question/{buyerId}/{productId}")
-    public ResponseEntity<ApiResponse<Void>> createQuestion(@PathVariable Long buyerId,
-                                                            @PathVariable Long productId,
-                                                            @RequestBody QuestionCreateRequest questionCreateRequest) {
+    @PostMapping(value = "/question/{productId}/{buyerId}")
+    public ResponseEntity<ApiResponse<Void>> createQuestion(@PathVariable Long productId,
+                                                            @PathVariable Long buyerId,
+                                                            @Valid @RequestBody QuestionCreateRequest questionCreateRequest) {
         try {
             Buyer buyer = findBuyerById(buyerId);
             qnaCommandService.createQuestion(productId, buyer, questionCreateRequest);
@@ -62,11 +63,11 @@ public class QnAController {
     }
 
     @Tag(name = "QnA", description = "qna 관련 API")
-    @Operation(summary = "답변 생성")
-    @PostMapping(value = "/answer/{sellerId}/{questionId}")
+    @Operation(summary = "답변 생성, sellerId는 나중에 뺄게요! ")
+    @PostMapping(value = "/answer/{questionId}/{sellerId}")
     public ResponseEntity<ApiResponse<Void>> createAnswer(@PathVariable Long questionId,
                                                           @PathVariable Long sellerId,
-                                                          @RequestBody AnswerCreateRequest answerCreateRequest) {
+                                                          @Valid @RequestBody AnswerCreateRequest answerCreateRequest) {
         try {
             Seller currentSeller = findSellerById(sellerId);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));

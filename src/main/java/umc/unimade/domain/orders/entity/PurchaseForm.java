@@ -1,7 +1,6 @@
 package umc.unimade.domain.orders.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.products.entity.PickupOption;
@@ -20,15 +19,12 @@ import java.util.List;
 public class PurchaseForm extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
-    @Column(name = "purchase_form_id")
+    @Column(name = "purchase_form_id", nullable = false)
     private Long id;
 
-    @NotNull
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -42,8 +38,7 @@ public class PurchaseForm extends BaseEntity {
     @Column(name = "detail_address")
     private String detailAddress;
 
-    @NotNull
-    @Column(name = "is_agree")
+    @Column(name = "is_agree", nullable = false)
     private Boolean isAgree;
 
     @ManyToOne(fetch = FetchType.LAZY)

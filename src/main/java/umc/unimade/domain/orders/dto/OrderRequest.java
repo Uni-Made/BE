@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class OrderRequest {
-    @NotNull
     private PurchaseFormRequest purchaseForm;
-    @NotEmpty
     private List<OrderOptionRequest> orderOptions;
 
     @Getter
@@ -55,9 +53,7 @@ public class OrderRequest {
     @NoArgsConstructor
     @Builder
     public static class OrderOptionRequest {
-        @NotEmpty(message = "옵션을 선택해주세요.")
         private List<Long> optionValueIds;
-        @Min(value = 1, message = "수량은 최소 1 이상이어야 합니다.")
         private int count;
 
         public List<OrderOption> toOrderOptions(OrderItem orderItem, List<OptionValue> optionValues) {

@@ -29,7 +29,14 @@ public enum ErrorCode implements BaseErrorCode {
     // Order 관련 에러
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER4000", "구매 내역을 찾을 수 없습니다."),
     STATUS_IS_PENDING(HttpStatus.BAD_REQUEST, "ORDER4001", "아직 입금되지 않은 대기 중 상태입니다."),
-    ORDER_AGREEMENT_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","동의가 필요합니다."),
+    ORDER_AGREEMENT_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","동의는 필수 항목입니다."),
+    PHONE_NUMBER_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","전화번호는 필수 항목입니다."),
+    NAME_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","이름은 필수 항목입니다."),
+    PURCHASE_FORM_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","구매폼은 필수입니다."),
+    ADDRESS_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","주소는 필수 항목입니다."),
+    OPTION_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","옵션을 선택해주세요."),
+    COUNT_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","수량은 1개 이상 선택해주세요."),
+
 
     // 판매자 관련 에러
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER4000", "판매자를 찾을 수 없습니다."),

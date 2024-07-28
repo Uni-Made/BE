@@ -2,13 +2,12 @@ package umc.unimade.domain.orders.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.orders.dto.*;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
@@ -38,7 +37,9 @@ public class OrderController {
     @Tag(name = "Order", description = "구매 관련 API")
     @Operation(summary = "상품 구매하기")
     @PostMapping("/{buyerId}/{productId}")
-    public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@PathVariable Long buyerId,@PathVariable Long productId, @RequestBody OrderRequest orderRequest){
+    public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@PathVariable Long buyerId,
+                                                                   @PathVariable Long productId,
+                                                                   @Valid @RequestBody OrderRequest orderRequest){
         try {
             return ResponseEntity.ok(ApiResponse.onSuccess(orderCommandService.createOrder(productId, buyerId, orderRequest)));
         }
