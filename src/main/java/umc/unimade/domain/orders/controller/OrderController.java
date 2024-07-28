@@ -80,7 +80,7 @@ public class OrderController {
     public ResponseEntity<List<SellerOrderResponse>> getOrdersBySellerId(@PathVariable Long sellerId,
                                                                          @RequestParam(name = "page", defaultValue = "0") int page,
                                                                          @RequestParam(name = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size); // TODO - 커서로 변경
         List<SellerOrderResponse> orders = orderQueryService.getOrdersBySellerId(sellerId, pageRequest);
         return ResponseEntity.ok(orders);
     }
