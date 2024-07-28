@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.products.dto.SellingProductResponse;
-import umc.unimade.domain.products.dto.SoldoutProductResponse;
+import umc.unimade.domain.products.dto.MyPageProductResponse;
+import umc.unimade.domain.products.dto.MyPageProductResponse;
 
 import java.util.List;
 
@@ -19,10 +19,10 @@ public class SellerMyPageResponse {
     private Long sellerId;
     private String name;
     private String profileImage;
-    private List<SellingProductResponse> sellingProducts;
-    private List<SoldoutProductResponse> soldoutProducts;
+    private List<MyPageProductResponse> sellingProducts;
+    private List<MyPageProductResponse> soldoutProducts;
 
-    public static SellerMyPageResponse from(Seller seller, List<SellingProductResponse> sellingProducts, List<SoldoutProductResponse> soldoutProducts) {
+    public static SellerMyPageResponse from(Seller seller, List<MyPageProductResponse> sellingProducts, List<MyPageProductResponse> soldoutProducts) {
         return SellerMyPageResponse.builder()
                 .sellerId(seller.getId())
                 .name(seller.getName())

@@ -10,15 +10,15 @@ import umc.unimade.domain.products.entity.Products;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SoldoutProductResponse {
+public class MyPageProductResponse {
 
     private Long productId;
     private String imageUrl;
     private String name;
     private Long price;
 
-    public static SoldoutProductResponse from(Products product) {
-        return SoldoutProductResponse.builder()
+    public static MyPageProductResponse from(Products product) {
+        return MyPageProductResponse.builder()
                 .productId(product.getId())
                 .imageUrl(product.getProductImages() == null || product.getProductImages().isEmpty() || product.getProductImages().get(0).getImageUrl() == null || product.getProductImages().get(0).getImageUrl().isEmpty() ? null : product.getProductImages().get(0).getImageUrl())
                 .name(product.getName())

@@ -1,6 +1,7 @@
 package umc.unimade.domain.orders.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,27 +71,23 @@ public class OrderQueryService {
     }
 
     // 특정 판매자의 구매 요청 확인(조회)
-    public List<SellerOrderResponse> getOrdersBySellerId(Long sellerId, Pageable pageable) {
+    public Page<SellerOrderResponse> getOrdersBySellerId(Long sellerId, Pageable pageable) {
         sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new SellerExceptionhandler(ErrorCode.SELLER_NOT_FOUND));
 
-        List<Orders> orders = orderRepository.findOrdersBySellerId(sellerId, pageable);
+        Page<Orders> ordersPage = orderRepository.findOrdersBySellerId(sellerId, pageable);
 
-        return orders.stream()
-                .map(SellerOrderResponse::from)
-                .collect(Collectors.toList());
+        return ordersPage.map(SellerOrderResponse::from);
     }
 
     // 특정 상품의 구매 요청 확인(조회)
-    public List<ProductOrderResponse> getOrdersByProductId(Long productId, Pageable pageable) {
+    public Page<ProductOrderResponse> getOrdersByProductId(Long productId, Pageable pageable) {
         productRepository.findById(productId)
             .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
 
-        List<Orders> orders = orderRepository.findOrdersByProductId(productId, pageable);
+        Page<Orders> orders = orderRepository.findOrdersByProductId(productId, pageable);
 
-        return orders.stream()
-                .map(ProductOrderResponse::from)
-                .collect(Collectors.toList());
+        return orders.map(ProductOrderResponse::from);
     }
 
     private Orders findOrderById(Long orderId){

@@ -9,8 +9,7 @@ import umc.unimade.domain.accounts.dto.SellerPageResponse;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.SellerExceptionHandler;
 import umc.unimade.domain.accounts.repository.SellerRepository;
-import umc.unimade.domain.products.dto.SellingProductResponse;
-import umc.unimade.domain.products.dto.SoldoutProductResponse;
+import umc.unimade.domain.products.dto.MyPageProductResponse;
 import umc.unimade.domain.products.entity.ProductStatus;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.repository.ProductRepository;
@@ -22,27 +21,41 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SellerQueryService {
 
     private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;
 
-    @Transactional(readOnly = true)
+    // 판매자 마이페이지
     public SellerMyPageResponse getSellerMyPage(Long sellerId) {
         Seller seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new SellerExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
 
-        List<SellingProductResponse> sellingProducts = productRepository.findTop4BySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SELLING)
+        List<MyPageProductResponse> sellingProducts = productRepository.findTop4BySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SELLING)
                 .stream()
-                .map(SellingProductResponse::from)
+                .map(MyPageProductResponse::from)
                 .collect(Collectors.toList());
 
-        List<SoldoutProductResponse> soldoutProducts = productRepository.findTop4BySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SOLDOUT)
+        List<MyPageProductResponse> soldoutProducts = productRepository.findTop4BySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SOLDOUT)
                 .stream()
-                .map(SoldoutProductResponse::from)
+                .map(MyPageProductResponse::from)
                 .collect(Collectors.toList());
 
         return SellerMyPageResponse.from(seller, sellingProducts, soldoutProducts);
+    }
+
+    // 판매자 마이페이지 - selling 상태인 상품 목록 더보기
+    public Page<MyPageProductResponse> getSellingProductsList(Long sellerId, Pageable pageable) {
+        return productRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SELLING, pageable)
+                .map(MyPageProductResponse::from);
+    }
+
+
+    // 판매자 마이페이지 - soldout 상태인 상품 목록 더보기
+    public Page<MyPageProductResponse> getSoldoutProductsList(Long sellerId, Pageable pageable) {
+        return productRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SOLDOUT, pageable)
+                .map(MyPageProductResponse::from);
     }
 
     // 특정 sellerId의 프로필 정보와 selling 상태인 상품 목록을 조회
