@@ -12,19 +12,33 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class OptionResponse {
-    private Long optionId;
-    private String name;
-    private List<String> values;
+    private Long optionCategoryId;
+    private String optionCategory;
+    private List<OptionValueResponse> optionValues;
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class OptionValueResponse {
+        private Long valueId;
+        private String value;
+
+        public static OptionValueResponse from(OptionValue optionValue) {
+            return OptionValueResponse.builder()
+                    .valueId(optionValue.getId())
+                    .value(optionValue.getValue())
+                    .build();
+        }
+    }
 
     public static OptionResponse from(OptionCategory category) {
-        List<String> values = category.getValues().stream()
-                .map(OptionValue::getValue)
-                .collect(Collectors.toList());
-
         return OptionResponse.builder()
-                .optionId(category.getId())
-                .name(category.getName())
-                .values(values)
+                .optionCategoryId(category.getId())
+                .optionCategory(category.getName())
+                .optionValues(category.getValues().stream()
+                        .map(OptionValueResponse::from)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

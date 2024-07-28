@@ -1,5 +1,8 @@
 package umc.unimade.domain.orders.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.orders.entity.OrderItem;
@@ -18,7 +21,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class OrderRequest {
+    @NotNull
     private PurchaseFormRequest purchaseForm;
+    @NotEmpty
     private List<OrderOptionRequest> orderOptions;
 
     @Getter
@@ -35,12 +40,12 @@ public class OrderRequest {
 
         public PurchaseForm toEntity() {
             return PurchaseForm.builder()
-                    .name(this.name)
-                    .phoneNumber(this.phoneNumber)
-                    .pickupOption(this.pickupOption)
-                    .address(this.address)
-                    .detailAddress(this.detailAddress)
-                    .isAgree(this.isAgree)
+                    .name(name)
+                    .phoneNumber(phoneNumber)
+                    .pickupOption(pickupOption)
+                    .address(address)
+                    .detailAddress(detailAddress)
+                    .isAgree(isAgree)
                     .build();
         }
     }
@@ -50,7 +55,9 @@ public class OrderRequest {
     @NoArgsConstructor
     @Builder
     public static class OrderOptionRequest {
+        @NotEmpty(message = "옵션을 선택해주세요.")
         private List<Long> optionValueIds;
+        @Min(value = 1, message = "수량은 최소 1 이상이어야 합니다.")
         private int count;
 
         public List<OrderOption> toOrderOptions(OrderItem orderItem, List<OptionValue> optionValues) {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import java.util.List;
 
+import umc.unimade.domain.products.entity.PickupOption;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.ProductsImage;
 import umc.unimade.domain.qna.dto.QnAListResponse;
@@ -35,6 +36,7 @@ public class ProductResponse {
     private List<String> productImages;
     private Integer favoriteCount;
     private List<OptionResponse> options;
+    private PickupOption pickupOption;
     private String detail;
     private ReviewListResponse reviews;
     private QnAListResponse questions;
@@ -55,6 +57,7 @@ public class ProductResponse {
                 .options(product.getOptionCategories().stream()
                         .map(OptionResponse::from)
                         .collect(Collectors.toList()))
+                .pickupOption(product.getPickupOption())
                 .build();
     }
 
