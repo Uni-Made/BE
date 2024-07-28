@@ -26,7 +26,7 @@ public class SellerMyPageResponse {
         return SellerMyPageResponse.builder()
                 .sellerId(seller.getId())
                 .name(seller.getName())
-                .profileImage(seller.getProfileImage().isEmpty() ? null : seller.getProfileImage())
+                .profileImage(seller.getProfileImage() == null || seller.getProfileImage().isEmpty() ? null : seller.getProfileImage())
                 .sellingProducts(sellingProducts)
                 .soldoutProducts(soldoutProducts)
                 .build();
