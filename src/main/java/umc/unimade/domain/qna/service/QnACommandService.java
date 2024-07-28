@@ -13,6 +13,7 @@ import umc.unimade.domain.qna.entity.Answers;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.qna.repository.AnswersRespository;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
+import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.qna.exception.QnAExceptionHandler;
@@ -36,6 +37,9 @@ public class QnACommandService {
     public void createAnswer(Long questionId, Seller seller , AnswerCreateRequest answerCreateRequest){
         Questions question = findQuestionById(questionId);
         Answers answer = answerCreateRequest.toEntity(seller, question);
+        if (question.getIsPrivate()) {
+            answer.setPrivate(true);
+        }
         answersRespository.save(answer);
     }
 
@@ -46,3 +50,4 @@ public class QnACommandService {
         return questionsRepository.findById(questionId).orElseThrow(()-> new QnAExceptionHandler(ErrorCode.QNA_NOT_FOUND));
     }
 }
+

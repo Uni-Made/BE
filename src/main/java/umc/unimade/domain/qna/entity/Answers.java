@@ -5,10 +5,6 @@ import lombok.*;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.global.common.BaseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 @Entity
 @Builder
 @Getter
@@ -27,6 +23,9 @@ public class Answers extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "is_private", nullable = false)
+    private Boolean isPrivate = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Questions question;
@@ -35,7 +34,9 @@ public class Answers extends BaseEntity {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<AnswerImage> answerImages = new ArrayList<>();
 
+    public void setPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
 }
+

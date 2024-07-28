@@ -14,6 +14,7 @@ public class AnswerResponse {
     private String seller;
     private String title;
     private String content;
+    private Boolean isPrivate;
     private LocalDateTime createdAt;
 
     public static AnswerResponse from(Answers answer){
@@ -22,6 +23,7 @@ public class AnswerResponse {
                 .seller(answer.getSeller().getName())
                 .title(answer.getTitle())
                 .content(answer.getContent())
+                .isPrivate(answer.getIsPrivate())
                 .createdAt(answer.getCreatedAt())
                 .build();
     }

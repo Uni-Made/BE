@@ -23,7 +23,7 @@ public class QuestionResponse {
                 .buyer(question.getBuyer().getName())
                 .title(question.getTitle())
                 .content(question.getContent())
-                .isPrivate(question.isPrivate())
+                .isPrivate(question.getIsPrivate())
                 .createdAt(question.getCreatedAt())
                 .build();
     }

@@ -1,6 +1,7 @@
 package umc.unimade.domain.qna.dto;
 
 import lombok.*;
+import umc.unimade.domain.qna.entity.Answers;
 import umc.unimade.domain.qna.entity.Questions;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ public class QnAListResponse {
                     .questionId(question.getId())
                     .title(question.getTitle())
                     .buyer(question.getBuyer().getName())
-                    .isPrivate(question.isPrivate())
+                    .isPrivate(question.getIsPrivate())
                     .createdAt(question.getCreatedAt())
                     .answers(question.getAnswers().stream()
                             .map(AnswerInfo::from)
@@ -50,13 +51,15 @@ public class QnAListResponse {
         private Long answerId;
         private String title;
         private String seller;
+        private Boolean isPrivate;
         private LocalDateTime createdAt;
 
-        public static AnswerInfo from(umc.unimade.domain.qna.entity.Answers answer) {
+        public static AnswerInfo from(Answers answer) {
             return AnswerInfo.builder()
                     .answerId(answer.getId())
                     .title(answer.getTitle())
                     .seller(answer.getSeller().getName())
+                    .isPrivate(answer.getIsPrivate())
                     .createdAt(answer.getCreatedAt())
                     .build();
         }
