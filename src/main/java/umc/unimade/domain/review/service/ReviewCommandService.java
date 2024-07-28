@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
-import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.review.repository.ReviewRepository;
@@ -23,7 +22,6 @@ import java.util.List;
 public class ReviewCommandService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
-    private final BuyerRepository buyerRepository;
     private final S3Provider s3Provider;
 
     @Transactional

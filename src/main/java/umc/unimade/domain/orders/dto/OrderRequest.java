@@ -1,5 +1,8 @@
 package umc.unimade.domain.orders.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.orders.entity.OrderItem;
@@ -35,12 +38,12 @@ public class OrderRequest {
 
         public PurchaseForm toEntity() {
             return PurchaseForm.builder()
-                    .name(this.name)
-                    .phoneNumber(this.phoneNumber)
-                    .pickupOption(this.pickupOption)
-                    .address(this.address)
-                    .detailAddress(this.detailAddress)
-                    .isAgree(this.isAgree)
+                    .name(name)
+                    .phoneNumber(phoneNumber)
+                    .pickupOption(pickupOption)
+                    .address(address)
+                    .detailAddress(detailAddress)
+                    .isAgree(isAgree)
                     .build();
         }
     }

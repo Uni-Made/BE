@@ -28,6 +28,9 @@ public class Questions extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "isPrivate", nullable = false)
+    private Boolean isPrivate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Products product;
@@ -36,8 +39,6 @@ public class Questions extends BaseEntity {
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 
-    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<QuestionImage> questionImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Answers> answers = new ArrayList<>();

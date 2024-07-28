@@ -2,15 +2,14 @@ package umc.unimade.domain.orders.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.orders.dto.*;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
@@ -25,6 +24,7 @@ import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
+import umc.unimade.global.security.UserId;
 
 import java.util.List;
 
@@ -38,8 +38,10 @@ public class OrderController {
 
     @Tag(name = "Order", description = "구매 관련 API")
     @Operation(summary = "상품 구매하기")
-    @PostMapping("/{productId}/{buyerId}")
-    public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@PathVariable Long productId, @PathVariable Long buyerId, @RequestBody OrderRequest orderRequest){
+    @PostMapping("/{buyerId}/{productId}")
+    public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@PathVariable Long buyerId,
+                                                                   @PathVariable Long productId,
+                                                                   @Valid @RequestBody OrderRequest orderRequest){
         try {
             return ResponseEntity.ok(ApiResponse.onSuccess(orderCommandService.createOrder(productId, buyerId, orderRequest)));
         }

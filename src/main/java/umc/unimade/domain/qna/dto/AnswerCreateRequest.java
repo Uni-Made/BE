@@ -12,11 +12,13 @@ import umc.unimade.domain.qna.entity.Questions;
 public class AnswerCreateRequest {
     private String title;
     private String content;
+    private Boolean isPrivate;
 
     public Answers toEntity(Seller seller, Questions question) {
         return Answers.builder()
                 .title(this.title)
                 .content(this.content)
+                .isPrivate(this.isPrivate)
                 .seller(seller)
                 .question(question)
                 .build();

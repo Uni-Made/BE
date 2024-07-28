@@ -50,4 +50,6 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> CANCELED_LIKE() {
         return new ApiResponse<>(HttpStatus.OK.name(), "좋아요 취소", null);
     }
+
+
 }
