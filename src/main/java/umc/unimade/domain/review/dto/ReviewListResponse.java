@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class ReviewListResponse {
-    private List<ReviewPreview> reviewsList;
     private Integer totalCount;
     private Double ratingAverage;
+    private List<ReviewPreview> reviewsList;
     private Long nextCursor;
     private Boolean isLast;
 
@@ -54,9 +54,9 @@ public class ReviewListResponse {
                 .average()
                 .orElse(0.0);
         return ReviewListResponse.builder()
-                .reviewsList(reviews)
                 .totalCount(reviewsList.size())
                 .ratingAverage(ratingAverage)
+                .reviewsList(reviews)
                 .nextCursor(nextCursor)
                 .isLast(isLast)
                 .build();
