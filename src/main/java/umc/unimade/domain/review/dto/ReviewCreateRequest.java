@@ -19,11 +19,13 @@ import java.util.stream.Collectors;
 public class ReviewCreateRequest {
     private String title;
     private String content;
+    private Integer ratingStar;
 
     public Review toEntity(Products product, Buyer buyer){
         return Review.builder()
                 .title(this.title)
                 .content(this.content)
+                .ratingStar(this.ratingStar)
                 .product(product)
                 .buyer(buyer)
                 .build();
