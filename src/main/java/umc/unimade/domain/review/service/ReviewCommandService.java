@@ -40,8 +40,11 @@ public class ReviewCommandService {
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
+    public void deleteReview(Long reviewId,Buyer buyer) {
         Review review = findReviewById(reviewId);
+        if (!review.getBuyer().getId().equals(buyer.getId())) {
+            throw new ReviewExceptionHandler(ErrorCode.REVIEW_DELETE_NOT_OWNER);
+        }
         reviewRepository.delete(review);
     }
 

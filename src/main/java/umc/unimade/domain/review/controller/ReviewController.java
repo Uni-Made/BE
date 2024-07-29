@@ -64,11 +64,13 @@ public class ReviewController {
         }
     }
     @Tag(name = "Review", description = "리뷰 관련 API")
-    @Operation(summary = "리뷰 삭제하기 ")
-    @DeleteMapping("/{reviewId}")
-    public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long reviewId) {
+    @Operation(summary = "리뷰 삭제하기, description = buyerId 나중에 뺄게요!  ")
+    @DeleteMapping("/{reviewId}/{buyerId}")
+    public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long reviewId,
+                                                          @PathVariable Long buyerId) {
         try {
-            reviewCommandService.deleteReview(reviewId);
+            Buyer buyer = findBuyerById(buyerId);
+            reviewCommandService.deleteReview(reviewId,buyer);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
