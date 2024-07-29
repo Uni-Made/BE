@@ -53,7 +53,9 @@ public enum ErrorCode implements BaseErrorCode {
 
 
     // QnA 관련 에러
-    QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4000", "QNA를 찾을 수 없습니다.");
+    QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4000", "QNA를 찾을 수 없습니다."),
+    QUESTION_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"QNA4003","질문을 삭제할 권한이 없습니다."),
+    ANSWER_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"QNA4003","답변 삭제할 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

@@ -13,7 +13,6 @@ import umc.unimade.domain.qna.entity.Answers;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.qna.repository.AnswersRespository;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
-import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.qna.exception.QnAExceptionHandler;
@@ -43,11 +42,35 @@ public class QnACommandService {
         answersRespository.save(answer);
     }
 
+    @Transactional
+    public void deleteQuestion(Long questionId, Buyer buyer){
+        Questions question = findQuestionById(questionId);
+        if (!question.getBuyer().getId().equals(buyer.getId())) {
+            throw new QnAExceptionHandler(ErrorCode.QUESTION_DELETE_NOT_OWNER);
+        }
+        questionsRepository.delete(question);
+    }
+
+    @Transactional
+    public void deleteAnswer(Long answerId, Seller seller){
+        Answers answer = findAnswerById(answerId);
+        if (!answer.getSeller().getId().equals(seller.getId())) {
+            throw new QnAExceptionHandler(ErrorCode.ANSWER_DELETE_NOT_OWNER);
+        }
+    }
+
     private Products findProductById(Long productId){
-        return productRepository.findById(productId).orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
     }
     private Questions findQuestionById(Long questionId){
-        return questionsRepository.findById(questionId).orElseThrow(()-> new QnAExceptionHandler(ErrorCode.QNA_NOT_FOUND));
+        return questionsRepository.findById(questionId)
+                .orElseThrow(()-> new QnAExceptionHandler(ErrorCode.QNA_NOT_FOUND));
+    }
+
+    private Answers findAnswerById(Long answerId){
+        return answersRespository.findById(answerId)
+                .orElseThrow(()-> new QnAExceptionHandler(ErrorCode.QNA_NOT_FOUND));
     }
 }
 

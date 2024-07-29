@@ -32,7 +32,7 @@ public class QnAController {
     private final SellerRepository sellerRepository;
 
     @Tag(name = "QnA", description = "qna 관련 API")
-    @Operation(summary = "질문 생성")
+    @Operation(summary = "질문 작성", description = "buyerId는 나중에 뺄게요!")
     @PostMapping(value = "/question/{productId}/{buyerId}")
     public ResponseEntity<ApiResponse<Void>> createQuestion(@PathVariable Long productId,
                                                             @PathVariable Long buyerId,
@@ -70,6 +70,7 @@ public class QnAController {
                                                           @Valid @RequestBody AnswerCreateRequest answerCreateRequest) {
         try {
             Seller currentSeller = findSellerById(sellerId);
+            qnaCommandService.createAnswer(questionId, currentSeller, answerCreateRequest);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
@@ -90,8 +91,41 @@ public class QnAController {
         } catch (UserExceptionHandler e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.SELLER_NOT_FOUND.getCode(), ErrorCode.SELLER_NOT_FOUND.getMessage()));
         }
-
     }
+
+    @Tag(name = "QnA", description = "qna 관련 API")
+    @Operation(summary = "질문 삭제", description = "buyerId는 나중에 뺄게요!")
+    @DeleteMapping(value = "/question/{questionId}/{buyerId}")
+    public ResponseEntity<ApiResponse<Void>> deleteQuestion(@PathVariable Long questionId,
+                                                            @PathVariable Long buyerId) {
+        try {
+            Buyer currentBuyer = findBuyerById(buyerId);
+            qnaCommandService.deleteQuestion(questionId, currentBuyer);
+            return ResponseEntity.ok(ApiResponse.onSuccess(null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (UserExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
+        }
+    }
+
+
+    @Tag(name = "QnA", description = "qna 관련 API")
+    @Operation(summary = "답변 삭제, sellerId는 나중에 뺄게요! ")
+    @DeleteMapping(value = "/answer/{answerId}/{sellerId}")
+    public ResponseEntity<ApiResponse<Void>> deleteAnswer(@PathVariable Long answerId,
+                                                          @PathVariable Long sellerId) {
+        try {
+            Seller currentSeller = findSellerById(sellerId);
+            qnaCommandService.deleteAnswer(answerId, currentSeller);
+            return ResponseEntity.ok(ApiResponse.onSuccess(null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (UserExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.SELLER_NOT_FOUND.getCode(), ErrorCode.SELLER_NOT_FOUND.getMessage()));
+        }
+    }
+
 
     // 임시로 추가
     private Buyer findBuyerById(Long buyerId) {
