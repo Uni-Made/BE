@@ -48,6 +48,8 @@ public enum ErrorCode implements BaseErrorCode {
 
     // 리뷰 관련 에러
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4000", "리뷰를 찾을 수 없습니다."),
+    INVALID_RATING_STAR(HttpStatus.BAD_REQUEST, "REVIEW4001", "별점은 0점 이상이어야합니다"),
+
 
     // QnA 관련 에러
     QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4000", "QNA를 찾을 수 없습니다.");

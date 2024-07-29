@@ -50,19 +50,34 @@ public class ReviewController {
         }
     }
 
-        @Tag(name = "Review", description = "리뷰 관련 API")
-        @Operation(summary = "리뷰 상세 내용 불러오기 ")
-        @GetMapping("/{reviewId}")
-        //To do : user 토큰 추가
-        public ResponseEntity<ApiResponse<ReviewResponse>> getReview(@PathVariable Long reviewId) {
-            try {
-                return ResponseEntity.ok(ApiResponse.onSuccess(reviewQueryService.getReview(reviewId)));
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
-            } catch (UserExceptionHandler e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
-            }
+    @Tag(name = "Review", description = "리뷰 관련 API")
+    @Operation(summary = "리뷰 상세 내용 불러오기 ")
+    @GetMapping("/{reviewId}")
+    //To do : user 토큰 추가
+    public ResponseEntity<ApiResponse<ReviewResponse>> getReview(@PathVariable Long reviewId) {
+        try {
+            return ResponseEntity.ok(ApiResponse.onSuccess(reviewQueryService.getReview(reviewId)));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (UserExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
+        }
     }
+    @Tag(name = "Review", description = "리뷰 관련 API")
+    @Operation(summary = "리뷰 삭제하기 ")
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long reviewId) {
+        try {
+            reviewCommandService.deleteReview(reviewId);
+            return ResponseEntity.ok(ApiResponse.onSuccess(null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (UserExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.REVIEW_NOT_FOUND.getCode(), ErrorCode.REVIEW_NOT_FOUND.getMessage()));
+        }
+    }
+
+
 
     // 임시로 추가
     private Buyer findBuyerById(Long buyerId) {
