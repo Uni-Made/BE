@@ -48,9 +48,14 @@ public enum ErrorCode implements BaseErrorCode {
 
     // 리뷰 관련 에러
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4000", "리뷰를 찾을 수 없습니다."),
+    INVALID_RATING_STAR(HttpStatus.BAD_REQUEST, "REVIEW4001", "별점은 0점 이상이어야합니다"),
+    REVIEW_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"REVIEW4003","리뷰를 삭제할 권한이 없습니다."),
+
 
     // QnA 관련 에러
-    QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4000", "QNA를 찾을 수 없습니다.");
+    QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4000", "QNA를 찾을 수 없습니다."),
+    QUESTION_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"QNA4003","질문을 삭제할 권한이 없습니다."),
+    ANSWER_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"QNA4003","답변 삭제할 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

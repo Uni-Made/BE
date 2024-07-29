@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
+import umc.unimade.domain.review.exception.ReviewExceptionHandler;
 import umc.unimade.domain.review.repository.ReviewRepository;
 import umc.unimade.domain.review.dto.ReviewCreateRequest;
 import umc.unimade.domain.review.entity.Review;
@@ -26,6 +27,9 @@ public class ReviewCommandService {
 
     @Transactional
     public void createReview(Long productId, Buyer buyer, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
+        if (reviewCreateRequest.getRatingStar() == 0 || reviewCreateRequest.getRatingStar()==null) {
+            throw new ReviewExceptionHandler(ErrorCode.INVALID_RATING_STAR);
+        }
         Products product = findProductById(productId);
         Review review = reviewCreateRequest.toEntity(product, buyer);
         List<ReviewImage> reviewImages = reviewCreateRequest.toReviewImages(images, s3Provider, buyer.getId(), review);
@@ -35,7 +39,22 @@ public class ReviewCommandService {
         reviewRepository.save(review);
     }
 
+    @Transactional
+    public void deleteReview(Long reviewId,Buyer buyer) {
+        Review review = findReviewById(reviewId);
+        if (!review.getBuyer().getId().equals(buyer.getId())) {
+            throw new ReviewExceptionHandler(ErrorCode.REVIEW_DELETE_NOT_OWNER);
+        }
+        reviewRepository.delete(review);
+    }
+
     private Products findProductById(Long productId){
-        return productRepository.findById(productId).orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+    }
+
+    private Review findReviewById(Long reviewId){
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_FOUND));
     }
 }
