@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class ReviewListResponse {
-    private List<ReviewInfo> reviewsList;
+    private List<ReviewPreview> reviewsList;
+    private Integer totalCount;
+    private Double ratingAverage;
     private Long nextCursor;
     private Boolean isLast;
 
@@ -23,28 +25,38 @@ public class ReviewListResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class ReviewInfo {
+    public static class ReviewPreview {
         private Long reviewId;
         private String buyer;
         private String title;
+        private Integer ratingStar;
+        private String imgUrl;
         private LocalDateTime createdAt;
 
-        public static ReviewInfo from(Review review) {
-            return ReviewInfo.builder()
+        public static ReviewPreview from(Review review) {
+            return ReviewPreview.builder()
                     .reviewId(review.getId())
                     .buyer(review.getBuyer().getName())
                     .title(review.getTitle())
+                    .ratingStar(review.getRatingStar())
+                    .imgUrl(review.getReviewImages().isEmpty() ? null :review.getReviewImages().get(0).getImageUrl())
                     .createdAt(review.getCreatedAt())
                     .build();
         }
     }
 
     public static ReviewListResponse from(List<Review> reviewsList, Long nextCursor, Boolean isLast) {
-        List<ReviewInfo> reviews = reviewsList.stream()
-                .map(ReviewInfo::from)
+        List<ReviewPreview> reviews = reviewsList.stream()
+                .map(ReviewPreview::from)
                 .collect(Collectors.toList());
+        double ratingAverage = reviewsList.stream()
+                .mapToInt(Review::getRatingStar)
+                .average()
+                .orElse(0.0);
         return ReviewListResponse.builder()
                 .reviewsList(reviews)
+                .totalCount(reviewsList.size())
+                .ratingAverage(ratingAverage)
                 .nextCursor(nextCursor)
                 .isLast(isLast)
                 .build();

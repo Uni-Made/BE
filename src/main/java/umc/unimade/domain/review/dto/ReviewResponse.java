@@ -17,6 +17,7 @@ public class ReviewResponse {
     private String buyer;
     private String title;
     private String content;
+    private Integer ratingStar;
     private List<String> reviewImages;
     private LocalDateTime createdAt;
 
@@ -26,6 +27,7 @@ public class ReviewResponse {
                 .buyer(review.getBuyer().getName())
                 .title(review.getTitle())
                 .content(review.getContent())
+                .ratingStar(review.getRatingStar())
                 .reviewImages(review.getReviewImages().stream()
                         .map(ReviewImage::getImageUrl)
                         .collect(Collectors.toList()))
