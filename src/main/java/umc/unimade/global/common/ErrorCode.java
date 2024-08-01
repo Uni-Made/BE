@@ -50,6 +50,7 @@ public enum ErrorCode implements BaseErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4000", "리뷰를 찾을 수 없습니다."),
     INVALID_RATING_STAR(HttpStatus.BAD_REQUEST, "REVIEW4001", "별점은 0점 이상이어야합니다"),
     REVIEW_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"REVIEW4003","리뷰를 삭제할 권한이 없습니다."),
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4004", "리뷰 신고를 찾을 수 없습니다."),
 
 
     // QnA 관련 에러
