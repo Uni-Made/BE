@@ -5,9 +5,16 @@ import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
+import umc.unimade.domain.accounts.entity.Seller;
+import umc.unimade.domain.accounts.exception.SellerExceptionHandler;
+import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
+import umc.unimade.domain.review.dto.ReviewReportRequest;
+import umc.unimade.domain.review.dto.ReviewReportResponse;
+import umc.unimade.domain.review.entity.ReviewReport;
 import umc.unimade.domain.review.exception.ReviewExceptionHandler;
+import umc.unimade.domain.review.repository.ReviewReportRepository;
 import umc.unimade.domain.review.repository.ReviewRepository;
 import umc.unimade.domain.review.dto.ReviewCreateRequest;
 import umc.unimade.domain.review.entity.Review;
@@ -24,6 +31,8 @@ public class ReviewCommandService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final S3Provider s3Provider;
+    private final SellerRepository sellerRepository;
+    private final ReviewReportRepository reviewReportRepository;
 
     @Transactional
     public void createReview(Long productId, Buyer buyer, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
@@ -56,5 +65,22 @@ public class ReviewCommandService {
     private Review findReviewById(Long reviewId){
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_FOUND));
+    }
+
+    @Transactional
+    public ReviewReportResponse reportReview(Long reviewId, ReviewReportRequest request) {
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_FOUND));
+
+        // TODO: 컨트롤러에서 seller 받아오기
+        Seller seller = sellerRepository.findById(1L)
+                .orElseThrow(() -> new SellerExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
+
+
+        ReviewReport report = request.toEntity(review, seller);
+        reviewReportRepository.save(report);
+
+        return ReviewReportResponse.from(report);
     }
 }
