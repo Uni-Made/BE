@@ -115,5 +115,12 @@ public class ProductsController extends BaseEntity {
         return ApiResponse.noContent();
     }
 
-
+    // 판매 재등록
+    @Tag(name = "Products")
+    @Operation(summary = "판매 재등록 (판매 종료 상품 판매 재등록)")
+    @PostMapping("/resale/{productId}")
+    public ResponseEntity<ApiResponse<ProductResponse>> resaleProduct(@PathVariable Long productId) {
+        ApiResponse<ProductResponse> response = productsCommandService.resaleProduct(productId);
+        return ResponseEntity.ok(response);
+    }
 }
