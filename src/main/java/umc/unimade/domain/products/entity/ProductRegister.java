@@ -45,6 +45,12 @@ public class ProductRegister {
     @Column(name = "pickup_option", nullable = false)
     private PickupOption pickupOption;
 
+    @Column(name = "pickup_date")
+    private LocalDate pickupDate;  // 수령일
+
+    @Column(name = "pickup_location")
+    private String pickupLocation;  // 수령장소
+
     @Column(name = "bank_name", nullable = false)
     private String bankName;
 

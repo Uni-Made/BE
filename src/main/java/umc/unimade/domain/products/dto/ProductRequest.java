@@ -30,6 +30,8 @@ public class ProductRequest {
         private Long sellerId;
         private Long categoryId;
         private List<OptionCategoryRequest> options;
+        private LocalDate pickupDate;
+        private String pickupLocation;
 
         public ProductRegister toEntity(Category category, Seller seller) {
 
@@ -48,6 +50,8 @@ public class ProductRequest {
                     .type(RegisterType.REGISTER)
                     .seller(seller)
                     .category(category)
+                    .pickupDate(pickupOption == PickupOption.OFFLINE ? pickupDate : null)
+                    .pickupLocation(pickupOption == PickupOption.OFFLINE ? pickupLocation : null)
                     .build();
         }
     }
@@ -71,6 +75,8 @@ public class ProductRequest {
         private Long sellerId;
         private Long categoryId;
         private List<OptionCategoryRequest> options;
+        private LocalDate pickupDate;
+        private String pickupLocation;
 
         public ProductRegister toEntity(Category category, Seller seller, Long productId) {
 
@@ -90,6 +96,8 @@ public class ProductRequest {
                     .seller(seller)
                     .category(category)
                     .productId(productId)
+                    .pickupDate(pickupOption == PickupOption.OFFLINE ? pickupDate : null)
+                    .pickupLocation(pickupOption == PickupOption.OFFLINE ? pickupLocation : null)
                     .build();
         }
     }
