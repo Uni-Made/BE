@@ -25,6 +25,8 @@ public enum ErrorCode implements BaseErrorCode {
     // Products 관련 에러
     PRODUCT_STATUS_IS_NOT_PENDING(HttpStatus.BAD_REQUEST, "PRODUCT4001", "대기중인 요청만 처리할 수 있습니다."),
     PRODUCT_STATUS_IS_NOT_PENDING_OR_HOLD(HttpStatus.BAD_REQUEST, "PRODUCT4002", "대기중 이거나 보류중인 요청만 승인할 수 있습니다."),
+    PRODUCT_STATUS_IS_NOT_SOLDOUT(HttpStatus.BAD_REQUEST, "PRODUCT4003", "판매 중단 상품만 판매 재등록할 수 있습니다."),
+    PRODUCT_STATUS_IS_NOT_SELLING(HttpStatus.BAD_REQUEST, "PRODUCT4004", "판매 중인 상품만 수정할 수 있습니다."),
 
     // Order 관련 에러
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER4000", "구매 내역을 찾을 수 없습니다."),

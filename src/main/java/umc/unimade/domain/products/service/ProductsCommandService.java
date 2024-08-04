@@ -14,6 +14,7 @@ import umc.unimade.domain.products.dto.OptionCategoryRequest;
 import umc.unimade.domain.products.dto.ProductRegisterResponse;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductRequest.CreateProductDto;
+import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.products.dto.ProductUpdateResponse;
 import umc.unimade.domain.products.entity.*;
 import umc.unimade.domain.products.exception.ProductExceptionHandler;
@@ -28,6 +29,7 @@ import umc.unimade.global.util.s3.S3Provider;
 import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -96,9 +98,12 @@ public class ProductsCommandService {
     // TODO - seller 추가
     @Transactional
     public ApiResponse<ProductUpdateResponse> updateProduct(Long productId, UpdateProductDto request, List<MultipartFile> images) {
-
-        productRepository.findById(productId)
+        Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (product.getStatus() != ProductStatus.SELLING) {
+            throw new ProductExceptionHandler(ErrorCode.PRODUCT_STATUS_IS_NOT_SELLING);
+        }
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
@@ -180,5 +185,23 @@ public class ProductsCommandService {
         }
 
          productRepository.saveAll(expiredProducts);
+    }
+
+    // 판매 중단 상품 판매 재등록
+    @Transactional
+    public ApiResponse<ProductResponse> resaleProduct(Long productId) {
+        Products product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (product.getStatus() != ProductStatus.SOLDOUT) {
+            throw new ProductExceptionHandler(ErrorCode.PRODUCT_STATUS_IS_NOT_SOLDOUT);
+        }
+
+        product.setStatus(ProductStatus.SELLING);
+        product.setCreatedAt(LocalDateTime.now().plusDays(1));
+        Products savedProduct = productRepository.save(product);
+
+        ProductResponse response = ProductResponse.baseResponse(savedProduct);
+        return ApiResponse.onSuccess(response);
     }
 }

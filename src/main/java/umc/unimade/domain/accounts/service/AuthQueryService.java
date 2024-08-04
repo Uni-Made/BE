@@ -12,6 +12,7 @@ import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.accounts.repository.SmsCertification;
+import umc.unimade.domain.notification.repository.FcmTokenRepository;
 import umc.unimade.global.common.exception.CustomException;
 import umc.unimade.global.common.exception.GlobalErrorCode;
 import umc.unimade.global.security.JwtProvider;
@@ -20,6 +21,7 @@ import umc.unimade.global.security.UserLoginForm;
 import umc.unimade.global.util.auth.OauthUtil;
 import umc.unimade.global.util.auth.SmsUtil;
 import umc.unimade.global.util.auth.dto.OauthSignUpDto;
+import umc.unimade.global.util.redis.RedisUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +34,12 @@ public class AuthQueryService {
     private final OauthUtil oauthUtil;
     private final JwtProvider jwtProvider;
     private final SmsUtil smsUtil;
+    private final RedisUtil redisUtil;
     private final SmsCertification smsCertification;
     private final SellerRepository sellerRepository;
+    private final FcmTokenRepository fcmTokenRepository;
 
-    public Object socialLogin(String authCode, Provider provider) {
+    public Object socialLogin(String authCode, Provider provider,String fcmToken) {
         String socialId = null;
         String socialName = null;
         String email = null;
@@ -72,7 +76,7 @@ public class AuthQueryService {
                     .socialId(socialId)
                     .build();
         }
-
+        redisUtil.saveFCMToken(email,fcmToken);
         JwtToken jwtToken = jwtProvider.createTotalToken(loginCustomer.getSocialId(), loginCustomer.getRole());
         loginCustomer.login(jwtToken.getRefreshToken());
 
@@ -125,6 +129,7 @@ public class AuthQueryService {
     public SignInResponseDto sellerSignIn(SignInRequestDto signInRequestDto, Role role) {
         Seller seller = sellerRepository.findByEmailAndPasswordAndProvider(signInRequestDto.getEmail(), signInRequestDto.getPassword(), Provider.NORMAL)
                 .orElseThrow(() -> new CustomException(GlobalErrorCode.USER_NOT_FOUND));
+        redisUtil.saveFCMToken(signInRequestDto.getEmail(), signInRequestDto.getFcmToken());
         JwtToken jwtToken = jwtProvider.createTotalToken(seller.getEmail(), role);
 
         seller.login(jwtToken.getRefreshToken());
@@ -142,6 +147,9 @@ public class AuthQueryService {
                 if (buyerIsLogin == null) {
                     throw new CustomException(GlobalErrorCode.USER_NOT_FOUND);
                 }
+
+                //to do : jwtProvider에서 빼오는 것으로 수정
+                //redisUtil.removeFCMToken();
                 buyerIsLogin.logout();
                 break;
             case "SELLER", "ADMIN":
@@ -173,6 +181,12 @@ public class AuthQueryService {
         smsCertification.deleteSmsCertification(smsVerifyRequestDto.getPhoneNumber());
 
         return true;
+    }
+
+    @Transactional
+    public void updateNotificationToken(Long userId, String token) {
+
+        fcmTokenRepository.saveToken(userId, token);
     }
 
     private boolean isVerify(SmsVerifyRequestDto smsVerifyRequestDto) {
