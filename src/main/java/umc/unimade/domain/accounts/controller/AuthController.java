@@ -15,23 +15,22 @@ import umc.unimade.global.common.ApiResponse;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthQueryService authQueryService;
-    private final BuyerQueryService buyerQueryService;
 
     // 소셜 로그인 - 구매자(buyer)
     @PostMapping("/buyers/kakao")
-    public ApiResponse<Object> byKakao(@RequestParam("code") String code) {
+    public ApiResponse<Object> byKakao(@RequestParam("code") String code, @RequestParam String fcmToken) {
         System.err.println(code);
-        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.KAKAO));
+        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.KAKAO,fcmToken));
     }
 
     @PostMapping("/buyers/naver")
-    public ApiResponse<Object> byNaver(@RequestParam("code") String code) {
-        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.NAVER));
+    public ApiResponse<Object> byNaver(@RequestParam("code") String code,@RequestParam String fcmToken) {
+        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.NAVER,fcmToken));
     }
 
     @PostMapping("/buyers/google")
-    public ApiResponse<Object> byGoogle(@RequestParam("code") String code) {
-        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.GOOGLE));
+    public ApiResponse<Object> byGoogle(@RequestParam("code") String code,@RequestParam String fcmToken) {
+        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.GOOGLE,fcmToken));
     }
 
     @PostMapping("/buyers/reissue")
@@ -42,7 +41,6 @@ public class AuthController {
     @PostMapping("/logout")
     public ApiResponse<Boolean> logoutCustomer(
     ) {
-        buyerQueryService.delete
         return ApiResponse.onSuccess(authQueryService.logout());
     }
 
