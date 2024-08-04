@@ -24,6 +24,7 @@ public class QnAListResponse {
     public static class QuestionInfo {
         private Long questionId;
         private String title;
+        private String content;
         private String buyer;
         private Boolean isPrivate;
         private LocalDateTime createdAt;
@@ -33,6 +34,7 @@ public class QnAListResponse {
             return QuestionInfo.builder()
                     .questionId(question.getId())
                     .title(question.getTitle())
+                    .content(question.getContent())
                     .buyer(question.getBuyer().getName())
                     .isPrivate(question.getIsPrivate())
                     .createdAt(question.getCreatedAt())
