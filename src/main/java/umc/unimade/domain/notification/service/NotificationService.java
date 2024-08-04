@@ -24,9 +24,8 @@ public class NotificationService {
 
 
     @Async
-    public void sendBuyerNotification(Long buyerId,NotificationRequest notificationRequest){
+    public void sendBuyerNotification(Buyer buyer ,NotificationRequest notificationRequest){
         try {
-            Buyer buyer = findBuyerById(buyerId);
             String fcmToken = redisUtil.getFCMToken(buyer.getEmail());
             Message message = Message.builder()
                     .putData("title", notificationRequest.getTitle())
@@ -42,9 +41,8 @@ public class NotificationService {
     }
 
     @Async
-    public void sendSellerNotification(Long sellerId, NotificationRequest notificationRequest){
+    public void sendSellerNotification(Seller seller , NotificationRequest notificationRequest){
         try {
-            Seller seller = findSellerById(sellerId);
             String fcmToken = redisUtil.getFCMToken(seller.getEmail());
             Message message = Message.builder()
                     .putData("title", notificationRequest.getTitle())
@@ -57,16 +55,6 @@ public class NotificationService {
             e.printStackTrace();
         }
 
-    }
-
-    private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId)
-                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
-    }
-
-    private Seller findSellerById (Long sellerId) {
-        return sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
     }
 
 }

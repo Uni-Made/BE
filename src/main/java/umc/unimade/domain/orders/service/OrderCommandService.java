@@ -40,10 +40,9 @@ public class OrderCommandService {
     private final BuyerRepository buyerRepository;
 
     @Transactional
-    public OrderResponse createOrder(Long productId, Long buyerId, OrderRequest orderRequest) {
+    public OrderResponse createOrder(Long productId, Buyer buyer, OrderRequest orderRequest) {
         validateOrderRequest(orderRequest);
 
-        Buyer buyer = findBuyerById(buyerId);
         Products product = findProductById(productId);
 
         // PurchaseForm 엔티티 생성 및 저장

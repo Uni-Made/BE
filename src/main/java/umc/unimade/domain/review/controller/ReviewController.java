@@ -20,6 +20,7 @@ import umc.unimade.domain.review.service.ReviewQueryService;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
+import umc.unimade.global.security.LoginBuyer;
 
 import java.util.List;
 
@@ -30,17 +31,14 @@ import java.util.List;
 public class ReviewController {
     private final ReviewCommandService reviewCommandService;
     private final ReviewQueryService reviewQueryService;
-    //임시로 추가
-    private final BuyerRepository buyerRepository;
 
     @Operation(summary = "리뷰 생성, buyerId는 나중에 뺄게요!")
-    @PostMapping(value = "/{productId}/{buyerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<Void> createReview(@PathVariable Long productId,
-                                                          @PathVariable Long buyerId,
-                                                          @Valid @RequestPart("reviewCreateRequest") ReviewCreateRequest reviewCreateRequest,
-                                                          @RequestPart(value = "reviewImages", required = false) List<MultipartFile> reviewImages) {
+                                          @LoginBuyer Buyer buyer,
+                                          @Valid @RequestPart("reviewCreateRequest") ReviewCreateRequest reviewCreateRequest,
+                                          @RequestPart(value = "reviewImages", required = false) List<MultipartFile> reviewImages) {
         try {
-            Buyer buyer = findBuyerById(buyerId);
             reviewCommandService.createReview(productId, buyer, reviewCreateRequest, reviewImages);
             return ApiResponse.onSuccess(null);
         } catch (IllegalArgumentException e) {
@@ -52,7 +50,6 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 상세 내용 불러오기 ")
     @GetMapping("/{reviewId}")
-    //To do : user 토큰 추가
     public ResponseEntity<ApiResponse<ReviewResponse>> getReview(@PathVariable Long reviewId) {
         try {
             return ResponseEntity.ok(ApiResponse.onSuccess(reviewQueryService.getReview(reviewId)));
@@ -64,11 +61,10 @@ public class ReviewController {
     }
 
     @Operation(summary = "리뷰 삭제하기", description = "buyerId 나중에 뺄게요!  ")
-    @DeleteMapping("/{reviewId}/{buyerId}")
+    @DeleteMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long reviewId,
-                                                          @PathVariable Long buyerId) {
+                                                          @LoginBuyer Buyer buyer) {
         try {
-            Buyer buyer = findBuyerById(buyerId);
             reviewCommandService.deleteReview(reviewId,buyer);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
@@ -78,11 +74,6 @@ public class ReviewController {
         }
     }
 
-    // 임시로 추가
-    private Buyer findBuyerById(Long buyerId) {
-        return buyerRepository.findById(buyerId)
-                .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
-    }
 
     // TODO: seller 받아 오기
     @Operation(summary = "리뷰 신고하기", description = "seller가 자신의 상품에 달린 리뷰를 신고")

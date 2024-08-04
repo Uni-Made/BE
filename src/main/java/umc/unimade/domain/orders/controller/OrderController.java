@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import umc.unimade.domain.accounts.repository.BuyerRepository;
+import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.orders.dto.*;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.orders.dto.OrderRequest;
@@ -24,9 +24,8 @@ import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
-import umc.unimade.global.security.UserId;
+import umc.unimade.global.security.LoginBuyer;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -34,16 +33,15 @@ import java.util.List;
 public class OrderController {
     private final OrderCommandService orderCommandService;
     private final OrderQueryService orderQueryService;
-    private final BuyerRepository buyerRepository;
 
     @Tag(name = "Order", description = "구매 관련 API")
     @Operation(summary = "상품 구매하기")
-    @PostMapping("/{buyerId}/{productId}")
-    public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@PathVariable Long buyerId,
+    @PostMapping("/{productId}")
+    public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@LoginBuyer Buyer buyer,
                                                                    @PathVariable Long productId,
                                                                    @Valid @RequestBody OrderRequest orderRequest){
         try {
-            return ResponseEntity.ok(ApiResponse.onSuccess(orderCommandService.createOrder(productId, buyerId, orderRequest)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(orderCommandService.createOrder(productId, buyer, orderRequest)));
         }
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
