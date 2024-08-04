@@ -17,6 +17,8 @@ public enum ErrorCode implements BaseErrorCode {
     // Accounts 관련 에러
     USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER4000", "사용자가 이미 존재합니다."),
     ACCESS_DENIED(HttpStatus.BAD_REQUEST, "USER4001", "관리자만 접근할 수 있습니다."),
+    LOGIN_ACCESS_DENIED(HttpStatus.UNAUTHORIZED, "USER4002", "로그인이 필요합니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4003", "사용자를 찾을 수 없습니다."),
 
     // Products 관련 에러
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4000", "해당 제품을 찾을 수 없습니다."),
@@ -58,7 +60,23 @@ public enum ErrorCode implements BaseErrorCode {
     // QnA 관련 에러
     QNA_NOT_FOUND(HttpStatus.NOT_FOUND, "QNA4000", "QNA를 찾을 수 없습니다."),
     QUESTION_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"QNA4003","질문을 삭제할 권한이 없습니다."),
-    ANSWER_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"QNA4003","답변 삭제할 권한이 없습니다.");
+    ANSWER_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"QNA4003","답변 삭제할 권한이 없습니다."),
+
+    
+    //토큰 관련 에러
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN4000", "토큰이 만료되었습니다."),
+    TOKEN_UNSUPPORTED(HttpStatus.UNAUTHORIZED, "TOKEN4001", "지원되지 않는 토큰입니다."),
+    TOKEN_UNKNOWN(HttpStatus.UNAUTHORIZED, "TOKEN4002", "알 수 없는 토큰입니다."),
+    TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "TOKEN4003", "토큰 타입이 잘못되었습니다."),
+    TOKEN_MALFORMED(HttpStatus.UNAUTHORIZED, "TOKEN4004", "토큰이 잘못되었습니다."),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN4005", "토큰이 유효하지 않습니다."),
+    
+    //sms 관련 오류
+
+    SMS_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "SMS4000", "SMS 전송에 실패했습니다."),
+    SMS_VERIFY_FAILED(HttpStatus.BAD_REQUEST, "SMS4001", "인증번호가 일치하지 않습니다.");
+    
+    
 
     private final HttpStatus httpStatus;
     private final String code;

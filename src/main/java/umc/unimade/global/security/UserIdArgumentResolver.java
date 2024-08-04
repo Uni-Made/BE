@@ -7,6 +7,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.CustomException;
 import umc.unimade.global.common.exception.GlobalErrorCode;
 
@@ -26,7 +27,7 @@ public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
             WebDataBinderFactory binderFactory) throws Exception {
         Object userId = webRequest.getAttribute("USER_ID", RequestAttributes.SCOPE_REQUEST);
         if (userId == null) {
-            throw new CustomException(GlobalErrorCode.USER_NOT_FOUND);
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         return Long.parseLong(userId.toString());
     }
