@@ -19,6 +19,7 @@ public class SellerMyPageResponse {
     private Long sellerId;
     private String name;
     private String profileImage;
+    private String description;
     private List<MyPageProductResponse> sellingProducts;
     private List<MyPageProductResponse> soldoutProducts;
 
@@ -27,6 +28,7 @@ public class SellerMyPageResponse {
                 .sellerId(seller.getId())
                 .name(seller.getName())
                 .profileImage(seller.getProfileImage() == null || seller.getProfileImage().isEmpty() ? null : seller.getProfileImage())
+                .description(seller.getDescription() == null || seller.getDescription().isEmpty() ? null : seller.getDescription())
                 .sellingProducts(sellingProducts)
                 .soldoutProducts(soldoutProducts)
                 .build();

@@ -6,13 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.accounts.dto.SellerMyPageResponse;
 import umc.unimade.domain.accounts.dto.SellerPageResponse;
+import umc.unimade.domain.accounts.service.SellerCommandService;
 import umc.unimade.domain.accounts.service.SellerQueryService;
 import org.springframework.data.domain.Pageable;
 import umc.unimade.domain.products.dto.MyPageProductResponse;
@@ -23,6 +20,7 @@ import umc.unimade.domain.products.dto.MyPageProductResponse;
 public class SellerController {
 
     private final SellerQueryService sellerQueryService;
+    private final SellerCommandService sellerCommandService;
 
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "판매자 마이페이지")
@@ -30,6 +28,14 @@ public class SellerController {
     public ResponseEntity<SellerMyPageResponse> getSellerMyPage(@PathVariable Long sellerId) {
         SellerMyPageResponse response = sellerQueryService.getSellerMyPage(sellerId);
         return ResponseEntity.ok(response);
+    }
+
+    @Tag(name = "Seller", description = "판매자 관련 API")
+    @Operation(summary = "판매자 마이페이지에서 설명창 입력 받기")
+    @PutMapping("/{sellerId}/description")
+    public ResponseEntity<Void> updateDescription(@PathVariable Long sellerId, @RequestBody String description) {
+        sellerCommandService.saveDescription(sellerId, description);
+        return ResponseEntity.ok().build();
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
