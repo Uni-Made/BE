@@ -7,6 +7,7 @@ import umc.unimade.domain.accounts.dto.*;
 import umc.unimade.domain.accounts.entity.Provider;
 import umc.unimade.domain.accounts.entity.Role;
 import umc.unimade.domain.accounts.service.AuthQueryService;
+import umc.unimade.domain.accounts.service.BuyerQueryService;
 import umc.unimade.global.common.ApiResponse;
 
 @RestController
@@ -14,6 +15,7 @@ import umc.unimade.global.common.ApiResponse;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthQueryService authQueryService;
+    private final BuyerQueryService buyerQueryService;
 
     // 소셜 로그인 - 구매자(buyer)
     @PostMapping("/buyers/kakao")
@@ -40,6 +42,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ApiResponse<Boolean> logoutCustomer(
     ) {
+        buyerQueryService.delete
         return ApiResponse.onSuccess(authQueryService.logout());
     }
 

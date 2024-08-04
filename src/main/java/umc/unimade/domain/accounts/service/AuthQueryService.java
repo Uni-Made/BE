@@ -12,6 +12,7 @@ import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.accounts.repository.SmsCertification;
+import umc.unimade.domain.notification.repository.FcmTokenRepository;
 import umc.unimade.global.common.exception.CustomException;
 import umc.unimade.global.common.exception.GlobalErrorCode;
 import umc.unimade.global.security.JwtProvider;
@@ -34,6 +35,7 @@ public class AuthQueryService {
     private final SmsUtil smsUtil;
     private final SmsCertification smsCertification;
     private final SellerRepository sellerRepository;
+    private final FcmTokenRepository fcmTokenRepository;
 
     public Object socialLogin(String authCode, Provider provider) {
         String socialId = null;
@@ -173,6 +175,12 @@ public class AuthQueryService {
         smsCertification.deleteSmsCertification(smsVerifyRequestDto.getPhoneNumber());
 
         return true;
+    }
+
+    @Transactional
+    public void updateNotificationToken(Long userId, String token) {
+
+        fcmTokenRepository.saveToken(userId, token);
     }
 
     private boolean isVerify(SmsVerifyRequestDto smsVerifyRequestDto) {
