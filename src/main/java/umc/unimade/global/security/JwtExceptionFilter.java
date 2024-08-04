@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
+import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.GlobalErrorCode;
 
 import java.io.IOException;
@@ -31,25 +32,25 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (SecurityException e) {
-            request.setAttribute("exception", GlobalErrorCode.LOGIN_ACCESS_DENIED);
+            request.setAttribute("exception", ErrorCode.LOGIN_ACCESS_DENIED);
             isException = true;
         } catch (MalformedJwtException e) {
-            request.setAttribute("exception", GlobalErrorCode.TOKEN_MALFORMED);
+            request.setAttribute("exception", ErrorCode.TOKEN_MALFORMED);
             isException = true;
         } catch (IllegalArgumentException e) {
-            request.setAttribute("exception", GlobalErrorCode.TOKEN_TYPE);
+            request.setAttribute("exception", ErrorCode.TOKEN_TYPE);
             isException = true;
         } catch (ExpiredJwtException e) {
-            request.setAttribute("exception", GlobalErrorCode.TOKEN_EXPIRED);
+            request.setAttribute("exception", ErrorCode.TOKEN_EXPIRED);
             isException = true;
         } catch (UnsupportedJwtException e) {
-            request.setAttribute("exception", GlobalErrorCode.TOKEN_UNSUPPORTED);
+            request.setAttribute("exception", ErrorCode.TOKEN_UNSUPPORTED);
             isException = true;
         } catch (JwtException e) {
-            request.setAttribute("exception", GlobalErrorCode.TOKEN_UNKNOWN);
+            request.setAttribute("exception", ErrorCode.TOKEN_UNKNOWN);
             isException = true;
         } catch (Exception e) {
-            request.setAttribute("exception", GlobalErrorCode.USER_NOT_FOUND);
+            request.setAttribute("exception", ErrorCode.USER_NOT_FOUND);
             isException = true;
         }
 

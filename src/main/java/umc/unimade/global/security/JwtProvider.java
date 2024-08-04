@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import umc.unimade.domain.accounts.entity.Role;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
+import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.CustomException;
 import umc.unimade.global.common.exception.GlobalErrorCode;
 
@@ -70,14 +71,14 @@ public class JwtProvider implements InitializingBean {
         switch (role) {
             case BUYER:
                 user = buyerRepository.findBySocialIdAndRefreshToken(userId, refreshToken)
-                        .orElseThrow(() -> new CustomException(GlobalErrorCode.USER_NOT_FOUND));
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
                 break;
             case SELLER, ADMIN:
                 user = sellerRepository.findByEmailAndPassword(userId, refreshToken)
-                        .orElseThrow(() -> new CustomException(GlobalErrorCode.USER_NOT_FOUND));
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
                 break;
             default:
-                throw new CustomException(GlobalErrorCode.USER_NOT_FOUND);
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
 //        if (user == null) {
@@ -110,7 +111,7 @@ public class JwtProvider implements InitializingBean {
         if (StringUtils.hasText(beforeToken) && beforeToken.startsWith("Bearer ")) {
             return beforeToken.substring(7);
         } else {
-            throw new CustomException(GlobalErrorCode.TOKEN_INVALID);
+            throw new CustomException(ErrorCode.TOKEN_INVALID);
         }
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
+import umc.unimade.global.common.BaseErrorCode;
+import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.CustomException;
 import umc.unimade.global.common.exception.GlobalErrorCode;
 
@@ -28,7 +30,7 @@ public class CustomUserDetailService implements UserDetailsService {
         roles.add(new SimpleGrantedAuthority("ROLE_USER"));
 
         UserLoginForm buyer = buyerRepository.findBySocialIdAndRefreshToken(username)
-                .orElseThrow(() -> new CustomException(GlobalErrorCode.LOGIN_ACCESS_DENIED));
+                .orElseThrow(() -> new CustomException(ErrorCode.LOGIN_ACCESS_DENIED));
 
         return CustomUserDetail.create(buyer);
     }
@@ -41,14 +43,14 @@ public class CustomUserDetailService implements UserDetailsService {
         switch (role) {
             case "BUYER" :
                 user = buyerRepository.findBySocialIdAndRefreshToken(username)
-                        .orElseThrow(() -> new CustomException(GlobalErrorCode.LOGIN_ACCESS_DENIED));
+                        .orElseThrow(() -> new CustomException(ErrorCode.LOGIN_ACCESS_DENIED));
                 break;
             case "SELLER", "ADMIN":
                 user = sellerRepository.findByEmailAndRefreshToken(username)
-                        .orElseThrow(() -> new CustomException(GlobalErrorCode.LOGIN_ACCESS_DENIED));
+                        .orElseThrow(() -> new CustomException(ErrorCode.LOGIN_ACCESS_DENIED));
                 break;
             default:
-                throw new CustomException(GlobalErrorCode.LOGIN_ACCESS_DENIED);
+                throw new CustomException(ErrorCode.LOGIN_ACCESS_DENIED);
         }
 
         return CustomUserDetail.create(user);

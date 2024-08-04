@@ -164,8 +164,6 @@ public class OauthUtil {
         );
 
         JsonObject element = JsonParser.parseString(response.getBody()).getAsJsonObject();
-        System.err.println("카카오 정보 : " + element);
-        //System.err.println(element.getAsJsonObject("kakao_account").get("email").getAsString());
         return OauthSignUpDto.builder()
                 .socialId(element.get("id").getAsString())
                 .socialEmail(element.getAsJsonObject("kakao_account").get("email").getAsString())
@@ -188,8 +186,6 @@ public class OauthUtil {
         );
 
         JsonObject element = JsonParser.parseString(response.getBody()).getAsJsonObject();
-        System.err.println("네이버 정보 : " + element);
-        //네이버 정보 : {"resultcode":"00","message":"success","response":{"id":"GL9ATxEhX7p9XImQHK9ZfUt2d8Zz5JH7z7_HuzheKaQ","profile_image":"https://ssl.pstatic.net/static/pwe/address/img_profile.png","email":"rokmcp150@naver.com","name":"박민기"}}
         return OauthSignUpDto.builder()
                 .socialId(element.getAsJsonObject("response").get("id").getAsString())
                 .socialEmail(element.getAsJsonObject("response").get("email").getAsString())
@@ -204,7 +200,6 @@ public class OauthUtil {
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         HttpEntity<MultiValueMap<String, String>> profileRequest = new HttpEntity<>(httpHeaders);
-        System.err.println(profileRequest);
         ResponseEntity<String> response = restTemplate.exchange(
                 GOOGLE_USERINFO_URL,
                 HttpMethod.GET,
@@ -212,10 +207,7 @@ public class OauthUtil {
                 String.class
         );
 
-        System.err.println("response에 대한 "+response.getBody());
         JsonObject element = JsonParser.parseString(response.getBody()).getAsJsonObject();
-        System.err.println("구글 정보 "+ element);
-        //구글 정보 {"sub":"106483083230577695980","name":"민기박","given_name":"박","family_name":"민기","picture":"https://lh3.googleusercontent.com/a/ACg8ocIrmKvc7O8uiw33WS_nzxEoF-sL996XpX4rn5n3MhNE77fPVA=s96-c","email":"rokmck156@gmail.com","email_verified":true}
         return OauthSignUpDto.builder()
                 .socialId(element.get("sub").getAsString())
                 .socialEmail(element.get("email").getAsString())
