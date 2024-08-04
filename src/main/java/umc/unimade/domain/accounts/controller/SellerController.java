@@ -23,7 +23,7 @@ public class SellerController {
     private final SellerCommandService sellerCommandService;
 
     @Tag(name = "Seller", description = "판매자 관련 API")
-    @Operation(summary = "판매자 마이페이지")
+    @Operation(summary = "판매자 마이페이지, sellerId 제거 예정")
     @GetMapping("/myPage/{sellerId}")
     public ResponseEntity<SellerMyPageResponse> getSellerMyPage(@PathVariable Long sellerId) {
         SellerMyPageResponse response = sellerQueryService.getSellerMyPage(sellerId);
@@ -31,7 +31,7 @@ public class SellerController {
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
-    @Operation(summary = "판매자 마이페이지에서 설명창 입력 받기")
+    @Operation(summary = "판매자 마이페이지에서 설명창 입력 받기, sellerId 제거 예정")
     @PutMapping("/{sellerId}/description")
     public ResponseEntity<Void> updateDescription(@PathVariable Long sellerId, @RequestBody String description) {
         sellerCommandService.saveDescription(sellerId, description);
@@ -39,7 +39,7 @@ public class SellerController {
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
-    @Operation(summary = "판매자 마이페이지 판매 중 상품 더보기")
+    @Operation(summary = "판매자 마이페이지 판매 중 상품 더보기, sellerId 제거 예정")
     @GetMapping("/myPage/sellingProducts/{sellerId}")
     public ResponseEntity<Page<MyPageProductResponse>> getSellingProductsList(@PathVariable Long sellerId,
                                                                               @RequestParam(name = "page", defaultValue = "0") int page,
@@ -50,7 +50,7 @@ public class SellerController {
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
-    @Operation(summary = "판매자 마이페이지 판매 종료 상품 더보기")
+    @Operation(summary = "판매자 마이페이지 판매 종료 상품 더보기, sellerId 제거 예정")
     @GetMapping("/myPage/soldoutProducts/{sellerId}")
     public ResponseEntity<Page<MyPageProductResponse>> getSoldoutProductsList(@PathVariable Long sellerId,
                                                                               @RequestParam(name = "page", defaultValue = "0") int page,
@@ -61,7 +61,7 @@ public class SellerController {
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
-    @Operation(summary = "특정 판매자 페이지")
+    @Operation(summary = "구매자 시점 메이더 홈", description = "popular/latest/deadline")
     @GetMapping("/{sellerId}")
     public ResponseEntity<SellerPageResponse> getSellerPage(@PathVariable Long sellerId,
                                                                       @RequestParam(required = false, defaultValue = "popular") String sort,

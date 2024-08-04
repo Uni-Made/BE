@@ -16,16 +16,18 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class SellerPageResponse {
+    private Long sellerId;
     private String profileImage;
     private String name;
-    private String phone;
+    private String description;
     private Page<ProductsResponse> products;
 
     public static SellerPageResponse of(Seller seller, Page<ProductsResponse> products) {
         return SellerPageResponse.builder()
-                .profileImage(seller.getProfileImage())
+                .sellerId(seller.getId())
+                .profileImage(seller.getProfileImage() == null || seller.getProfileImage().isEmpty() ? null : seller.getProfileImage())
                 .name(seller.getName())
-                .phone(seller.getPhone())
+                .description(seller.getDescription() == null || seller.getDescription().isEmpty() ? null : seller.getDescription())
                 .products(products)
                 .build();
     }
