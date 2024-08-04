@@ -1,6 +1,5 @@
 package umc.unimade.domain.accounts.repository;
 
-import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,7 +8,6 @@ import umc.unimade.domain.accounts.entity.Provider;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.global.security.UserLoginForm;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Repository
@@ -25,4 +23,5 @@ public interface SellerRepository extends JpaRepository<Seller, Long> {
 
     Optional<Seller> findByEmailAndPasswordAndProvider(String email, String password, Provider provider);
 
+    Optional<Seller> findByEmail(String email);
 }
