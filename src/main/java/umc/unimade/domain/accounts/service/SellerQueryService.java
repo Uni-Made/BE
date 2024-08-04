@@ -9,6 +9,7 @@ import umc.unimade.domain.accounts.dto.SellerPageResponse;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.SellerExceptionHandler;
 import umc.unimade.domain.accounts.repository.SellerRepository;
+import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
 import umc.unimade.domain.products.dto.MyPageProductResponse;
 import umc.unimade.domain.products.entity.ProductStatus;
 import umc.unimade.domain.products.entity.Products;
@@ -26,6 +27,7 @@ public class SellerQueryService {
 
     private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;
+    private final FavoriteSellerRepository favoriteSellerRepository;
 
     // 판매자 마이페이지
     public SellerMyPageResponse getSellerMyPage(Long sellerId) {
@@ -42,7 +44,9 @@ public class SellerQueryService {
                 .map(MyPageProductResponse::from)
                 .collect(Collectors.toList());
 
-        return SellerMyPageResponse.from(seller, sellingProducts, soldoutProducts);
+        Long favoriteCount = favoriteSellerRepository.countBySellerId(sellerId);
+
+        return SellerMyPageResponse.from(seller, sellingProducts, soldoutProducts, favoriteCount);
     }
 
     // 판매자 마이페이지 - selling 상태인 상품 목록 더보기
@@ -50,7 +54,6 @@ public class SellerQueryService {
         return productRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SELLING, pageable)
                 .map(MyPageProductResponse::from);
     }
-
 
     // 판매자 마이페이지 - soldout 상태인 상품 목록 더보기
     public Page<MyPageProductResponse> getSoldoutProductsList(Long sellerId, Pageable pageable) {
