@@ -8,12 +8,12 @@ import java.util.List;
 
 public class CustomUserDetail implements UserDetails {
 
-    private final String id;
+    private final String email;
     private final List<GrantedAuthority> authorities; // 사용자의 권한 목록을 저장하는 필드
 
     // 생성자: 사용자 ID와 권한 목록을 받아서 초기화
-    public CustomUserDetail(String id, List<GrantedAuthority> authorities) {
-        this.id = id;
+    public CustomUserDetail(String email, List<GrantedAuthority> authorities) {
+        this.email = email;
         this.authorities = authorities;
     }
 
@@ -29,7 +29,7 @@ public class CustomUserDetail implements UserDetails {
 
     @Override
     public String getUsername() {
-        return id.toString();
+        return email;
     }
 
     @Override
@@ -61,4 +61,3 @@ public class CustomUserDetail implements UserDetails {
         return new CustomUserDetail(user.getId(), authorities);
     }
 }
-

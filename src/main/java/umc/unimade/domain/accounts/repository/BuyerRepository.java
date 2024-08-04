@@ -25,4 +25,5 @@ public interface BuyerRepository extends JpaRepository<Buyer, Long> {
 
     Optional<Buyer> findBySocialId(String socialId);
 
+    Optional<Buyer> findByEmail(String email);
 }
