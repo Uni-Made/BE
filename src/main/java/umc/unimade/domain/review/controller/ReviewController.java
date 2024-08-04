@@ -35,18 +35,18 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 생성, buyerId는 나중에 뺄게요!")
     @PostMapping(value = "/{productId}/{buyerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<Void>> createReview(@PathVariable Long productId,
+    public ApiResponse<Void> createReview(@PathVariable Long productId,
                                                           @PathVariable Long buyerId,
                                                           @Valid @RequestPart("reviewCreateRequest") ReviewCreateRequest reviewCreateRequest,
                                                           @RequestPart(value = "reviewImages", required = false) List<MultipartFile> reviewImages) {
         try {
             Buyer buyer = findBuyerById(buyerId);
             reviewCommandService.createReview(productId, buyer, reviewCreateRequest, reviewImages);
-            return ResponseEntity.ok(ApiResponse.onSuccess(null));
+            return ApiResponse.onSuccess(null);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+            return ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage());
         } catch (UserExceptionHandler e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
+            return ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage());
         }
     }
 
