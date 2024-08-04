@@ -8,12 +8,28 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class SignUpResponseDto {
     private Integer status;
     private String socialName;
     private String email;
     private String socialId;
+
+    public SignUpResponseDto(Integer status, String socialName, String email, String socialId) {
+        this.status = status;
+        this.socialName = socialName;
+        this.email = email;
+        this.socialId = socialId;
+    }
+
+    public static SignUpResponseDto from(Integer status, String socialName, String email, String socialId) {
+        return SignUpResponseDto.builder()
+                .status(status)
+                .socialName(socialName)
+                .email(email)
+                .socialId(socialId)
+                .build();
+    }
+
 
 }

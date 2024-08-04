@@ -11,4 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReissueTokenResponseDto {
     private String accessToken;
+
+    public static ReissueTokenResponseDto from(String accessToken) {
+        return ReissueTokenResponseDto.builder()
+                .accessToken(accessToken)
+                .build();
+    }
 }
