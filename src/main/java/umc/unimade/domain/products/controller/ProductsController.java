@@ -87,7 +87,7 @@ public class ProductsController extends BaseEntity {
 
     // 상품 등록
     @Tag(name = "Products")
-    @Operation(summary = "상품 등록", description = "productRegister로 저장")
+    @Operation(summary = "상품 등록, sellerId 제거 예정", description = "productRegister로 저장")
     @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductRegisterResponse>> createProduct(@RequestPart("createProductDto") CreateProductDto request,
                                                                               @RequestPart(name = "image", required = false) List<MultipartFile> images) {
@@ -97,7 +97,7 @@ public class ProductsController extends BaseEntity {
 
     // 상품 수정
     @Tag(name = "Products")
-    @Operation(summary = "상품 수정", description = "product 수정")
+    @Operation(summary = "상품 수정, sellerId 제거 예정")
     @PutMapping(value = "/{productId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@PathVariable Long productId,
                                                                             @RequestPart("updateProductDto") UpdateProductDto request,
@@ -118,7 +118,7 @@ public class ProductsController extends BaseEntity {
     // 판매 재등록
     @Tag(name = "Products")
     @Operation(summary = "판매 재등록 (판매 종료 상품 판매 재등록)")
-    @PostMapping("/resale/{productId}")
+    @PutMapping("/{productId}/resale")
     public ResponseEntity<ApiResponse<ProductResponse>> resaleProduct(@PathVariable Long productId) {
         ApiResponse<ProductResponse> response = productsCommandService.resaleProduct(productId);
         return ResponseEntity.ok(response);
