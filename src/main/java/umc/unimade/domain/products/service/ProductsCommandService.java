@@ -75,7 +75,7 @@ public class ProductsCommandService {
     // 상품 등록
     // TODO - seller 추가
     @Transactional
-    public ApiResponse<ProductRegisterResponse> createProduct(CreateProductDto request, List<MultipartFile> images) {
+    public ApiResponse<ProductRegisterResponse> createProduct(CreateProductDto request, List<MultipartFile> images, List<MultipartFile> detailImages) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
         Seller seller = sellerRepository.findById(request.getSellerId())
@@ -90,6 +90,9 @@ public class ProductsCommandService {
         // 사진 등록
         addImagesToProduct(images, seller.getId(), savedProduct);
 
+        // 상세 설명 사진 등록
+        addDetailImagesToProduct(detailImages, seller.getId(), savedProduct);
+
         ProductRegisterResponse response = ProductRegisterResponse.from(savedProduct);
         return ApiResponse.onSuccess(response);
     }
@@ -97,7 +100,7 @@ public class ProductsCommandService {
     // 상품 수정
     // TODO - seller 추가
     @Transactional
-    public ApiResponse<ProductUpdateResponse> updateProduct(Long productId, UpdateProductDto request, List<MultipartFile> images) {
+    public ApiResponse<ProductUpdateResponse> updateProduct(Long productId, UpdateProductDto request, List<MultipartFile> images, List<MultipartFile> detailImages) {
         Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
 
@@ -119,6 +122,9 @@ public class ProductsCommandService {
 
         // 사진 등록
         addImagesToProduct(images, seller.getId(), savedProduct);
+
+        // 상세 설명 사진 등록
+        addDetailImagesToProduct(detailImages, seller.getId(), savedProduct);
 
         ProductUpdateResponse response = ProductUpdateResponse.from(savedProduct);
         return ApiResponse.onSuccess(response);
@@ -171,6 +177,25 @@ public class ProductsCommandService {
                     })
                     .collect(Collectors.toList());
             product.setProductImages(productsImages);
+        }
+    }
+
+    private void addDetailImagesToProduct(List<MultipartFile> images, Long sellerId, ProductRegister product) {
+        if (images != null && !images.isEmpty()) {
+            List<ProductDetailImage> productDetailImages = images.stream()
+                    .map(image -> {
+                        String imageUrl = s3Provider.uploadFile(image,
+                                S3UploadRequest.builder()
+                                        .userId(sellerId)
+                                        .dirName("product")
+                                        .build());
+                        return ProductDetailImage.builder()
+                                .imageUrl(imageUrl)
+                                .productRegister(product)
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+            product.setProductDetailImages(productDetailImages);
         }
     }
 

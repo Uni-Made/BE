@@ -27,6 +27,8 @@ public class ProductUpdateResponse {
     private ProductStatus status;
     private String university;
     private PickupOption pickupOption;
+    private LocalDate pickupDate;
+    private String pickupLocation;
     private String bankName;
     private String accountNumber;
     private String accountName;
@@ -34,6 +36,7 @@ public class ProductUpdateResponse {
     private String reason;
     private Long categoryId;
     private List<ProductsImageDTO> productImages;
+    private List<ProductDetailImageDTO> productDetailImages;
     private List<OptionCategoryResponse> optionCategories;
 
     public static ProductUpdateResponse from(ProductRegister product) {
@@ -46,12 +49,17 @@ public class ProductUpdateResponse {
                 .status(product.getStatus())
                 .university(product.getUniversity())
                 .pickupOption(product.getPickupOption())
+                .pickupDate(product.getPickupDate())
+                .pickupLocation(product.getPickupLocation())
                 .bankName(product.getBankName())
                 .accountNumber(product.getAccountNumber())
                 .accountName(product.getAccountName())
                 .categoryId(product.getCategory().getId())
                 .productImages(product.getProductImages().stream()
                         .map(ProductsImageDTO::from)
+                        .collect(Collectors.toList()))
+                .productDetailImages(product.getProductDetailImages().stream()
+                        .map(ProductDetailImageDTO::from)
                         .collect(Collectors.toList()))
                 .optionCategories(product.getOptionCategories().stream()
                         .map(OptionCategoryResponse::from)
