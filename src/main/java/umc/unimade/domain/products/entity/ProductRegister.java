@@ -85,6 +85,9 @@ public class ProductRegister {
     private List<ProductsImage> productImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ProductDetailImage> productDetailImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "productRegister", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OptionCategory> optionCategories = new ArrayList<>();
 
     @PostPersist
@@ -94,6 +97,10 @@ public class ProductRegister {
 
     public void setProductImages(List<ProductsImage> productImages) {
         this.productImages = productImages;
+    }
+
+    public void setProductDetailImages(List<ProductDetailImage> productDetailImages) {
+        this.productDetailImages = productDetailImages;
     }
 
     public void changeStatus(RegisterStatus registerStatus) {

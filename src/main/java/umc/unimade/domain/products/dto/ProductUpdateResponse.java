@@ -34,6 +34,7 @@ public class ProductUpdateResponse {
     private String reason;
     private Long categoryId;
     private List<ProductsImageDTO> productImages;
+    private List<ProductDetailImageDTO> productDetailImages;
     private List<OptionCategoryResponse> optionCategories;
 
     public static ProductUpdateResponse from(ProductRegister product) {
@@ -52,6 +53,9 @@ public class ProductUpdateResponse {
                 .categoryId(product.getCategory().getId())
                 .productImages(product.getProductImages().stream()
                         .map(ProductsImageDTO::from)
+                        .collect(Collectors.toList()))
+                .productDetailImages(product.getProductDetailImages().stream()
+                        .map(ProductDetailImageDTO::from)
                         .collect(Collectors.toList()))
                 .optionCategories(product.getOptionCategories().stream()
                         .map(OptionCategoryResponse::from)

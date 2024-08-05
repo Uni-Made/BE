@@ -7,10 +7,7 @@ import umc.unimade.domain.accounts.dto.AdminRegisterRequest;
 import umc.unimade.domain.orders.repository.OptionValueRepository;
 import umc.unimade.domain.products.dto.AdminProductRegisterResponse;
 import umc.unimade.domain.products.entity.*;
-import umc.unimade.domain.products.repository.OptionCategoryRepository;
-import umc.unimade.domain.products.repository.ProductRegisterRepository;
-import umc.unimade.domain.products.repository.ProductRepository;
-import umc.unimade.domain.products.repository.ProductsImageRepository;
+import umc.unimade.domain.products.repository.*;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.global.registerStatus.RegisterStatus;
@@ -28,6 +25,7 @@ public class ProductRegisterCommandService {
     private final OptionValueRepository optionValueRepository;
     private final OptionCategoryRepository optionCategoryRepository;
     private final ProductsImageRepository productsImageRepository;
+    private final ProductDetailImageRepository productDetailImageRepository;
 
     public AdminProductRegisterResponse approveProduct(Long productRegisterId, RegisterStatus registerStatus) {
 
@@ -101,6 +99,15 @@ public class ProductRegisterCommandService {
             product.getProductImages().add(image);
         }
 
+        // 기존 상세 이미지 제거
+        productDetailImageRepository.deleteAllByProductId(product.getId());
+        product.getProductDetailImages().clear();
+
+        for (ProductDetailImage detailImage : productRegister.getProductDetailImages()) {
+            detailImage.setProduct(product);
+            product.getProductDetailImages().add(detailImage);
+        }
+
         productRepository.save(product);
 
         return AdminProductRegisterResponse.of(productRegister, product);
@@ -142,6 +149,16 @@ public class ProductRegisterCommandService {
             }
         }
         product.setProductImages(images);
+
+        // ProductDetailImage 연관관게 설정
+        List<ProductDetailImage> detailImages = new ArrayList<>();
+        for (ProductDetailImage detailImage : productRegister.getProductDetailImages()) {
+            detailImage.setProduct(product);
+            if (!detailImages.contains(detailImage)) {
+                detailImages.add(detailImage);
+            }
+        }
+        product.setProductDetailImages(detailImages);
 
         return product;
     }

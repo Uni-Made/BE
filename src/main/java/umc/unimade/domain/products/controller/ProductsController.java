@@ -90,8 +90,9 @@ public class ProductsController extends BaseEntity {
     @Operation(summary = "상품 등록, sellerId 제거 예정", description = "productRegister로 저장")
     @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductRegisterResponse>> createProduct(@RequestPart("createProductDto") CreateProductDto request,
-                                                                              @RequestPart(name = "image", required = false) List<MultipartFile> images) {
-        ApiResponse<ProductRegisterResponse> createdProduct = productsCommandService.createProduct(request, images);
+                                                                              @RequestPart(name = "image", required = false) List<MultipartFile> images,
+                                                                              @RequestPart(name = "detailImage", required = false) List<MultipartFile> detailImages) {
+        ApiResponse<ProductRegisterResponse> createdProduct = productsCommandService.createProduct(request, images, detailImages);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
@@ -101,8 +102,9 @@ public class ProductsController extends BaseEntity {
     @PutMapping(value = "/{productId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@PathVariable Long productId,
                                                                             @RequestPart("updateProductDto") UpdateProductDto request,
-                                                                            @RequestPart(name = "image", required = false) List<MultipartFile> images) {
-        ApiResponse<ProductUpdateResponse> updatedProduct = productsCommandService.updateProduct(productId, request, images);
+                                                                            @RequestPart(name = "image", required = false) List<MultipartFile> images,
+                                                                            @RequestPart(name = "detailImage", required = false) List<MultipartFile> detailImages) {
+        ApiResponse<ProductUpdateResponse> updatedProduct = productsCommandService.updateProduct(productId, request, images, detailImages);
         return ResponseEntity.ok(updatedProduct);
     }
 

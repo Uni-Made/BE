@@ -82,6 +82,9 @@ public class Products extends BaseEntity {
     private List<ProductsImage> productImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductDetailImage> productDetailImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OptionCategory> optionCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -116,6 +119,10 @@ public class Products extends BaseEntity {
 
     public void setProductImages(List<ProductsImage> productImages) {
         this.productImages = productImages;
+    }
+
+    public void setProductDetailImages(List<ProductDetailImage> productDetailImages) {
+        this.productDetailImages = productDetailImages;
     }
 
     public void setStatus(ProductStatus status) {
