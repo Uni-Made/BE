@@ -3,6 +3,7 @@ package umc.unimade.domain.accounts.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import umc.unimade.domain.accounts.entity.*;
+import umc.unimade.global.registerStatus.RegisterStatus;
 
 @Getter
 @AllArgsConstructor
@@ -24,6 +25,7 @@ public class SellerSignUpRequestDto {
                 .profileImage(null)
                 .gender(signUpReqeustDto.getGender())
                 .role(Role.SELLER)
+                .registerStatus(RegisterStatus.PENDING)
                 .build();
     }
 }
