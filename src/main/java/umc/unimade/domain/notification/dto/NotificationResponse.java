@@ -11,5 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class NotificationResponse {
-
+    private Long id;
+    private String title;
+    private String message;
 }

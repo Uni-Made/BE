@@ -43,7 +43,7 @@ public class QnACommandService {
             answer.setPrivate(true);
         }
         answersRespository.save(answer);
-        eventPublisher.publishEvent(new AnswerPostedEvent(question.getBuyer().getId()));
+        eventPublisher.publishEvent(new AnswerPostedEvent(question.getProduct().getId(),question.getBuyer().getId()));
     }
 
     @Transactional

@@ -23,6 +23,11 @@ public class SellerNotification {
     private Seller seller;
 
     @Column
-    private String token;
+    private String title;
 
+    @Column
+    private String body;
+
+    @Column
+    private boolean isRead;
 }

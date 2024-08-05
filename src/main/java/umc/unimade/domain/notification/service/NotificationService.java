@@ -12,13 +12,15 @@ import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.notification.dto.NotificationRequest;
-import umc.unimade.domain.notification.entity.BuyerNotification;
 import umc.unimade.domain.notification.events.AnswerPostedEvent;
 import umc.unimade.domain.notification.events.ReviewRequestEvent;
 import umc.unimade.domain.notification.repository.BuyerNotificationRepository;
 import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.repository.OrderRepository;
+import umc.unimade.domain.products.entity.Products;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
+import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.util.redis.RedisUtil;
 
@@ -31,6 +33,7 @@ import java.util.List;
 public class NotificationService {
     private final BuyerRepository buyerRepository;
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
     private final BuyerNotificationRepository buyerNotificationRepository;
     private final RedisUtil redisUtil;
 
@@ -42,6 +45,7 @@ public class NotificationService {
 
     /*구매자 알림*/
 
+    // 입금 안내 알림
     @Scheduled(cron = "0 0 10 * * ?")
     public void sendPendingPaymentReminders() {
         LocalDate currentDate = LocalDate.now();
@@ -54,6 +58,7 @@ public class NotificationService {
         }
     }
 
+    // 수령 당일 알림
     @Scheduled(cron = "0 0 10 * * ?")
     public void sendPickupReminders() {
         LocalDate currentDate = LocalDate.now();
@@ -65,40 +70,45 @@ public class NotificationService {
         }
     }
 
+    // QNA 답변 알림
     @Async
     @EventListener
     public void handleAnswerPostedEvent(AnswerPostedEvent event) {
         Buyer buyer = findBuyerById(event.getUserId());
-        sendAnswerNotification(buyer);
+        Products product = findProductById(event.getProductId());
+        sendAnswerNotification(buyer,product);
     }
 
+    // 리뷰 작성 요청 알람
     @Async
     @EventListener
     public void handleReviewRequestEvent(ReviewRequestEvent event) {
         Buyer buyer = findBuyerById(event.getUserId());
-        sendReviewReminderNotification(buyer);
+        Long orderId = event.getOrder().getId();
+        sendReviewReminderNotification(buyer,orderId);
     }
 
-    @Scheduled(cron = "0 0 9 * * ?")
-    public void deleteOldNotifications() {
-        LocalDateTime timeLimit = LocalDateTime.now().minusDays(3);
-        buyerNotificationRepository.deleteAllByCreatedAtBefore(timeLimit);
-    }
+    // 리뷰 생성 후 3일 지나면 삭제
+//    @Scheduled(cron = "0 0 9 * * ?")
+//    public void deleteOldNotifications() {
+//        LocalDateTime timeLimit = LocalDateTime.now().minusDays(3);
+//        buyerNotificationRepository.deleteAllByCreatedAtBefore(timeLimit);
+//    }
 
     private void sendPaymentReminderNotification(Buyer buyer) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림", "주문 후 입금 부탁드립니다."));
+        sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림",String.valueOf(buyer.getId())));
     }
 
     private void sendPickupNotification(Buyer buyer) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("픽업 알림", "오늘은 주문하신 상품의 픽업일입니다."));
+        sendNotification(buyer.getEmail(), new NotificationRequest("수령 알림",String.valueOf(buyer.getId())));
     }
 
-    private void sendAnswerNotification(Buyer buyer) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("답변 등록 알림", "당신의 질문에 새로운 답변이 등록되었습니다."));
+    private void sendAnswerNotification(Buyer buyer, Products product) {
+        sendNotification(buyer.getEmail(), new NotificationRequest("답변 등록 알림",String.valueOf(product.getId())));
     }
 
-    private void sendReviewReminderNotification(Buyer buyer) {
-        NotificationRequest notificationRequest = new NotificationRequest("리뷰 작성 알림", "수령이 완료되었습니다. 리뷰를 작성해 주세요.");
+    private void sendReviewReminderNotification(Buyer buyer,Long orderId) {
+        NotificationRequest notificationRequest = new NotificationRequest("리뷰 작성 알림", String.valueOf(orderId));
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -121,12 +131,12 @@ public class NotificationService {
                         .setToken(fcmToken)
                         .build();
                 FirebaseMessaging.getInstance().sendAsync(message).get();
-                BuyerNotification notification = BuyerNotification.builder()
-                        .buyer(buyer)
-                        .title(notificationRequest.getTitle())
-                        .body(notificationRequest.getBody())
-                        .build();
-                buyerNotificationRepository.save(notification);
+//                BuyerNotification notification = BuyerNotification.builder()
+//                        .buyer(buyer)
+//                        .title(notificationRequest.getTitle())
+//                        .body(notificationRequest.getBody())
+//                        .build();
+//                buyerNotificationRepository.save(notification);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,4 +152,10 @@ public class NotificationService {
         return buyerRepository.findByEmail(email)
                 .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
+
+    private Products findProductById(Long productId){
+        return productRepository.findById(productId)
+                .orElseThrow(()-> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+    }
+
 }

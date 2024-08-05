@@ -6,5 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class AnswerPostedEvent {
+    private final Long productId;
     private final Long userId;
 }
