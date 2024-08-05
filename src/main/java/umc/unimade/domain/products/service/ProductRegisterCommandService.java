@@ -123,6 +123,8 @@ public class ProductRegisterCommandService {
                 .status(productRegister.getStatus())
                 .university(productRegister.getUniversity())
                 .pickupOption(productRegister.getPickupOption())
+                .pickupLocation(productRegister.getPickupLocation())
+                .pickupDate(productRegister.getPickupDate())
                 .bankName(productRegister.getBankName())
                 .accountNumber(productRegister.getAccountNumber())
                 .accountName(productRegister.getAccountName())

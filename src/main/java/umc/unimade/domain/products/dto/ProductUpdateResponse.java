@@ -27,6 +27,8 @@ public class ProductUpdateResponse {
     private ProductStatus status;
     private String university;
     private PickupOption pickupOption;
+    private LocalDate pickupDate;
+    private String pickupLocation;
     private String bankName;
     private String accountNumber;
     private String accountName;
@@ -47,6 +49,8 @@ public class ProductUpdateResponse {
                 .status(product.getStatus())
                 .university(product.getUniversity())
                 .pickupOption(product.getPickupOption())
+                .pickupDate(product.getPickupDate())
+                .pickupLocation(product.getPickupLocation())
                 .bankName(product.getBankName())
                 .accountNumber(product.getAccountNumber())
                 .accountName(product.getAccountName())

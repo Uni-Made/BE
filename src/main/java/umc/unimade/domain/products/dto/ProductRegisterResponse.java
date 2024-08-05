@@ -25,6 +25,8 @@ public class ProductRegisterResponse {
     private ProductStatus status;
     private String university;
     private PickupOption pickupOption;
+    private LocalDate pickupDate;
+    private String pickupLocation;
     private String bankName;
     private String accountNumber;
     private String accountName;
@@ -46,6 +48,8 @@ public class ProductRegisterResponse {
                 .status(productRegister.getStatus())
                 .university(productRegister.getUniversity())
                 .pickupOption(productRegister.getPickupOption())
+                .pickupDate(productRegister.getPickupDate())
+                .pickupLocation(productRegister.getPickupLocation())
                 .bankName(productRegister.getBankName())
                 .accountNumber(productRegister.getAccountNumber())
                 .accountName(productRegister.getAccountName())

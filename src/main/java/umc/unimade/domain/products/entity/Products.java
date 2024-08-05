@@ -107,6 +107,8 @@ public class Products extends BaseEntity {
         this.status = productRegister.getStatus();
         this.university = productRegister.getUniversity();
         this.pickupOption = productRegister.getPickupOption();
+        this.pickupDate = productRegister.getPickupDate();
+        this.pickupLocation = productRegister.getPickupLocation();
         this.bankName = productRegister.getBankName();
         this.accountNumber = productRegister.getAccountNumber();
         this.accountName = productRegister.getAccountName();
