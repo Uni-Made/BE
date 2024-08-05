@@ -7,6 +7,7 @@ import umc.unimade.domain.products.entity.PickupOption;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.BaseEntity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class PurchaseForm extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "pickup_option")
     private PickupOption pickupOption;
+
+    @Column(name = "pickup_date")
+    private LocalDate pickupDate;
 
     @Column(name = "address")
     private String address;

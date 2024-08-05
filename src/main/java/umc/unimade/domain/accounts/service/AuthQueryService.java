@@ -56,11 +56,6 @@ public class AuthQueryService {
         return true;
     }
 
-    @Transactional
-    public void updateNotificationToken(Long userId, String token) {
-
-        fcmTokenRepository.saveToken(userId, token);
-    }
 
     private boolean isVerify(SmsVerifyRequestDto smsVerifyRequestDto) {
         return !(smsCertification.hasKey(smsVerifyRequestDto.getPhoneNumber()) &&

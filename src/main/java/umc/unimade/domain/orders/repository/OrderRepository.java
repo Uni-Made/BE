@@ -9,6 +9,7 @@ import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.domain.orders.entity.Orders;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,4 +26,10 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 
     @Query("SELECT o FROM Orders o WHERE o.purchaseForm.createdAt < :threeDaysAgo AND o.status = :status")
     List<Orders> findOrdersCreatedBefore(LocalDateTime threeDaysAgo, OrderStatus status);
+
+    @Query("SELECT o FROM Orders o WHERE o.status = :status AND o.createdAt BETWEEN :start AND :end")
+    List<Orders> findByStatusAndCreatedAtBetween(OrderStatus status, LocalDateTime start, LocalDateTime end);
+
+    @Query("SELECT o FROM Orders o WHERE o.status = :status AND o.purchaseForm.pickupDate = :pickupDate")
+    List<Orders> findByStatusAndPickupDate(OrderStatus status, LocalDate pickupDate);
 }

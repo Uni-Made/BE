@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +23,11 @@ import umc.unimade.global.common.BaseEntity;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
+import umc.unimade.global.security.LoginBuyer;
 
 import java.util.List;
 
+//TO DO : Buyer인지 Seller인지 Role 검증
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
@@ -54,9 +55,9 @@ public class ProductsController extends BaseEntity {
     @Tag(name = "FavoriteProduct")
     @Operation(summary = "찜하지 않은 상태라면 찜하기. \n 찜한 상태라면 찜하기 취소")
     @PostMapping("/favorite/{productId}")
-    public ResponseEntity<ApiResponse<Void>> toggleFavoriteProduct(@AuthenticationPrincipal Buyer currentBuyer, @PathVariable Long productId) {
+    public ResponseEntity<ApiResponse<Void>> toggleFavoriteProduct(@LoginBuyer Buyer buyer, @PathVariable Long productId) {
         try {
-            return ResponseEntity.ok(productsCommandService.toggleFavoriteProduct(productId, currentBuyer));
+            return ResponseEntity.ok(productsCommandService.toggleFavoriteProduct(productId, buyer));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {
