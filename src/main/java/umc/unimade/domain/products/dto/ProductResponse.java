@@ -15,9 +15,6 @@ import umc.unimade.domain.review.dto.ReviewListResponse;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-
-
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,7 +34,7 @@ public class ProductResponse {
     private Integer favoriteCount;
     private List<OptionResponse> options;
     private PickupOption pickupOption;
-    private String detail;
+    private ProductDetailResponse detail;
     private ReviewListResponse reviews;
     private QnAListResponse questions;
 
@@ -52,7 +49,9 @@ public class ProductResponse {
                 .categoryName(product.getCategory().getName())
                 .deadline(product.getDeadline())
                 .price(product.getPrice())
-                .productImages(product.getProductImages().stream().map(ProductsImage::getImageUrl).collect(Collectors.toList()))
+                .productImages(product.getProductImages().stream()
+                        .map(ProductsImage::getImageUrl)
+                        .collect(Collectors.toList()))
                 .favoriteCount(product.getFavoriteProducts().size())
                 .options(product.getOptionCategories().stream()
                         .map(OptionResponse::from)
@@ -61,9 +60,9 @@ public class ProductResponse {
                 .build();
     }
 
-    public static ProductResponse toDetail(Products product) {
+    public static ProductResponse toDetail(Products product,ProductDetailResponse detail) {
         ProductResponse response = baseResponse(product);
-        response.setDetail(product.getContent());
+        response.setDetail(detail);
         return response;
     }
 
@@ -80,7 +79,7 @@ public class ProductResponse {
     }
 
 
-    public void setDetail(String detail) {
+    public void setDetail(ProductDetailResponse detail) {
         this.detail = detail;
     }
 
