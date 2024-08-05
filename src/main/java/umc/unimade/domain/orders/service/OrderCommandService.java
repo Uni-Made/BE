@@ -2,11 +2,13 @@ package umc.unimade.domain.orders.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
+import umc.unimade.domain.notification.events.PaymentRequestEvent;
+import umc.unimade.domain.notification.events.ReviewRequestEvent;
 import umc.unimade.domain.orders.dto.OrderRequest;
 import umc.unimade.domain.orders.dto.OrderRequest.OrderOptionRequest;
 import umc.unimade.domain.orders.dto.OrderRequest.PurchaseFormRequest;
@@ -25,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static umc.unimade.domain.products.entity.PickupOption.ONLINE;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,7 @@ public class OrderCommandService {
     private final OptionValueRepository optionValueRepository;
     private final OrderItemRepository orderItemRepository;
     private final BuyerRepository buyerRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public OrderResponse createOrder(Long productId, Buyer buyer, OrderRequest orderRequest) {
@@ -68,7 +70,6 @@ public class OrderCommandService {
 
         orderOptionRepository.saveAll(orderOptions);
 
-        // 총 가격 계산 및 Orders 엔티티 업데이트
         Long totalPrice = orderItems.stream()
                 .mapToLong(item -> product.getPrice() * item.getCount())
                 .sum();
@@ -77,6 +78,7 @@ public class OrderCommandService {
 
         return OrderResponse.from(order, product, totalPrice);
     }
+
 
     private Buyer findBuyerById(Long buyerId) {
         return buyerRepository.findById(buyerId)
@@ -150,18 +152,8 @@ public class OrderCommandService {
 
         order.setStatus(OrderStatus.RECEIVED);
         order.setReceiveStatus(ReceiveStatus.RECEIVED);
+        eventPublisher.publishEvent(new ReviewRequestEvent(order.getBuyer().getId(), order));
         return orderRepository.save(order);
-    }
 
-    // 구매폼 작성 후 3일 이후 미입금 시 구매 취소
-    @Scheduled(cron = "0 0 0 * * *") // 0시 0분 0초
-    @Transactional
-    public void cancelOldOrders() {
-        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3); // 지금으로부터 3일 전 날짜 찾기
-        List<Orders> Orders = orderRepository.findOrdersCreatedBefore(threeDaysAgo, OrderStatus.PENDING); // 3일 전
-        for (Orders order : Orders) {
-            order.setStatus(OrderStatus.CANCELLED);
-            orderRepository.save(order);
-        }
     }
 }

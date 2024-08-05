@@ -17,6 +17,7 @@ import umc.unimade.global.common.exception.CustomException;
 import umc.unimade.global.common.exception.GlobalErrorCode;
 import umc.unimade.global.security.JwtProvider;
 import umc.unimade.global.security.JwtToken;
+import umc.unimade.global.security.LoginBuyer;
 import umc.unimade.global.security.UserLoginForm;
 import umc.unimade.global.util.auth.OauthUtil;
 import umc.unimade.global.util.auth.SmsUtil;
@@ -147,9 +148,7 @@ public class AuthQueryService {
                 if (buyerIsLogin == null) {
                     throw new CustomException(GlobalErrorCode.USER_NOT_FOUND);
                 }
-
-                //to do : jwtProvider에서 빼오는 것으로 수정
-                //redisUtil.removeFCMToken();
+                redisUtil.removeFCMToken(buyerIsLogin.getEmail());
                 buyerIsLogin.logout();
                 break;
             case "SELLER", "ADMIN":
@@ -183,11 +182,6 @@ public class AuthQueryService {
         return true;
     }
 
-    @Transactional
-    public void updateNotificationToken(Long userId, String token) {
-
-        fcmTokenRepository.saveToken(userId, token);
-    }
 
     private boolean isVerify(SmsVerifyRequestDto smsVerifyRequestDto) {
         return !(smsCertification.hasKey(smsVerifyRequestDto.getPhoneNumber()) &&

@@ -1,10 +1,12 @@
 package umc.unimade.domain.qna.service;
 
 import lombok.*;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
+import umc.unimade.domain.notification.events.AnswerPostedEvent;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.qna.dto.AnswerCreateRequest;
@@ -24,6 +26,7 @@ public class QnACommandService {
     private final QuestionsRepository questionsRepository;
     private final ProductRepository productRepository;
     private final AnswersRespository answersRespository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void createQuestion(Long productId, Buyer buyer, QuestionCreateRequest questionCreateRequest) {
@@ -40,6 +43,7 @@ public class QnACommandService {
             answer.setPrivate(true);
         }
         answersRespository.save(answer);
+        eventPublisher.publishEvent(new AnswerPostedEvent(question.getBuyer().getId()));
     }
 
     @Transactional
