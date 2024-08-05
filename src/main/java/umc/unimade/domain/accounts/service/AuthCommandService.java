@@ -10,13 +10,11 @@ import umc.unimade.domain.accounts.repository.SellerRegisterRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.CustomException;
-import umc.unimade.global.common.exception.GlobalErrorCode;
 import umc.unimade.global.security.JwtProvider;
 import umc.unimade.global.security.JwtToken;
 import umc.unimade.global.util.auth.OauthUtil;
 import umc.unimade.global.util.auth.dto.OauthSignUpDto;
 import umc.unimade.global.util.redis.RedisUtil;
-
 import java.util.Map;
 
 @Service
@@ -88,7 +86,6 @@ public class AuthCommandService {
         if(loginSeller == null) {
             SellerRegister newSeller = signUpReqeustDto.toEntity(signUpReqeustDto);
             sellerRegisterRepository.save(newSeller);
-
             return true;
         } else {
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
