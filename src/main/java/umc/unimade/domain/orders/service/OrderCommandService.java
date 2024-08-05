@@ -18,6 +18,8 @@ import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.*;
 import umc.unimade.domain.products.entity.OptionValue;
 import umc.unimade.domain.products.entity.PickupOption;
+import umc.unimade.domain.products.entity.ProductStatus;
+import umc.unimade.domain.products.exception.ProductExceptionHandler;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.ErrorCode;
@@ -46,6 +48,10 @@ public class OrderCommandService {
         validateOrderRequest(orderRequest);
 
         Products product = findProductById(productId);
+
+        if (product.getStatus() != ProductStatus.SELLING) {
+            throw new ProductExceptionHandler(ErrorCode.PRODUCT_STATUS_IS_NOT_SELLING);
+        }
 
         // PurchaseForm 엔티티 생성 및 저장
         PurchaseForm purchaseForm = orderRequest.getPurchaseForm().toEntity();
