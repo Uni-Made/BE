@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.accounts.dto.*;
 import umc.unimade.domain.accounts.entity.Provider;
 import umc.unimade.domain.accounts.entity.Role;
+import umc.unimade.domain.accounts.service.AuthCommandService;
 import umc.unimade.domain.accounts.service.AuthQueryService;
-import umc.unimade.domain.accounts.service.BuyerQueryService;
 import umc.unimade.global.common.ApiResponse;
 
 @RestController
@@ -15,22 +15,22 @@ import umc.unimade.global.common.ApiResponse;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthQueryService authQueryService;
+    private final AuthCommandService authCommandService;
 
     // 소셜 로그인 - 구매자(buyer)
     @PostMapping("/buyers/kakao")
     public ApiResponse<Object> byKakao(@RequestParam("code") String code, @RequestParam String fcmToken) {
-        System.err.println(code);
-        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.KAKAO,fcmToken));
+        return ApiResponse.onSuccess(authCommandService.socialLogin(code, Provider.KAKAO,fcmToken));
     }
 
     @PostMapping("/buyers/naver")
     public ApiResponse<Object> byNaver(@RequestParam("code") String code,@RequestParam String fcmToken) {
-        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.NAVER,fcmToken));
+        return ApiResponse.onSuccess(authCommandService.socialLogin(code, Provider.NAVER,fcmToken));
     }
 
     @PostMapping("/buyers/google")
     public ApiResponse<Object> byGoogle(@RequestParam("code") String code,@RequestParam String fcmToken) {
-        return ApiResponse.onSuccess(authQueryService.socialLogin(code, Provider.GOOGLE,fcmToken));
+        return ApiResponse.onSuccess(authCommandService.socialLogin(code, Provider.GOOGLE,fcmToken));
     }
 
     @PostMapping("/buyers/reissue")
@@ -41,32 +41,32 @@ public class AuthController {
     @PostMapping("/logout")
     public ApiResponse<Boolean> logoutCustomer(
     ) {
-        return ApiResponse.onSuccess(authQueryService.logout());
+        return ApiResponse.onSuccess(authCommandService.logout());
     }
 
     @PostMapping("/buyers/signup")
     public ApiResponse<SignInResponseDto> buyerSignUp(
-            @RequestBody SignUpReqeustDto signUpReqeustDto
+            @RequestBody BuyerSignUpReqeustDto signUpReqeustDto
             ) {
-        return ApiResponse.onSuccess(authQueryService.buyerSignUp(signUpReqeustDto, Role.BUYER));
+        return ApiResponse.onSuccess(authCommandService.buyerSignUp(signUpReqeustDto, Role.BUYER));
     }
 
     @PostMapping("/seller/signup")
-    public ApiResponse<SignInResponseDto> sellerSignUp(
-            @RequestBody SignUpReqeustDto signUpReqeustDto
+    public ApiResponse<Boolean> sellerSignUp(
+            @RequestBody SellerSignUpRequestDto signUpReqeustDto
     ) {
-        return ApiResponse.onSuccess(authQueryService.sellerSignUp(signUpReqeustDto, Role.SELLER));
+        return ApiResponse.onSuccess(authCommandService.sellerSignUp(signUpReqeustDto, Role.SELLER));
     }
 
     @PostMapping("/seller/signin")
     public ApiResponse<SignInResponseDto> sellerSignIn(
             @RequestBody SignInRequestDto signInRequestDto
     ) {
-        return ApiResponse.onSuccess(authQueryService.sellerSignIn(signInRequestDto, Role.SELLER));
+        return ApiResponse.onSuccess(authCommandService.sellerSignIn(signInRequestDto, Role.SELLER));
     }
 
     @PostMapping("/sms")
-    public ApiResponse<String> authSmsSend(
+    public ApiResponse<Boolean> authSmsSend(
             @RequestParam("phone") String phone
     ) {
         return ApiResponse.onSuccess(authQueryService.authSmsSend(phone));
@@ -78,7 +78,6 @@ public class AuthController {
     ) {
         return ApiResponse.onSuccess(authQueryService.authSmsVerify(smsVerifyRequestDto));
     }
-
 
 
 

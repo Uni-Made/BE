@@ -57,6 +57,9 @@ public class Seller extends BaseEntity {
     @Column(name = "is_login")
     private Boolean isLogin;
 
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description; // 설명
+
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private List<Products> products = new ArrayList<>();
 
@@ -95,5 +98,9 @@ public class Seller extends BaseEntity {
     public void logout() {
         this.isLogin = false;
         this.refreshToken = null;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
     }
 }

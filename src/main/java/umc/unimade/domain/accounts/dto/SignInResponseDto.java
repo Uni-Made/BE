@@ -13,4 +13,12 @@ public class SignInResponseDto {
     private Integer status;
     private String accessToken;
     private String refreshToken;
+
+    public static SignInResponseDto from(Integer status, String accessToken, String refreshToken) {
+        return SignInResponseDto.builder()
+                .status(status)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
 }

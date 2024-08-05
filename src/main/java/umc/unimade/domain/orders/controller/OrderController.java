@@ -77,7 +77,7 @@ public class OrderController {
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
-    @Operation(summary = "특정 판매자에게 온 구매 요청 보기")
+    @Operation(summary = "사용 X - 특정 판매자에게 온 구매 요청 보기")
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<Page<SellerOrderResponse>> getOrdersBySellerId(@PathVariable Long sellerId,
                                                                          @RequestParam(name = "page", defaultValue = "0") int page,
@@ -87,7 +87,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @Tag(name = "Order", description = "판매자 관련 API")
+    @Tag(name = "Order", description = "구매 관련 API")
     @Operation(summary = "특정 상품의 구매 요청 보기")
     @GetMapping("/product/{productId}")
     public ResponseEntity<Page<ProductOrderResponse>> getOrdersByProductId(@PathVariable Long productId,

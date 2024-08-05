@@ -82,6 +82,9 @@ public class Products extends BaseEntity {
     private List<ProductsImage> productImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductDetailImage> productDetailImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OptionCategory> optionCategories = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -104,6 +107,8 @@ public class Products extends BaseEntity {
         this.status = productRegister.getStatus();
         this.university = productRegister.getUniversity();
         this.pickupOption = productRegister.getPickupOption();
+        this.pickupDate = productRegister.getPickupDate();
+        this.pickupLocation = productRegister.getPickupLocation();
         this.bankName = productRegister.getBankName();
         this.accountNumber = productRegister.getAccountNumber();
         this.accountName = productRegister.getAccountName();
@@ -116,6 +121,10 @@ public class Products extends BaseEntity {
 
     public void setProductImages(List<ProductsImage> productImages) {
         this.productImages = productImages;
+    }
+
+    public void setProductDetailImages(List<ProductDetailImage> productDetailImages) {
+        this.productDetailImages = productDetailImages;
     }
 
     public void setStatus(ProductStatus status) {

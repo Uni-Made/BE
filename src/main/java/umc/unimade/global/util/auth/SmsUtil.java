@@ -5,6 +5,9 @@ import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import umc.unimade.global.common.ErrorCode;
+import umc.unimade.global.common.exception.CustomException;
+import umc.unimade.global.common.exception.GlobalErrorCode;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -39,7 +42,7 @@ public class SmsUtil {
         params.put("type", "SMS");
         params.put("app_version", "test app 1.2");
         params.put("to", to);
-        params.put("text", "라인 친구해요 : " + randomNum);
+        params.put("text", "인증 번호 : " + randomNum);
         return params;
     }
 
@@ -49,17 +52,14 @@ public class SmsUtil {
 
         // 랜덤한 인증 번호 생성
         String randomNum = createRandomNumber();
-        System.out.println(randomNum);
 
         // 발신 정보 설정
         HashMap<String, String> params = makeParams(phonNumber, randomNum);
 
         try {
             JSONObject obj = (JSONObject) coolsms.send(params);
-            System.out.println(obj.toString());
-        } catch (CoolsmsException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getCode());
+           } catch (CoolsmsException e) {
+            throw new CustomException(ErrorCode.SMS_SEND_FAIL);
         }
 
         return randomNum;

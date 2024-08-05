@@ -37,6 +37,10 @@ public class SellerRegister {
     private String profileImage;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "provider")
     private Provider provider;
 
