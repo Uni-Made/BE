@@ -6,13 +6,14 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import umc.unimade.domain.accounts.dto.BuyerOrderHistoryResponse;
+import umc.unimade.domain.orders.dto.BuyerOrderHistoryResponse;
 import umc.unimade.domain.accounts.dto.BuyerPageResponse;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.service.BuyerCommandService;
 import umc.unimade.domain.accounts.service.BuyerQueryService;
 import umc.unimade.domain.favorite.dto.FavoriteProductsListResponse;
 import umc.unimade.domain.favorite.dto.FavoriteSellersListResponse;
+import umc.unimade.domain.orders.dto.OrderStatusDetailResponse;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
@@ -65,6 +66,19 @@ public class BuyerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
+        }
+    }
+
+    @Tag(name = "Buyer", description = "구매자 관련 API")
+    @Operation(summary = "구매 상세 내역 조회")
+    @GetMapping("/history/{orderId}")
+    public ResponseEntity<ApiResponse<OrderStatusDetailResponse>> getOrderStatusDetail(@PathVariable Long orderId){
+        try {
+            return ResponseEntity.ok(ApiResponse.onSuccess(buyerQueryService.getOrderStatusDetail(orderId)));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (UserExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.ORDER_NOT_FOUND.getCode(), ErrorCode.ORDER_NOT_FOUND.getMessage()));
         }
     }
 

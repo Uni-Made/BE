@@ -1,4 +1,4 @@
-package umc.unimade.domain.accounts.dto;
+package umc.unimade.domain.orders.dto;
 
 import lombok.*;
 import umc.unimade.domain.orders.entity.Orders;

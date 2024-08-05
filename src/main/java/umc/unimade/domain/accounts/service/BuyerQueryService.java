@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.unimade.domain.accounts.dto.BuyerOrderHistoryResponse;
+import umc.unimade.domain.orders.dto.BuyerOrderHistoryResponse;
 import umc.unimade.domain.accounts.dto.BuyerPageResponse;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
@@ -17,8 +17,11 @@ import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.entity.FavoriteSeller;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
+import umc.unimade.domain.orders.dto.OrderStatusDetailResponse;
 import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OrderRepository;
+import umc.unimade.domain.products.entity.PickupOption;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 
@@ -53,6 +56,26 @@ public class BuyerQueryService {
         Long nextCursor = orders.isEmpty() ? null : orders.get(orders.size() - 1).getId();
         boolean isLast = orders.size() < pageSize;
         return BuyerOrderHistoryResponse.from(orders, nextCursor, isLast);
+    }
+
+    // 구매 상태 상세 정보
+    public OrderStatusDetailResponse getOrderStatusDetail(Long orderId){
+        Orders order = findOrderById(orderId);
+        switch (order.getStatus()){
+            case PENDING :
+                return OrderStatusDetailResponse.fromPendingOrder(order);
+            case PAID:
+                if (order.getPurchaseForm().getPickupOption() == PickupOption.OFFLINE) {
+                    return OrderStatusDetailResponse.fromPaidOfflineOrder(order);
+                } else if (order.getPurchaseForm().getPickupOption() == PickupOption.ONLINE) {
+                    return OrderStatusDetailResponse.fromPaidOnlineOrder(order);
+                }
+                break;
+
+            default:
+                throw new OrderExceptionHandler(ErrorCode.INVALID_ORDER_STATUS);
+        }
+        throw new OrderExceptionHandler(ErrorCode.INVALID_ORDER_STATUS);
     }
 
     // 찜한 상품 더보기
@@ -93,5 +116,10 @@ public class BuyerQueryService {
     private Buyer findBuyerById(Long buyerId) {
         return buyerRepository.findById(buyerId)
                 .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
+    }
+
+    private Orders findOrderById(Long orderId){
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
     }
 }
