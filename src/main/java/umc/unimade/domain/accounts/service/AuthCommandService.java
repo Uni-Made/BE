@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.dto.*;
 import umc.unimade.domain.accounts.entity.*;
+import umc.unimade.domain.accounts.exception.BuyerExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.accounts.repository.SellerRegisterRepository;
 import umc.unimade.domain.accounts.repository.SellerRepository;
+import umc.unimade.domain.review.entity.ReportStatus;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.common.exception.CustomException;
 import umc.unimade.global.security.JwtProvider;
@@ -57,6 +59,18 @@ public class AuthCommandService {
         }
 
         Buyer loginCustomer = buyerRepository.findBySocialIdAndProvider(socialId, provider);
+
+        // 정지된 사용자 접근 금지
+        if (loginCustomer.getStatus() == ReportStatus.THREE) {
+            throw new BuyerExceptionHandler(ErrorCode.USER_LOCKED_THREE);
+        } else if (loginCustomer.getStatus() == ReportStatus.WEEK) {
+            throw new BuyerExceptionHandler(ErrorCode.USER_LOCKED_WEEK);
+        } else if (loginCustomer.getStatus() == ReportStatus.MONTH) {
+            throw new BuyerExceptionHandler(ErrorCode.USER_LOCKED_MONTH);
+        } else if (loginCustomer.getStatus() == ReportStatus.PERMANENT) {
+            throw new BuyerExceptionHandler(ErrorCode.USER_LOCKED_PERMANENT);
+        }
+
         if (loginCustomer == null) {
             return SignUpResponseDto.from(201, socialName, email, socialId);
         }

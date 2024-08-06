@@ -6,6 +6,7 @@ import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.entity.FavoriteSeller;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.qna.entity.Questions;
+import umc.unimade.domain.review.entity.ReportStatus;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.global.common.BaseEntity;
 
@@ -58,6 +59,9 @@ public class Buyer extends BaseEntity {
     @Column(name = "social_id")
     private String socialId;
 
+    @Column(name = "status")
+    private ReportStatus status; // 정지 상태
+
     @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
@@ -74,10 +78,10 @@ public class Buyer extends BaseEntity {
     private List<Orders> orders = new ArrayList<>();
 
     @PostPersist
-    private void setRole() {
+    private void setRoleAndStatus() {
         role = Role.BUYER;
+        status = ReportStatus.FREE;
     }
-
 
     //-----------------------------------------------
 
@@ -102,5 +106,9 @@ public class Buyer extends BaseEntity {
     public void logout() {
         this.refreshToken = null;
         this.isLogin = false;
+    }
+
+    public void changeStatus(ReportStatus newStatus) {
+        status = newStatus;
     }
 }

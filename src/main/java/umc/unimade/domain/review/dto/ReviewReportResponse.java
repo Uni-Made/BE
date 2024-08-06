@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.unimade.domain.review.entity.ReportStatus;
 import umc.unimade.domain.review.entity.ReportType;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.domain.review.entity.ReviewReport;
@@ -19,6 +20,7 @@ public class ReviewReportResponse {
     private Long buyerId;
     private Long sellerId;
     private ReportType type;
+    private ReportStatus status;
     private String reviewTitle;
     private String reviewContent;
     private String description;
@@ -31,6 +33,7 @@ public class ReviewReportResponse {
                 .buyerId(review.getBuyer().getId())
                 .sellerId(report.getSeller().getId())
                 .type(report.getType())
+                .status(report.getStatus())
                 .reviewTitle(review.getTitle())
                 .reviewContent(review.getContent())
                 .description(report.getDescription())

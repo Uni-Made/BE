@@ -8,8 +8,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
+import umc.unimade.domain.review.dto.ReportProcessResponse;
 import umc.unimade.domain.review.dto.ReviewReportResponse;
 import umc.unimade.domain.review.dto.ReviewReportsResponse;
+import umc.unimade.domain.review.entity.ReportStatus;
+import umc.unimade.domain.review.service.ReviewReportCommandService;
 import umc.unimade.domain.review.service.ReviewReportQueryService;
 import umc.unimade.global.common.ApiResponse;
 
@@ -20,8 +23,8 @@ import umc.unimade.global.common.ApiResponse;
 public class AdminReviewController {
 
     private final ReviewReportQueryService reviewReportQueryService;
+    private final ReviewReportCommandService reviewReportCommandService;
 
-    // TODO: 신고 처리 여부에 따라 조회
     @Operation(summary = "리뷰 신고 목록 조회", description = "유저 role이 관리자인 사람만 가능")
     @GetMapping()
     public ApiResponse<Page<ReviewReportsResponse>> getReports(
@@ -40,4 +43,12 @@ public class AdminReviewController {
     }
 
     // TODO: 관리자의 신고 처리 추가
+    @Operation(summary = "리뷰 신고 처리", description = "유저 role이 관리자인 사람만 가능, 3일, 일주일, 한달, 영구 정지")
+    @PostMapping("/{reviewReportId}")
+    public ApiResponse<ReportProcessResponse> processReport(@PathVariable Long reviewReportId,
+                                                            @RequestParam ReportStatus reportStatus) {
+        ReportProcessResponse response = reviewReportCommandService.processReport(reviewReportId, reportStatus);
+        return ApiResponse.onSuccess(response);
+    }
+
 }

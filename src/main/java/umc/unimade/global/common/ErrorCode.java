@@ -49,8 +49,11 @@ public enum ErrorCode implements BaseErrorCode {
     SELLER_STATUS_IS_NOT_PENDING_OR_HOLD(HttpStatus.BAD_REQUEST, "SELLER4002", "대기중 이거나 보류중인 요청만 승인할 수 있습니다."),
 
     // 구매자 관련 에러
-    BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "Buyer4000", "구매자를 찾을 수 없습니다."),
-
+    BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "BUYER4000", "구매자를 찾을 수 없습니다."),
+    USER_LOCKED_THREE(HttpStatus.FORBIDDEN, "BUYER4001", "3일간 사용이 정지된 사용자 입니다."),
+    USER_LOCKED_WEEK(HttpStatus.FORBIDDEN, "BUYER4001", "일주일간 사용이 정지된 사용자 입니다."),
+    USER_LOCKED_MONTH(HttpStatus.FORBIDDEN, "BUYER4001", "한달간 사용이 정지된 사용자 입니다."),
+    USER_LOCKED_PERMANENT(HttpStatus.FORBIDDEN, "BUYER4001", "사용이 영구 정지된 사용자 입니다."),
 
     // 리뷰 관련 에러
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4000", "리뷰를 찾을 수 없습니다."),
