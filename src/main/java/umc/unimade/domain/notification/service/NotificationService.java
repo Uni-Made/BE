@@ -33,6 +33,7 @@ import umc.unimade.global.util.redis.RedisUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -141,8 +142,11 @@ public class NotificationService {
     private void sendOrderCancelledNotification(Buyer buyer, Orders order){
         sendNotification(buyer.getEmail(),new NotificationRequest("입금 미완료 구매 취소 알림", order.getProduct().getName(), String.valueOf(buyer.getId())));
     }
-    private void sendPaymentReminderNotification(Buyer buyer,Orders order) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림",order.getProduct().getName(), String.valueOf(buyer.getId())));
+
+    private void sendPaymentReminderNotification(Buyer buyer, Orders order) {
+        long daysLeft = ChronoUnit.DAYS.between(order.getCreatedAt().toLocalDate(), LocalDate.now());
+        String body = String.format("주문 후 %d일이 지났습니다. 입금을 완료해 주세요.", daysLeft);
+        sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림", body, String.valueOf(buyer.getId())));
     }
 
     private void sendPickupNotification(Buyer buyer,Orders order) {
