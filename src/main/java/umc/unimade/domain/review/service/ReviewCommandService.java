@@ -6,9 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.accounts.exception.SellerExceptionHandler;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
-import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OrderRepository;
@@ -32,7 +30,6 @@ public class ReviewCommandService {
     private final ReviewRepository reviewRepository;
     private final OrderRepository orderRepository;
     private final S3Provider s3Provider;
-    private final SellerRepository sellerRepository;
     private final ReviewReportRepository reviewReportRepository;
 
     @Transactional
@@ -72,15 +69,15 @@ public class ReviewCommandService {
     }
 
     @Transactional
-    public ReviewReportResponse reportReview(Long reviewId, ReviewReportRequest request) {
+    public ReviewReportResponse reportReview(Long reviewId, ReviewReportRequest request, Seller seller) {
 
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_FOUND));
 
-        // TODO: 컨트롤러에서 seller 받아오기
-        Seller seller = sellerRepository.findById(1L)
-                .orElseThrow(() -> new SellerExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
-
+        // 자신의 상품에 대한 리뷰가 아닌 경우
+        if (!review.getProduct().getSeller().getId().equals(seller.getId())) {
+            throw new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_YOURS);
+        }
 
         ReviewReport report = request.toEntity(review, seller);
         reviewReportRepository.save(report);

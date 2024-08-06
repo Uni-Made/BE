@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.review.dto.ReviewReportRequest;
 import umc.unimade.domain.review.dto.ReviewReportResponse;
 import umc.unimade.domain.review.dto.ReviewCreateRequest;
@@ -20,6 +21,7 @@ import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.security.LoginBuyer;
+import umc.unimade.global.security.LoginSeller;
 
 import java.util.List;
 
@@ -73,12 +75,10 @@ public class ReviewController {
         }
     }
 
-
-    // TODO: seller 받아 오기
     @Operation(summary = "리뷰 신고하기", description = "seller가 자신의 상품에 달린 리뷰를 신고")
     @PostMapping("/{reviewId}/report")
-    public ApiResponse<ReviewReportResponse> reportReview(@PathVariable Long reviewId, @RequestBody ReviewReportRequest request) {
-        ReviewReportResponse response = reviewCommandService.reportReview(reviewId, request);
+    public ApiResponse<ReviewReportResponse> reportReview(@LoginSeller Seller seller, @PathVariable Long reviewId, @RequestBody ReviewReportRequest request) {
+        ReviewReportResponse response = reviewCommandService.reportReview(reviewId, request, seller);
         return ApiResponse.onSuccess(response);
     }
 }
