@@ -8,7 +8,6 @@ import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.orders.entity.Orders;
-import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OrderRepository;
 import umc.unimade.domain.review.dto.ReviewReportRequest;
