@@ -156,6 +156,8 @@ public class BuyerQueryService {
 
         Page<SellerPageResponse.ProductsResponse> productResponses = products.map(SellerPageResponse.ProductsResponse::from);
 
-        return SellerPageResponse.of(seller, productResponses);
+        Long favoriteCount = favoriteSellerRepository.countBySellerId(sellerId);
+
+        return SellerPageResponse.of(seller, productResponses, favoriteCount);
     }
 }
