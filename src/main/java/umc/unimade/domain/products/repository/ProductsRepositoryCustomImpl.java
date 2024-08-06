@@ -3,6 +3,7 @@ package umc.unimade.domain.products.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import umc.unimade.domain.products.entity.ProductStatus;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.QProducts;
 import umc.unimade.domain.favorite.entity.QFavoriteProduct;
@@ -26,7 +27,8 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
                         categoryEq(category),
                         keywordContains(keyword),
                         priceBetween(minPrice, maxPrice),
-                        cursorLessThan(cursor)
+                        cursorLessThan(cursor),
+                        statusEq(ProductStatus.SELLING)
                 )
                 .groupBy(products.id)
                 .orderBy(getSortOrder(sort, products, favoriteProduct))
@@ -58,6 +60,10 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
 
     private BooleanExpression cursorLessThan(Long cursor) {
         return cursor != null ? QProducts.products.id.lt(cursor) : null;
+    }
+
+    private BooleanExpression statusEq(ProductStatus status) {
+        return QProducts.products.status.eq(status);
     }
 
     private OrderSpecifier<?> getSortOrder(String sort, QProducts products, QFavoriteProduct favoriteProduct) {
