@@ -4,6 +4,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,9 @@ import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
+import umc.unimade.domain.notification.dto.NotificationListResponse;
 import umc.unimade.domain.notification.dto.NotificationRequest;
+import umc.unimade.domain.notification.entity.BuyerNotification;
 import umc.unimade.domain.notification.events.AnswerPostedEvent;
 import umc.unimade.domain.notification.events.OrderCancelledEvent;
 import umc.unimade.domain.notification.events.OrderRequestEvent;
@@ -21,9 +25,6 @@ import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OrderRepository;
-import umc.unimade.domain.products.entity.Products;
-import umc.unimade.domain.products.exception.ProductsExceptionHandler;
-import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.qna.exception.QnAExceptionHandler;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
@@ -39,7 +40,6 @@ import java.util.List;
 public class NotificationService {
     private final BuyerRepository buyerRepository;
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
     private final QuestionsRepository questionsRepository;
     private final BuyerNotificationRepository buyerNotificationRepository;
     private final RedisUtil redisUtil;
@@ -51,8 +51,21 @@ public class NotificationService {
     }
 
     /*구매자 알림*/
+    public NotificationListResponse getNotificationList(Buyer buyer, Long cursor, int pageSize){
+        Pageable pageable = PageRequest.of(0, pageSize);
+        List<BuyerNotification> notifications;
+        if (cursor == null) {
+            notifications = buyerNotificationRepository.findByBuyerOrderByCreatedAtDesc(buyer, pageable);
+        } else {
+            notifications = buyerNotificationRepository.findByBuyerAndIdLessThanOrderByCreatedAtDesc(buyer, cursor, pageable);
+        }
 
-    // TO DO : 프론트와 상의해서 알림을 저장해뒀다가 목록을 반환해야하는지 결정
+        Long nextCursor = notifications.isEmpty()?null : notifications.get(notifications.size() - 1).getId();
+        Boolean isLast = notifications.size()<pageSize;
+
+        return NotificationListResponse.from(notifications, nextCursor, isLast);
+
+    }
 
     //구매 완료 알림
     @Async
@@ -69,7 +82,7 @@ public class NotificationService {
     public void handleOrderCancelledEvent(OrderCancelledEvent event) {
         Buyer buyer = findBuyerById(event.getUserId());
         Orders order = findOrderById(event.getOrderId());
-        sendOrderCompleteNotification(buyer,order);
+        sendOrderCancelledNotification(buyer,order);
     }
     // 입금 안내 알림
     @Scheduled(cron = "0 0 10 * * ?")
@@ -114,12 +127,12 @@ public class NotificationService {
         sendReviewReminderNotification(buyer,order);
     }
 
-    // 리뷰 생성 후 3일 지나면 삭제
-//    @Scheduled(cron = "0 0 9 * * ?")
-//    public void deleteOldNotifications() {
-//        LocalDateTime timeLimit = LocalDateTime.now().minusDays(3);
-//        buyerNotificationRepository.deleteAllByCreatedAtBefore(timeLimit);
-//    }
+    // 리뷰 생성 후 15일 지나면 삭제
+    @Scheduled(cron = "0 0 9 * * ?")
+    public void deleteOldNotifications() {
+        LocalDateTime timeLimit = LocalDateTime.now().minusDays(15);
+        buyerNotificationRepository.deleteAllByCreatedAtBefore(timeLimit);
+    }
 
     private void sendOrderCompleteNotification(Buyer buyer,Orders order){
         sendNotification(buyer.getEmail(),new NotificationRequest("구매 완료 알림",order.getProduct().getName(),String.valueOf(buyer.getId())));
@@ -165,12 +178,13 @@ public class NotificationService {
                         .setToken(fcmToken)
                         .build();
                 FirebaseMessaging.getInstance().sendAsync(message).get();
-//                BuyerNotification notification = BuyerNotification.builder()
-//                        .buyer(buyer)
-//                        .title(notificationRequest.getTitle())
-//                        .body(notificationRequest.getBody())
-//                        .build();
-//                buyerNotificationRepository.save(notification);
+                BuyerNotification notification = BuyerNotification.builder()
+                        .buyer(buyer)
+                        .title(notificationRequest.getTitle())
+                        .body(notificationRequest.getBody())
+                        .extraId(notificationRequest.getId())
+                        .build();
+                buyerNotificationRepository.save(notification);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -187,10 +201,6 @@ public class NotificationService {
                 .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
 
-    private Products findProductById(Long productId){
-        return productRepository.findById(productId)
-                .orElseThrow(()-> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
-    }
 
     private Orders findOrderById(Long orderId){
         return orderRepository.findById(orderId)

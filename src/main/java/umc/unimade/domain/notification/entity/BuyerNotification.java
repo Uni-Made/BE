@@ -30,7 +30,5 @@ public class BuyerNotification extends BaseEntity {
     private String body;
 
     @Column
-    private boolean isRead;
-
-
+    private String extraId;
 }
