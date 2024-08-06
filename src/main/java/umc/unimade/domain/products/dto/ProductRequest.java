@@ -15,7 +15,7 @@ public class ProductRequest {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CreateProductDto { // TODO - 셀러 추가
+    public static class CreateProductDto {
         private String name;
         private String content;
         private Long price;
@@ -27,7 +27,6 @@ public class ProductRequest {
         private String accountNumber;
         private String accountName;
         private RegisterStatus registerStatus;
-        private Long sellerId;
         private Long categoryId;
         private List<OptionCategoryRequest> options;
         private LocalDate pickupDate;
@@ -72,7 +71,6 @@ public class ProductRequest {
         private String accountNumber;
         private String accountName;
         private RegisterStatus registerStatus;
-        private Long sellerId;
         private Long categoryId;
         private List<OptionCategoryRequest> options;
         private LocalDate pickupDate;

@@ -75,11 +75,9 @@ public class ProductsCommandService {
     // 상품 등록
     // TODO - seller 추가
     @Transactional
-    public ApiResponse<ProductRegisterResponse> createProduct(CreateProductDto request, List<MultipartFile> images, List<MultipartFile> detailImages) {
+    public ApiResponse<ProductRegisterResponse> createProduct(Seller seller, CreateProductDto request, List<MultipartFile> images, List<MultipartFile> detailImages) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
-        Seller seller = sellerRepository.findById(request.getSellerId())
-                .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
 
         ProductRegister product = request.toEntity(category, seller);
         ProductRegister savedProduct = productRegisterRepository.save(product);
@@ -100,7 +98,7 @@ public class ProductsCommandService {
     // 상품 수정
     // TODO - seller 추가
     @Transactional
-    public ApiResponse<ProductUpdateResponse> updateProduct(Long productId, UpdateProductDto request, List<MultipartFile> images, List<MultipartFile> detailImages) {
+    public ApiResponse<ProductUpdateResponse> updateProduct(Seller seller, Long productId, UpdateProductDto request, List<MultipartFile> images, List<MultipartFile> detailImages) {
         Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
 
@@ -110,9 +108,6 @@ public class ProductsCommandService {
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
-
-        Seller seller = sellerRepository.findById(request.getSellerId())
-                .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
 
         ProductRegister productRegister = request.toEntity(category, seller, productId);
         ProductRegister savedProduct = productRegisterRepository.save(productRegister);
