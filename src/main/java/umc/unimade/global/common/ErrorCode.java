@@ -58,6 +58,7 @@ public enum ErrorCode implements BaseErrorCode {
     REVIEW_CREATE_NOT_BUYER(HttpStatus.FORBIDDEN,"REVIEW4003","리뷰를 작성할 권한이 없습니다."),
     REVIEW_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"REVIEW4003","리뷰를 삭제할 권한이 없습니다."),
     REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4004", "리뷰 신고를 찾을 수 없습니다."),
+    REVIEW_NOT_YOURS(HttpStatus.FORBIDDEN, "REVIEW4004", "자신의 상품에 대한 리뷰가 아닙니다."),
 
 
     // QnA 관련 에러
