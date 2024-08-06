@@ -6,12 +6,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.dto.SellerMyPageResponse;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
+import umc.unimade.domain.orders.dto.ProductOrderResponse;
+import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.repository.OrderRepository;
 import umc.unimade.domain.products.dto.MyPageProductResponse;
 import umc.unimade.domain.products.entity.ProductStatus;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.products.repository.ProductRepository;
 import org.springframework.data.domain.Pageable;
+import umc.unimade.global.common.ErrorCode;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +25,9 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class SellerQueryService {
 
-    private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;
     private final FavoriteSellerRepository favoriteSellerRepository;
+    private final OrderRepository orderRepository;
 
     // 판매자 마이페이지
     public SellerMyPageResponse getSellerMyPage(Seller seller) {
@@ -54,4 +58,13 @@ public class SellerQueryService {
                 .map(MyPageProductResponse::from);
     }
 
+    // 특정 상품의 구매 요청 확인(조회)
+    public Page<ProductOrderResponse> getOrdersByProductId(Long productId, Pageable pageable) {
+        productRepository.findById(productId)
+                .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+
+        Page<Orders> orders = orderRepository.findOrdersByProductId(productId, pageable);
+
+        return orders.map(ProductOrderResponse::from);
+    }
 }

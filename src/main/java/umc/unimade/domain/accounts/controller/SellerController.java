@@ -12,6 +12,8 @@ import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.service.SellerCommandService;
 import umc.unimade.domain.accounts.service.SellerQueryService;
 import org.springframework.data.domain.Pageable;
+import umc.unimade.domain.orders.dto.ProductOrderResponse;
+import umc.unimade.domain.orders.service.OrderQueryService;
 import umc.unimade.domain.products.dto.MyPageProductResponse;
 import umc.unimade.global.security.LoginSeller;
 
@@ -60,5 +62,16 @@ public class SellerController {
         Pageable pageable = PageRequest.of(page, size);
         Page<MyPageProductResponse> response = sellerQueryService.getSoldoutProductsList(seller, pageable);
         return ResponseEntity.ok(response);
+    }
+
+    @Tag(name = "Seller", description = "판매자 관련 API")
+    @Operation(summary = "특정 상품의 구매 요청 보기")
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<Page<ProductOrderResponse>> getOrdersByProductId(@PathVariable Long productId,
+                                                                           @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                           @RequestParam(name = "size", defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductOrderResponse> orders = sellerQueryService.getOrdersByProductId(productId, pageable);
+        return ResponseEntity.ok(orders);
     }
 }

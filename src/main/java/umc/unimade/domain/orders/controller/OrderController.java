@@ -87,17 +87,6 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @Tag(name = "Order", description = "구매 관련 API")
-    @Operation(summary = "특정 상품의 구매 요청 보기")
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<Page<ProductOrderResponse>> getOrdersByProductId(@PathVariable Long productId,
-                                                                         @RequestParam(name = "page", defaultValue = "0") int page,
-                                                                         @RequestParam(name = "size", defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductOrderResponse> orders = orderQueryService.getOrdersByProductId(productId, pageable);
-        return ResponseEntity.ok(orders);
-    }
-
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "주문 상태 변경하기(PENDING,PAID,RECEIVED)")
     @PutMapping("/orderStatus/{orderId}")
