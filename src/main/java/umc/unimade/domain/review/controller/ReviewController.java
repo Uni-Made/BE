@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
-import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.review.dto.ReviewReportRequest;
 import umc.unimade.domain.review.dto.ReviewReportResponse;
 import umc.unimade.domain.review.dto.ReviewCreateRequest;
@@ -32,14 +31,14 @@ public class ReviewController {
     private final ReviewCommandService reviewCommandService;
     private final ReviewQueryService reviewQueryService;
 
-    @Operation(summary = "리뷰 생성, buyerId는 나중에 뺄게요!")
-    @PostMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<Void> createReview(@PathVariable Long productId,
+    @Operation(summary = "리뷰 생성")
+    @PostMapping(value = "/{orderId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<Void> createReview(@PathVariable Long orderId,
                                           @LoginBuyer Buyer buyer,
                                           @Valid @RequestPart("reviewCreateRequest") ReviewCreateRequest reviewCreateRequest,
                                           @RequestPart(value = "reviewImages", required = false) List<MultipartFile> reviewImages) {
         try {
-            reviewCommandService.createReview(productId, buyer, reviewCreateRequest, reviewImages);
+            reviewCommandService.createReview(orderId, buyer, reviewCreateRequest, reviewImages);
             return ApiResponse.onSuccess(null);
         } catch (IllegalArgumentException e) {
             return ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage());

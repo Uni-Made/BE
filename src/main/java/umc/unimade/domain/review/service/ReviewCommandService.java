@@ -7,9 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.SellerExceptionHandler;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.SellerRepository;
-import umc.unimade.domain.products.repository.ProductRepository;
-import umc.unimade.domain.products.entity.Products;
+import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.exception.OrderExceptionHandler;
+import umc.unimade.domain.orders.repository.OrderRepository;
 import umc.unimade.domain.review.dto.ReviewReportRequest;
 import umc.unimade.domain.review.dto.ReviewReportResponse;
 import umc.unimade.domain.review.entity.ReviewReport;
@@ -20,7 +22,6 @@ import umc.unimade.domain.review.dto.ReviewCreateRequest;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.domain.review.entity.ReviewImage;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.global.util.s3.S3Provider;
 
 import java.util.List;
@@ -29,18 +30,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewCommandService {
     private final ReviewRepository reviewRepository;
-    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
     private final S3Provider s3Provider;
     private final SellerRepository sellerRepository;
     private final ReviewReportRepository reviewReportRepository;
 
     @Transactional
-    public void createReview(Long productId, Buyer buyer, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
-        if (reviewCreateRequest.getRatingStar() == 0 || reviewCreateRequest.getRatingStar()==null) {
+    public void createReview(Long orderId, Buyer buyer, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
+        if (reviewCreateRequest.getRatingStar() == 0) {
             throw new ReviewExceptionHandler(ErrorCode.INVALID_RATING_STAR);
         }
-        Products product = findProductById(productId);
-        Review review = reviewCreateRequest.toEntity(product, buyer);
+        Orders order = findOrderById(orderId);
+        if (!order.getBuyer().getId().equals(buyer.getId())) {
+            throw new UserExceptionHandler(ErrorCode.REVIEW_CREATE_NOT_BUYER);
+        }
+        Review review = reviewCreateRequest.toEntity(order);
         List<ReviewImage> reviewImages = reviewCreateRequest.toReviewImages(images, s3Provider, buyer.getId(), review);
         if (reviewImages != null) {
             review.setReviewImages(reviewImages);
@@ -57,14 +61,14 @@ public class ReviewCommandService {
         reviewRepository.delete(review);
     }
 
-    private Products findProductById(Long productId){
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
-    }
-
     private Review findReviewById(Long reviewId){
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_FOUND));
+    }
+
+    private Orders findOrderById(Long orderId){
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
     }
 
     @Transactional

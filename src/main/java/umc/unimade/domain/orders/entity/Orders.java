@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.products.entity.Products;
+import umc.unimade.domain.review.entity.Review;
 import umc.unimade.global.common.BaseEntity;
 
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ public class Orders extends BaseEntity {
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
     public void setTotalPrice(Long totalPrice) {
         this.totalPrice = totalPrice;

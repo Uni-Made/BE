@@ -28,15 +28,21 @@ public class ReviewListResponse {
     public static class ReviewPreview {
         private Long reviewId;
         private String buyer;
+        private List<String> options;
         private String title;
         private Integer ratingStar;
         private String imgUrl;
         private LocalDateTime createdAt;
 
         public static ReviewPreview from(Review review) {
+            List<String> options = review.getOrder().getOrderItems().stream()
+                    .flatMap(orderItem -> orderItem.getOrderOptions().stream()
+                            .map(orderOption -> orderOption.getOptionValue().getValue()))
+                    .collect(Collectors.toList());
             return ReviewPreview.builder()
                     .reviewId(review.getId())
                     .buyer(review.getBuyer().getName())
+                    .options(options)
                     .title(review.getTitle())
                     .ratingStar(review.getRatingStar())
                     .imgUrl(review.getReviewImages().isEmpty() ? null :review.getReviewImages().get(0).getImageUrl())
