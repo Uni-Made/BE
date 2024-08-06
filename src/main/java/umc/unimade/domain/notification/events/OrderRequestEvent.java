@@ -7,4 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderRequestEvent {
     private final Long userId;
+    private final Long orderId;
 }

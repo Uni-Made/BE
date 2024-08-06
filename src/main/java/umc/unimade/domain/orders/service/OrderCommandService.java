@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
+import umc.unimade.domain.notification.events.OrderCancelledEvent;
 import umc.unimade.domain.notification.events.OrderRequestEvent;
 import umc.unimade.domain.notification.events.PaymentRequestEvent;
 import umc.unimade.domain.notification.events.ReviewRequestEvent;
@@ -82,7 +83,7 @@ public class OrderCommandService {
                 .sum();
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
-        eventPublisher.publishEvent(new OrderRequestEvent(order.getBuyer().getId()));
+        eventPublisher.publishEvent(new OrderRequestEvent(order.getBuyer().getId(),order.getId()));
         return OrderResponse.from(order, product, totalPrice);
     }
 
@@ -144,6 +145,9 @@ public class OrderCommandService {
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
         order.setStatus(status);
+        if (status == OrderStatus.CANCELLED) {
+            eventPublisher.publishEvent(new OrderCancelledEvent(order.getBuyer().getId(),orderId));
+        }
         return orderRepository.save(order);
     }
 
@@ -159,7 +163,7 @@ public class OrderCommandService {
 
         order.setStatus(OrderStatus.RECEIVED);
         order.setReceiveStatus(ReceiveStatus.RECEIVED);
-        eventPublisher.publishEvent(new ReviewRequestEvent(order.getBuyer().getId(), order));
+        eventPublisher.publishEvent(new ReviewRequestEvent(order.getBuyer().getId(), order.getId()));
         return orderRepository.save(order);
 
     }

@@ -13,15 +13,20 @@ import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.notification.dto.NotificationRequest;
 import umc.unimade.domain.notification.events.AnswerPostedEvent;
+import umc.unimade.domain.notification.events.OrderCancelledEvent;
 import umc.unimade.domain.notification.events.OrderRequestEvent;
 import umc.unimade.domain.notification.events.ReviewRequestEvent;
 import umc.unimade.domain.notification.repository.BuyerNotificationRepository;
 import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OrderRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.products.repository.ProductRepository;
+import umc.unimade.domain.qna.entity.Questions;
+import umc.unimade.domain.qna.exception.QnAExceptionHandler;
+import umc.unimade.domain.qna.repository.QuestionsRepository;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.util.redis.RedisUtil;
 
@@ -35,6 +40,7 @@ public class NotificationService {
     private final BuyerRepository buyerRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final QuestionsRepository questionsRepository;
     private final BuyerNotificationRepository buyerNotificationRepository;
     private final RedisUtil redisUtil;
 
@@ -53,9 +59,18 @@ public class NotificationService {
     @EventListener
     public void handleOrderCompletedEvent(OrderRequestEvent event) {
         Buyer buyer = findBuyerById(event.getUserId());
-        sendOrderCompleteNotification(buyer);
+        Orders order = findOrderById(event.getOrderId());
+        sendOrderCompleteNotification(buyer,order);
     }
 
+
+    @Async
+    @EventListener
+    public void handleOrderCancelledEvent(OrderCancelledEvent event) {
+        Buyer buyer = findBuyerById(event.getUserId());
+        Orders order = findOrderById(event.getOrderId());
+        sendOrderCompleteNotification(buyer,order);
+    }
     // 입금 안내 알림
     @Scheduled(cron = "0 0 10 * * ?")
     public void sendPendingPaymentReminders() {
@@ -65,7 +80,7 @@ public class NotificationService {
 
         for (Orders order : pendingOrders) {
             Buyer buyer = order.getBuyer();
-            sendPaymentReminderNotification(buyer);
+            sendPaymentReminderNotification(buyer,order);
         }
     }
 
@@ -77,7 +92,7 @@ public class NotificationService {
 
         for (Orders order : orders) {
             Buyer buyer = order.getBuyer();
-            sendPickupNotification(buyer);
+            sendPickupNotification(buyer,order);
         }
     }
 
@@ -86,8 +101,8 @@ public class NotificationService {
     @EventListener
     public void handleAnswerPostedEvent(AnswerPostedEvent event) {
         Buyer buyer = findBuyerById(event.getUserId());
-        Products product = findProductById(event.getProductId());
-        sendAnswerNotification(buyer,product);
+        Questions question = findQuestionById(event.getQuestionId());
+        sendAnswerNotification(buyer,question);
     }
 
     // 리뷰 작성 요청 알람
@@ -95,8 +110,8 @@ public class NotificationService {
     @EventListener
     public void handleReviewRequestEvent(ReviewRequestEvent event) {
         Buyer buyer = findBuyerById(event.getUserId());
-        Long orderId = event.getOrder().getId();
-        sendReviewReminderNotification(buyer,orderId);
+        Orders order = findOrderById(event.getOrderId());
+        sendReviewReminderNotification(buyer,order);
     }
 
     // 리뷰 생성 후 3일 지나면 삭제
@@ -106,23 +121,27 @@ public class NotificationService {
 //        buyerNotificationRepository.deleteAllByCreatedAtBefore(timeLimit);
 //    }
 
-    private void sendOrderCompleteNotification(Buyer buyer){
-        sendNotification(buyer.getEmail(),new NotificationRequest("구매 완료 알림",String.valueOf(buyer.getId())));
-    }
-    private void sendPaymentReminderNotification(Buyer buyer) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림",String.valueOf(buyer.getId())));
+    private void sendOrderCompleteNotification(Buyer buyer,Orders order){
+        sendNotification(buyer.getEmail(),new NotificationRequest("구매 완료 알림",order.getProduct().getName(),String.valueOf(buyer.getId())));
     }
 
-    private void sendPickupNotification(Buyer buyer) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("수령 알림",String.valueOf(buyer.getId())));
+    private void sendOrderCancelledNotification(Buyer buyer, Orders order){
+        sendNotification(buyer.getEmail(),new NotificationRequest("입금 미완료 구매 취소 알림", order.getProduct().getName(), String.valueOf(buyer.getId())));
+    }
+    private void sendPaymentReminderNotification(Buyer buyer,Orders order) {
+        sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림",order.getProduct().getName(), String.valueOf(buyer.getId())));
     }
 
-    private void sendAnswerNotification(Buyer buyer, Products product) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("답변 등록 알림",String.valueOf(product.getId())));
+    private void sendPickupNotification(Buyer buyer,Orders order) {
+        sendNotification(buyer.getEmail(), new NotificationRequest("수령 알림",order.getProduct().getName(), String.valueOf(buyer.getId())));
     }
 
-    private void sendReviewReminderNotification(Buyer buyer,Long orderId) {
-        NotificationRequest notificationRequest = new NotificationRequest("리뷰 작성 알림", String.valueOf(orderId));
+    private void sendAnswerNotification(Buyer buyer, Questions question) {
+        sendNotification(buyer.getEmail(), new NotificationRequest("답변 등록 알림",question.getTitle(),String.valueOf(question.getProduct().getId())));
+    }
+
+    private void sendReviewReminderNotification(Buyer buyer,Orders order) {
+        NotificationRequest notificationRequest = new NotificationRequest("리뷰 작성 알림",order.getProduct().getName(), String.valueOf(order.getId()));
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -142,6 +161,7 @@ public class NotificationService {
                 Message message = Message.builder()
                         .putData("title", notificationRequest.getTitle())
                         .putData("body", notificationRequest.getBody())
+                        .putData("id", notificationRequest.getId())
                         .setToken(fcmToken)
                         .build();
                 FirebaseMessaging.getInstance().sendAsync(message).get();
@@ -170,6 +190,16 @@ public class NotificationService {
     private Products findProductById(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(()-> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+    }
+
+    private Orders findOrderById(Long orderId){
+        return orderRepository.findById(orderId)
+                .orElseThrow(()-> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
+    }
+
+    private Questions findQuestionById(Long questionId){
+        return questionsRepository.findById(questionId)
+                .orElseThrow(()-> new QnAExceptionHandler(ErrorCode.QNA_NOT_FOUND));
     }
 
 }
