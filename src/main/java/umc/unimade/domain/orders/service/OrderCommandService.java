@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
+import umc.unimade.domain.notification.events.OrderRequestEvent;
 import umc.unimade.domain.notification.events.PaymentRequestEvent;
 import umc.unimade.domain.notification.events.ReviewRequestEvent;
 import umc.unimade.domain.orders.dto.OrderRequest;
@@ -81,7 +82,7 @@ public class OrderCommandService {
                 .sum();
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
-
+        eventPublisher.publishEvent(new OrderRequestEvent(order.getBuyer().getId()));
         return OrderResponse.from(order, product, totalPrice);
     }
 

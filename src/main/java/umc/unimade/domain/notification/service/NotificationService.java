@@ -13,6 +13,7 @@ import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.notification.dto.NotificationRequest;
 import umc.unimade.domain.notification.events.AnswerPostedEvent;
+import umc.unimade.domain.notification.events.OrderRequestEvent;
 import umc.unimade.domain.notification.events.ReviewRequestEvent;
 import umc.unimade.domain.notification.repository.BuyerNotificationRepository;
 import umc.unimade.domain.orders.entity.OrderStatus;
@@ -46,7 +47,15 @@ public class NotificationService {
     /*구매자 알림*/
 
     // TO DO : 프론트와 상의해서 알림을 저장해뒀다가 목록을 반환해야하는지 결정
-    // TO Do : 구매 완료 알림
+
+    //구매 완료 알림
+    @Async
+    @EventListener
+    public void handleOrderCompletedEvent(OrderRequestEvent event) {
+        Buyer buyer = findBuyerById(event.getUserId());
+        sendOrderCompleteNotification(buyer);
+    }
+
     // 입금 안내 알림
     @Scheduled(cron = "0 0 10 * * ?")
     public void sendPendingPaymentReminders() {
@@ -97,6 +106,9 @@ public class NotificationService {
 //        buyerNotificationRepository.deleteAllByCreatedAtBefore(timeLimit);
 //    }
 
+    private void sendOrderCompleteNotification(Buyer buyer){
+        sendNotification(buyer.getEmail(),new NotificationRequest("구매 완료 알림",String.valueOf(buyer.getId())));
+    }
     private void sendPaymentReminderNotification(Buyer buyer) {
         sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림",String.valueOf(buyer.getId())));
     }
