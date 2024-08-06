@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.accounts.dto.SellerMyPageResponse;
-import umc.unimade.domain.accounts.dto.SellerPageResponse;
 import umc.unimade.domain.accounts.service.SellerCommandService;
 import umc.unimade.domain.accounts.service.SellerQueryService;
 import org.springframework.data.domain.Pageable;
@@ -58,18 +57,5 @@ public class SellerController {
         Pageable pageable = PageRequest.of(page, size);
         Page<MyPageProductResponse> response = sellerQueryService.getSoldoutProductsList(sellerId, pageable);
         return ResponseEntity.ok(response);
-    }
-
-    @Tag(name = "Seller", description = "판매자 관련 API")
-    @Operation(summary = "구매자 시점 메이더 홈", description = "popular/latest/deadline")
-    @GetMapping("/{sellerId}")
-    public ResponseEntity<SellerPageResponse> getSellerPage(@PathVariable Long sellerId,
-                                                                      @RequestParam(required = false, defaultValue = "popular") String sort,
-                                                                      @RequestParam(name = "page", defaultValue = "0") int page,
-                                                                      @RequestParam(name = "size", defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        SellerPageResponse sellerPage = sellerQueryService.getSellerPage(sellerId, sort, pageable);
-        return ResponseEntity.ok(sellerPage);
     }
 }

@@ -3,10 +3,14 @@ package umc.unimade.domain.accounts.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.unimade.domain.accounts.dto.SellerPageResponse;
 import umc.unimade.domain.accounts.entity.Seller;
+import umc.unimade.domain.accounts.service.SellerQueryService;
 import umc.unimade.domain.orders.dto.BuyerOrderHistoryResponse;
 import umc.unimade.domain.accounts.dto.BuyerPageResponse;
 import umc.unimade.domain.accounts.entity.Buyer;
@@ -28,7 +32,6 @@ import umc.unimade.global.security.LoginSeller;
 public class BuyerController {
     private final BuyerCommandService buyerCommandService;
     private final BuyerQueryService buyerQueryService;
-
 
     @Tag(name = "FavoriteSeller")
     @Operation(summary = "찜하지 않은 상태라면 찜하기. \n 찜한 상태라면 찜하기 취소")
@@ -113,5 +116,18 @@ public class BuyerController {
         } catch (UserExceptionHandler e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.BUYER_NOT_FOUND.getCode(), ErrorCode.BUYER_NOT_FOUND.getMessage()));
         }
+    }
+
+    @Tag(name = "Buyer", description = "구매자 관련 API")
+    @Operation(summary = "구매자 시점 메이더 홈", description = "popular/latest/deadline")
+    @GetMapping("/{sellerId}")
+    public ResponseEntity<SellerPageResponse> getSellerPage(@PathVariable Long sellerId,
+                                                            @RequestParam(required = false, defaultValue = "popular") String sort,
+                                                            @RequestParam(name = "page", defaultValue = "0") int page,
+                                                            @RequestParam(name = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        SellerPageResponse sellerPage = buyerQueryService.getSellerPage(sellerId, sort, pageable);
+        return ResponseEntity.ok(sellerPage);
     }
 }
