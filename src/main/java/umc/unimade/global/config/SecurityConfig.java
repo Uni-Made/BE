@@ -41,10 +41,12 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests(authorize -> {authorize
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/products/favorite/**", "/api/buyer/**").hasRole("BUYER")
+                        .requestMatchers("/seller/**").hasRole("SELLER")
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated();})
                 .oauth2Login(oauth2 -> oauth2 // OAuth2 로그인 설정
                         .loginPage("/oauth2/authorization/messaging-client-oidc")
                         .defaultSuccessUrl("/loginSuccess")
