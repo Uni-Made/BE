@@ -5,27 +5,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.unimade.domain.review.entity.ReportStatus;
-import umc.unimade.domain.review.entity.Review;
 import umc.unimade.domain.review.entity.ReviewReport;
+
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReviewReportsResponse {
-
-    private Long reportId;
+public class ReportProcessResponse {
+    private Long id;
     private Long reviewId;
-    private String reviewTitle;
     private ReportStatus status;
+    private LocalDateTime processedAt;
 
-    public static ReviewReportsResponse from(ReviewReport report) {
-        Review review = report.getReview();
-        return ReviewReportsResponse.builder()
-                .reportId(report.getId())
-                .reviewId(review.getId())
-                .reviewTitle(review.getTitle())
+    public static ReportProcessResponse from(ReviewReport report) {
+        return ReportProcessResponse.builder()
+                .id(report.getId())
+                .reviewId(report.getReview().getId())
                 .status(report.getStatus())
+                .processedAt(report.getProcessedAt())
                 .build();
     }
 }
