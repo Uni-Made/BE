@@ -8,5 +8,5 @@ import umc.unimade.domain.orders.entity.Orders;
 @RequiredArgsConstructor
 public class ReviewRequestEvent {
     private final Long userId;
-    private final Orders order;
+    private final Long orderId;
 }

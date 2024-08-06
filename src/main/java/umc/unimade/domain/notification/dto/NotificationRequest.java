@@ -8,4 +8,5 @@ import lombok.*;
 public class NotificationRequest {
     private String title;
     private String body;
+    private String id;
 }
