@@ -51,9 +51,11 @@ public enum ErrorCode implements BaseErrorCode {
     // 구매자 관련 에러
     BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "Buyer4000", "구매자를 찾을 수 없습니다."),
 
+
     // 리뷰 관련 에러
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4000", "리뷰를 찾을 수 없습니다."),
     INVALID_RATING_STAR(HttpStatus.BAD_REQUEST, "REVIEW4001", "별점은 0점 이상이어야합니다"),
+    REVIEW_CREATE_NOT_BUYER(HttpStatus.FORBIDDEN,"REVIEW4003","리뷰를 작성할 권한이 없습니다."),
     REVIEW_DELETE_NOT_OWNER(HttpStatus.FORBIDDEN,"REVIEW4003","리뷰를 삭제할 권한이 없습니다."),
     REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW4004", "리뷰 신고를 찾을 수 없습니다."),
 

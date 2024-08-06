@@ -3,6 +3,7 @@ package umc.unimade.domain.review.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Buyer;
+import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.BaseEntity;
 
@@ -34,6 +35,10 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Products product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Orders order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id")
