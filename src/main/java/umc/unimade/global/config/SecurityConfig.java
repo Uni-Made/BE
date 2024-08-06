@@ -23,6 +23,8 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final JwtEntryPoint jwtEntryPoint;
 
+    private final String[] swaggerUrls = {"/swagger-ui/**", "/v3/**"};
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -46,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/products/favorite/**", "/api/buyer/**").hasRole("BUYER")
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(swaggerUrls).permitAll()
                         .anyRequest().authenticated();})
                 .oauth2Login(oauth2 -> oauth2 // OAuth2 로그인 설정
                         .loginPage("/oauth2/authorization/messaging-client-oidc")
