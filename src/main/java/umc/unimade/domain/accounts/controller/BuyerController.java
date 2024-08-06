@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.orders.dto.BuyerOrderHistoryResponse;
 import umc.unimade.domain.accounts.dto.BuyerPageResponse;
 import umc.unimade.domain.accounts.entity.Buyer;
@@ -18,6 +19,7 @@ import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.security.LoginBuyer;
+import umc.unimade.global.security.LoginSeller;
 
 
 @RestController
