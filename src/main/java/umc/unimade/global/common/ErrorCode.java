@@ -40,6 +40,7 @@ public enum ErrorCode implements BaseErrorCode {
     ADDRESS_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","주소는 필수 항목입니다."),
     OPTION_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","옵션을 선택해주세요."),
     COUNT_REQUIRED(HttpStatus.BAD_REQUEST,"ORDER4002","수량은 1개 이상 선택해주세요."),
+    INVALID_ORDER_STATUS(HttpStatus.INTERNAL_SERVER_ERROR, "ORDER5000", "서버 에러"),
 
 
     // 판매자 관련 에러

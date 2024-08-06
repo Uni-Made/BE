@@ -6,6 +6,9 @@ import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Builder
 @Getter
@@ -42,6 +45,9 @@ public class Orders extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Products product;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     public void setTotalPrice(Long totalPrice) {
         this.totalPrice = totalPrice;

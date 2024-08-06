@@ -45,6 +45,8 @@ public class NotificationService {
 
     /*구매자 알림*/
 
+    // TO DO : 프론트와 상의해서 알림을 저장해뒀다가 목록을 반환해야하는지 결정
+    // TO Do : 구매 완료 알림
     // 입금 안내 알림
     @Scheduled(cron = "0 0 10 * * ?")
     public void sendPendingPaymentReminders() {

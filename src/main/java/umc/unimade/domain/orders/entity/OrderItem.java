@@ -5,6 +5,9 @@ import lombok.*;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.global.common.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -27,5 +30,8 @@ public class OrderItem extends BaseEntity {
 
     @Column(name = "count", nullable = false)
     private int count;
+
+    @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderOption> orderOptions = new ArrayList<>();
 }
 
