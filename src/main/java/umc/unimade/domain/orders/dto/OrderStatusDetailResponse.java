@@ -21,7 +21,7 @@ public class OrderStatusDetailResponse {
     private String accountName;
     private LocalDate pickupDate;
     private String pickupAddress;
-    private LocalDate deliverDate;
+    private LocalDate deliveryDate;
 
     @Getter
     @NoArgsConstructor
@@ -60,7 +60,7 @@ public class OrderStatusDetailResponse {
     // TO DO : deliveryDate 칼럼 추가 시 수정
     public static OrderStatusDetailResponse fromPaidOnlineOrder(Orders order) {
         return commonResponse(order)
-                .deliverDate(order.getProduct().getPickupDate())
+                .deliveryDate(order.getCreatedAt().toLocalDate().plusDays(5))
                 .build();
     }
 
