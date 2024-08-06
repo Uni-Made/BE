@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> {authorize
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/products/favorite/**", "/api/buyer/**").hasRole("BUYER")
+                        .requestMatchers("/api/products/favorite/**", "/api/buyer/**").hasAnyRole("BUYER","ADMIN")
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(swaggerUrls).permitAll()

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.orders.dto.BuyerOrderHistoryResponse;
 import umc.unimade.domain.accounts.dto.BuyerPageResponse;
 import umc.unimade.domain.accounts.entity.Buyer;

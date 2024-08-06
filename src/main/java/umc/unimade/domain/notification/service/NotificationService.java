@@ -145,7 +145,7 @@ public class NotificationService {
 
     private void sendPaymentReminderNotification(Buyer buyer, Orders order) {
         long daysLeft = ChronoUnit.DAYS.between(order.getCreatedAt().toLocalDate(), LocalDate.now());
-        String body = String.format("주문 후 %d일이 지났습니다. 입금을 완료해 주세요.", daysLeft);
+        String body = String.format(order.getProduct().getName(),"주문 후 %d일이 지났습니다. 입금을 완료해 주세요.", daysLeft);
         sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림", body, String.valueOf(buyer.getId())));
     }
 
