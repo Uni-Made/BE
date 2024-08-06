@@ -57,6 +57,7 @@ public class OrderStatusDetailResponse {
                 .build();
     }
 
+    // TO DO : deliveryDate 칼럼 추가 시 수정
     public static OrderStatusDetailResponse fromPaidOnlineOrder(Orders order) {
         return commonResponse(order)
                 .deliverDate(order.getProduct().getPickupDate())
