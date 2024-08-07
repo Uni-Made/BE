@@ -134,7 +134,7 @@ public class BuyerQueryService {
     }
 
     // 구매자 시점 메이더 홈 - 특정 sellerId의 프로필 정보와 selling 상태인 상품 목록을 조회
-    public SellerPageResponse getSellerPage(Long sellerId, String sort, Pageable pageable) {
+    public SellerPageResponse getSellerPage(Buyer buyer, Long sellerId, String sort, Pageable pageable) {
         Seller seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new SellerExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
 
@@ -155,9 +155,9 @@ public class BuyerQueryService {
         }
 
         Page<SellerPageResponse.ProductsResponse> productResponses = products.map(SellerPageResponse.ProductsResponse::from);
-
         Long favoriteCount = favoriteSellerRepository.countBySellerId(sellerId);
+        boolean favoriteSeller = favoriteSellerRepository.existsBySellerIdAndBuyerId(sellerId, buyer.getId());
 
-        return SellerPageResponse.of(seller, productResponses, favoriteCount);
+        return SellerPageResponse.of(seller, productResponses, favoriteCount, favoriteSeller);
     }
 }

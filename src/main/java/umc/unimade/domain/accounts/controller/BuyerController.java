@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.accounts.dto.SellerPageResponse;
-import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.accounts.service.SellerQueryService;
 import umc.unimade.domain.orders.dto.BuyerOrderHistoryResponse;
 import umc.unimade.domain.accounts.dto.BuyerPageResponse;
 import umc.unimade.domain.accounts.entity.Buyer;
@@ -121,13 +119,14 @@ public class BuyerController {
     @Tag(name = "Buyer", description = "구매자 관련 API")
     @Operation(summary = "구매자 시점 메이더 홈", description = "popular/latest/deadline")
     @GetMapping("/{sellerId}")
-    public ResponseEntity<SellerPageResponse> getSellerPage(@PathVariable Long sellerId,
+    public ResponseEntity<SellerPageResponse> getSellerPage(@LoginBuyer Buyer buyer,
+                                                            @PathVariable Long sellerId,
                                                             @RequestParam(required = false, defaultValue = "popular") String sort,
                                                             @RequestParam(name = "page", defaultValue = "0") int page,
                                                             @RequestParam(name = "size", defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        SellerPageResponse sellerPage = buyerQueryService.getSellerPage(sellerId, sort, pageable);
+        SellerPageResponse sellerPage = buyerQueryService.getSellerPage(buyer, sellerId, sort, pageable);
         return ResponseEntity.ok(sellerPage);
     }
 }

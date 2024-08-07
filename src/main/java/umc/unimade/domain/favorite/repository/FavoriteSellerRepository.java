@@ -22,6 +22,7 @@ public interface FavoriteSellerRepository extends JpaRepository<FavoriteSeller, 
     @Query("SELECT fs FROM FavoriteSeller fs WHERE fs.buyer = :buyer AND fs.id < :cursor ORDER BY fs.createdAt DESC")
     List<FavoriteSeller> findByBuyerAndIdLessThanOrderByCreatedAtDesc(Buyer buyer, Long cursor, Pageable pageable);
 
-    @Query("SELECT COUNT(fs) FROM FavoriteSeller fs WHERE fs.seller.id = :sellerId")
     Long countBySellerId(Long sellerId);
+
+    boolean existsBySellerIdAndBuyerId(Long sellerId, Long buyerId);
 }
