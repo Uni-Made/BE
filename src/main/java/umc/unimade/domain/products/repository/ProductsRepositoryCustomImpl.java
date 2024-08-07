@@ -16,7 +16,7 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Products> findProductsByFilters(String category, String keyword, Long minPrice, Long maxPrice, String sort, Long cursor, int pageSize) {
+    public List<Products> findProductsByFilters(List<Long> categoryIds, String keyword, Long minPrice, Long maxPrice, String sort, Long cursor, int pageSize) {
         QProducts products = QProducts.products;
         QFavoriteProduct favoriteProduct = QFavoriteProduct.favoriteProduct;
 
@@ -24,7 +24,7 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
                 .selectFrom(products)
                 .leftJoin(favoriteProduct).on(favoriteProduct.product.eq(products))
                 .where(
-                        categoryEq(category),
+                        categoryIn(categoryIds),
                         keywordContains(keyword),
                         priceBetween(minPrice, maxPrice),
                         cursorLessThan(cursor),
@@ -36,8 +36,8 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
                 .fetch();
     }
 
-    private BooleanExpression categoryEq(String category) {
-        return category != null ? QProducts.products.category.name.eq(category) : null;
+    private BooleanExpression categoryIn(List<Long> categoryIds) {
+        return categoryIds != null && !categoryIds.isEmpty() ? QProducts.products.category.id.in(categoryIds) : null;
     }
 
     private BooleanExpression keywordContains(String keyword) {
