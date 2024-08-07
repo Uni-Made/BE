@@ -136,25 +136,25 @@ public class NotificationService {
     }
 
     private void sendOrderCompleteNotification(Buyer buyer,Orders order){
-        sendNotification(buyer.getEmail(),new NotificationRequest("구매 완료 알림",order.getProduct().getName(),String.valueOf(buyer.getId())));
+        sendNotification(buyer.getSocialId(),new NotificationRequest("구매 완료 알림",order.getProduct().getName(),String.valueOf(buyer.getId())));
     }
 
     private void sendOrderCancelledNotification(Buyer buyer, Orders order){
-        sendNotification(buyer.getEmail(),new NotificationRequest("입금 미완료 구매 취소 알림", order.getProduct().getName(), String.valueOf(buyer.getId())));
+        sendNotification(buyer.getSocialId(),new NotificationRequest("입금 미완료 구매 취소 알림", order.getProduct().getName(), String.valueOf(buyer.getId())));
     }
 
     private void sendPaymentReminderNotification(Buyer buyer, Orders order) {
         long daysLeft = ChronoUnit.DAYS.between(order.getCreatedAt().toLocalDate(), LocalDate.now());
         String body = String.format(order.getProduct().getName(),"주문 후 %d일이 지났습니다. 입금을 완료해 주세요.", daysLeft);
-        sendNotification(buyer.getEmail(), new NotificationRequest("입금 알림", body, String.valueOf(buyer.getId())));
+        sendNotification(buyer.getSocialId(), new NotificationRequest("입금 알림", body, String.valueOf(buyer.getId())));
     }
 
     private void sendPickupNotification(Buyer buyer,Orders order) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("수령 알림",order.getProduct().getName(), String.valueOf(buyer.getId())));
+        sendNotification(buyer.getSocialId(), new NotificationRequest("수령 알림",order.getProduct().getName(), String.valueOf(buyer.getId())));
     }
 
     private void sendAnswerNotification(Buyer buyer, Questions question) {
-        sendNotification(buyer.getEmail(), new NotificationRequest("답변 등록 알림",question.getTitle(),String.valueOf(question.getProduct().getId())));
+        sendNotification(buyer.getSocialId(), new NotificationRequest("답변 등록 알림",question.getTitle(),String.valueOf(question.getProduct().getId())));
     }
 
     private void sendReviewReminderNotification(Buyer buyer,Orders order) {
@@ -163,17 +163,17 @@ public class NotificationService {
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        sendNotification(buyer.getEmail(), notificationRequest);
+                        sendNotification(buyer.getSocialId(), notificationRequest);
                     }
                 },
                 5 * 60 * 1000 // 5 minutes delay
         );
     }
 
-    private void sendNotification(String email, NotificationRequest notificationRequest) {
+    private void sendNotification(String socialId, NotificationRequest notificationRequest) {
         try {
-            String fcmToken = redisUtil.getFCMToken(email);
-            Buyer buyer = findBuyerByEmail(email);
+            String fcmToken = redisUtil.getFCMToken(socialId);
+            Buyer buyer = findBuyerBySocialId(socialId);
             if (fcmToken != null) {
                 Message message = Message.builder()
                         .putData("title", notificationRequest.getTitle())
@@ -200,8 +200,8 @@ public class NotificationService {
                 .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
 
-    private Buyer findBuyerByEmail(String email){
-        return buyerRepository.findByEmail(email)
+    private Buyer findBuyerBySocialId(String email){
+        return buyerRepository.findBySocialId(email)
                 .orElseThrow(() -> new UserExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
 
