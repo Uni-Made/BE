@@ -8,6 +8,7 @@ import umc.unimade.domain.products.entity.Products;
 @NoArgsConstructor
 @Builder
 public class OrderResponse {
+    private Long orderId;
     private String bankName;
     private String accountNumber;
     private String accountName;
@@ -16,6 +17,7 @@ public class OrderResponse {
 
     public static OrderResponse from(Orders order, Products product, Long totalPrice) {
         return OrderResponse.builder()
+                .orderId(order.getId())
                 .bankName(product.getBankName())
                 .accountNumber(product.getAccountNumber())
                 .accountName(product.getAccountName())
