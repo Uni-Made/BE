@@ -38,7 +38,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
         String email = ((CustomUserDetail) userDetails).getUsername();
 
         if (parameter.hasParameterAnnotation(LoginBuyer.class)) {
-            return accountsQueryService.getBuyerByEmail(email);
+            return accountsQueryService.getBuyerBySocialId(email);
         } else if (parameter.hasParameterAnnotation(LoginSeller.class)) {
             return accountsQueryService.getSellerByEmail(email);
         }

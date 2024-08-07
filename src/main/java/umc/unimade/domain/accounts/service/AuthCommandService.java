@@ -74,7 +74,7 @@ public class AuthCommandService {
         if (loginCustomer == null) {
             return SignUpResponseDto.from(201, socialName, email, socialId);
         }
-        redisUtil.saveFCMToken(email,fcmToken);
+        redisUtil.saveFCMToken(socialId,fcmToken);
         JwtToken jwtToken = jwtProvider.createTotalToken(loginCustomer.getSocialId(), loginCustomer.getRole());
         loginCustomer.login(jwtToken.getRefreshToken());
         return SignInResponseDto.from(202, jwtToken.getAccessToken(), jwtToken.getRefreshToken());
@@ -125,8 +125,7 @@ public class AuthCommandService {
                     throw new CustomException(ErrorCode.USER_NOT_FOUND);
                 }
 
-                //to do : jwtProvider에서 빼오는 것으로 수정
-                //redisUtil.removeFCMToken();
+                redisUtil.removeFCMToken(buyerIsLogin.getSocialId());
                 buyerIsLogin.logout();
                 break;
             case "SELLER", "ADMIN":

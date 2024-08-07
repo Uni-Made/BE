@@ -48,7 +48,6 @@ public class OrderCommandService {
     @Transactional
     public OrderResponse createOrder(Long productId, Buyer buyer, OrderRequest orderRequest) {
         validateOrderRequest(orderRequest);
-
         Products product = findProductById(productId);
 
         if (product.getStatus() != ProductStatus.SELLING) {

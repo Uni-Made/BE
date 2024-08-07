@@ -20,8 +20,8 @@ public class AccountsQueryService {
     private final SellerRepository sellerRepository;
 
 
-    public Buyer getBuyerByEmail(String email) {
-        return buyerRepository.findByEmail(email)
+    public Buyer getBuyerBySocialId(String socialId) {
+        return buyerRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new BuyerExceptionHandler(ErrorCode.BUYER_NOT_FOUND));
     }
 
