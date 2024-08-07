@@ -69,7 +69,7 @@ public class ProductsController extends BaseEntity {
     @Operation(summary = "판매 상품 목록 가져오기 + 필터링 ")
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<ProductsListResponse>> findProductsByFilters(
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) List<Long> categoryIds,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long minPrice,
             @RequestParam(required = false) Long maxPrice,
@@ -78,7 +78,7 @@ public class ProductsController extends BaseEntity {
             @RequestParam(defaultValue = "10") int pageSize) {
 
         try {
-            return ResponseEntity.ok(ApiResponse.onSuccess(productsQueryService.findProductsByFilters(category, keyword, minPrice, maxPrice, sort, cursor, pageSize)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(productsQueryService.findProductsByFilters(categoryIds, keyword, minPrice, maxPrice, sort, cursor, pageSize)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (ProductsExceptionHandler e) {

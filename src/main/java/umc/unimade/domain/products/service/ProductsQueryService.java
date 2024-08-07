@@ -34,8 +34,8 @@ public class ProductsQueryService {
     }
 
     @Transactional
-    public ProductsListResponse findProductsByFilters(String category, String keyword, Long minPrice, Long maxPrice, String sort, Long cursor, int pageSize) {
-        List<Products> products = productRepository.findProductsByFilters(category, keyword, minPrice, maxPrice, sort, cursor, pageSize);
+    public ProductsListResponse findProductsByFilters(List<Long> categoryIds, String keyword, Long minPrice, Long maxPrice, String sort, Long cursor, int pageSize) {
+        List<Products> products = productRepository.findProductsByFilters(categoryIds, keyword, minPrice, maxPrice, sort, cursor, pageSize);
 
         Long nextCursor = products.isEmpty() ? null : products.get(products.size() - 1).getId();
         boolean isLast = products.size() < pageSize;
