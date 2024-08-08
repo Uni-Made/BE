@@ -36,10 +36,11 @@ public class SellerController {
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "판매자 마이페이지에서 설명창 입력 받기")
     @PutMapping("/description")
-    public ResponseEntity<Void> updateDescription(@LoginSeller Seller seller,
+    public ResponseEntity<SellerMyPageResponse> updateDescription(@LoginSeller Seller seller,
                                                   @RequestBody String description) {
         sellerCommandService.saveDescription(seller, description);
-        return ResponseEntity.ok().build();
+        SellerMyPageResponse response = sellerQueryService.getSellerMyPage(seller);
+        return ResponseEntity.ok(response);
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
