@@ -39,7 +39,7 @@ public class ProductsController extends BaseEntity {
 
     @Tag(name = "Products", description = "판매 상품 관련 API")
     @Operation(summary = "판매 상품 정보 가져오기")
-    @GetMapping("/{productId}")
+    @GetMapping("/buyer/{productId}")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductDetails (@PathVariable Long productId ,
                                                                            @RequestParam ViewType viewType,
                                                                            @RequestParam(required = false) Long cursor,
@@ -56,7 +56,7 @@ public class ProductsController extends BaseEntity {
 
     @Tag(name = "FavoriteProduct")
     @Operation(summary = "찜하지 않은 상태라면 찜하기. \n 찜한 상태라면 찜하기 취소")
-    @PostMapping("/favorite/{productId}")
+    @PostMapping("/buyer/favorite/{productId}")
     public ResponseEntity<ApiResponse<Void>> toggleFavoriteProduct(@LoginBuyer Buyer buyer, @PathVariable Long productId) {
         try {
             return ResponseEntity.ok(productsCommandService.toggleFavoriteProduct(productId, buyer));
@@ -69,7 +69,7 @@ public class ProductsController extends BaseEntity {
 
     @Tag(name = "Products")
     @Operation(summary = "판매 상품 목록 가져오기 + 필터링 ")
-    @GetMapping("/list")
+    @GetMapping("/buyer/list")
     public ResponseEntity<ApiResponse<ProductsListResponse>> findProductsByFilters(
             @RequestParam(required = false) List<Long> categoryIds,
             @RequestParam(required = false) String keyword,
