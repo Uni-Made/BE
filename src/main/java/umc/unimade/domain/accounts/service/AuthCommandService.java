@@ -60,6 +60,10 @@ public class AuthCommandService {
 
         Buyer loginCustomer = buyerRepository.findBySocialIdAndProvider(socialId, provider);
 
+        if (loginCustomer == null) {
+            return SignUpResponseDto.from(201, socialName, email, socialId);
+        }
+
         // 정지된 사용자 접근 금지
         if (loginCustomer.getStatus() == ReportStatus.THREE) {
             throw new BuyerExceptionHandler(ErrorCode.USER_LOCKED_THREE);
@@ -71,9 +75,7 @@ public class AuthCommandService {
             throw new BuyerExceptionHandler(ErrorCode.USER_LOCKED_PERMANENT);
         }
 
-        if (loginCustomer == null) {
-            return SignUpResponseDto.from(201, socialName, email, socialId);
-        }
+
         redisUtil.saveFCMToken(socialId,fcmToken);
         JwtToken jwtToken = jwtProvider.createTotalToken(loginCustomer.getSocialId(), loginCustomer.getRole());
         loginCustomer.login(jwtToken.getRefreshToken());
