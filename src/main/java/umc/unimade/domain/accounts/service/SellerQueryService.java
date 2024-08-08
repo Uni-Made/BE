@@ -5,17 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.dto.SellerMyPageResponse;
-import umc.unimade.domain.accounts.dto.SellerPageResponse;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.accounts.exception.SellerExceptionHandler;
-import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
+import umc.unimade.domain.orders.dto.ProductOrderResponse;
+import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.orders.repository.OrderRepository;
 import umc.unimade.domain.products.dto.MyPageProductResponse;
 import umc.unimade.domain.products.entity.ProductStatus;
-import umc.unimade.domain.products.entity.Products;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.products.repository.ProductRepository;
-import umc.unimade.global.common.ErrorCode;
 import org.springframework.data.domain.Pageable;
+import umc.unimade.global.common.ErrorCode;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,65 +25,46 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class SellerQueryService {
 
-    private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;
     private final FavoriteSellerRepository favoriteSellerRepository;
+    private final OrderRepository orderRepository;
 
     // 판매자 마이페이지
-    public SellerMyPageResponse getSellerMyPage(Long sellerId) {
-        Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new SellerExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
-
-        List<MyPageProductResponse> sellingProducts = productRepository.findTop4BySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SELLING)
+    public SellerMyPageResponse getSellerMyPage(Seller seller) {
+        List<MyPageProductResponse> sellingProducts = productRepository.findTop4BySellerIdAndStatusOrderByCreatedAtDesc(seller.getId(), ProductStatus.SELLING)
                 .stream()
                 .map(MyPageProductResponse::from)
                 .collect(Collectors.toList());
 
-        List<MyPageProductResponse> soldoutProducts = productRepository.findTop4BySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SOLDOUT)
+        List<MyPageProductResponse> soldoutProducts = productRepository.findTop4BySellerIdAndStatusOrderByCreatedAtDesc(seller.getId(), ProductStatus.SOLDOUT)
                 .stream()
                 .map(MyPageProductResponse::from)
                 .collect(Collectors.toList());
 
-        Long favoriteCount = favoriteSellerRepository.countBySellerId(sellerId);
+        Long favoriteCount = favoriteSellerRepository.countBySellerId(seller.getId());
 
         return SellerMyPageResponse.from(seller, sellingProducts, soldoutProducts, favoriteCount);
     }
 
     // 판매자 마이페이지 - selling 상태인 상품 목록 더보기
-    public Page<MyPageProductResponse> getSellingProductsList(Long sellerId, Pageable pageable) {
-        return productRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SELLING, pageable)
+    public Page<MyPageProductResponse> getSellingProductsList(Seller seller, Pageable pageable) {
+        return productRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(seller.getId(), ProductStatus.SELLING, pageable)
                 .map(MyPageProductResponse::from);
     }
 
     // 판매자 마이페이지 - soldout 상태인 상품 목록 더보기
-    public Page<MyPageProductResponse> getSoldoutProductsList(Long sellerId, Pageable pageable) {
-        return productRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SOLDOUT, pageable)
+    public Page<MyPageProductResponse> getSoldoutProductsList(Seller seller, Pageable pageable) {
+        return productRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(seller.getId(), ProductStatus.SOLDOUT, pageable)
                 .map(MyPageProductResponse::from);
     }
 
-    // 특정 sellerId의 프로필 정보와 selling 상태인 상품 목록을 조회
-    public SellerPageResponse getSellerPage(Long sellerId, String sort, Pageable pageable) {
-        Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new SellerExceptionHandler(ErrorCode.SELLER_NOT_FOUND));
+    // 특정 상품의 구매 요청 확인(조회)
+    public Page<ProductOrderResponse> getOrdersByProductId(Long productId, Pageable pageable) {
+        productRepository.findById(productId)
+                .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
 
-        // 정렬
-        Page<Products> products;
-        switch (sort) {
-            case "popular": // 인기순
-                products = productRepository.findBySellerIdAndStatusOrderByPopularity(sellerId, ProductStatus.SELLING, pageable);
-                break;
-            case "latest": // 최신순
-                products = productRepository.findBySellerIdAndStatusOrderByCreatedAtDesc(sellerId, ProductStatus.SELLING, pageable);
-                break;
-            case "deadline": // 마감순
-                products = productRepository.findBySellerIdAndStatusOrderByDeadline(sellerId, ProductStatus.SELLING, pageable);
-                break;
-            default:
-                products = productRepository.findBySellerIdAndStatusOrderByPopularity(sellerId, ProductStatus.SELLING, pageable);
-        }
+        Page<Orders> orders = orderRepository.findOrdersByProductId(productId, pageable);
 
-        Page<SellerPageResponse.ProductsResponse> productResponses = products.map(SellerPageResponse.ProductsResponse::from);
-
-        return SellerPageResponse.of(seller, productResponses);
+        return orders.map(ProductOrderResponse::from);
     }
 }

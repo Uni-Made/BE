@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
+import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.products.dto.ProductRegisterResponse;
 import umc.unimade.domain.products.dto.ProductRequest.UpdateProductDto;
 import umc.unimade.domain.products.dto.ProductResponse;
@@ -24,6 +25,7 @@ import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.security.LoginBuyer;
+import umc.unimade.global.security.LoginSeller;
 
 import java.util.List;
 
@@ -88,24 +90,26 @@ public class ProductsController extends BaseEntity {
 
     // 상품 등록
     @Tag(name = "Products")
-    @Operation(summary = "상품 등록, sellerId 제거 예정", description = "productRegister로 저장")
+    @Operation(summary = "상품 등록", description = "productRegister로 저장")
     @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiResponse<ProductRegisterResponse>> createProduct(@RequestPart("createProductDto") CreateProductDto request,
+    public ResponseEntity<ApiResponse<ProductRegisterResponse>> createProduct(@LoginSeller Seller seller,
+                                                                              @RequestPart("createProductDto") CreateProductDto request,
                                                                               @RequestPart(name = "image", required = false) List<MultipartFile> images,
                                                                               @RequestPart(name = "detailImage", required = false) List<MultipartFile> detailImages) {
-        ApiResponse<ProductRegisterResponse> createdProduct = productsCommandService.createProduct(request, images, detailImages);
+        ApiResponse<ProductRegisterResponse> createdProduct = productsCommandService.createProduct(seller, request, images, detailImages);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     // 상품 수정
     @Tag(name = "Products")
-    @Operation(summary = "상품 수정, sellerId 제거 예정")
+    @Operation(summary = "상품 수정")
     @PutMapping(value = "/{productId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@PathVariable Long productId,
+    public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@LoginSeller Seller seller,
+                                                                            @PathVariable Long productId,
                                                                             @RequestPart("updateProductDto") UpdateProductDto request,
                                                                             @RequestPart(name = "image", required = false) List<MultipartFile> images,
                                                                             @RequestPart(name = "detailImage", required = false) List<MultipartFile> detailImages) {
-        ApiResponse<ProductUpdateResponse> updatedProduct = productsCommandService.updateProduct(productId, request, images, detailImages);
+        ApiResponse<ProductUpdateResponse> updatedProduct = productsCommandService.updateProduct(seller, productId, request, images, detailImages);
         return ResponseEntity.ok(updatedProduct);
     }
 

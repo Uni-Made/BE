@@ -80,16 +80,6 @@ public class OrderQueryService {
         return ordersPage.map(SellerOrderResponse::from);
     }
 
-    // 특정 상품의 구매 요청 확인(조회)
-    public Page<ProductOrderResponse> getOrdersByProductId(Long productId, Pageable pageable) {
-        productRepository.findById(productId)
-            .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
-
-        Page<Orders> orders = orderRepository.findOrdersByProductId(productId, pageable);
-
-        return orders.map(ProductOrderResponse::from);
-    }
-
     private Orders findOrderById(Long orderId){
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
