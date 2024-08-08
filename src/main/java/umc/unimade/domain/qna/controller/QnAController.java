@@ -31,7 +31,7 @@ public class QnAController {
 
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "질문 작성")
-    @PostMapping(value = "/question/{productId}")
+    @PostMapping(value = "/buyer/question/{productId}")
     public ResponseEntity<ApiResponse<Void>> createQuestion(@PathVariable Long productId,
                                                             @LoginBuyer Buyer buyer,
                                                             @Valid @RequestBody QuestionCreateRequest questionCreateRequest) {
@@ -60,7 +60,7 @@ public class QnAController {
 
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "답변 생성")
-    @PostMapping(value = "/answer/{questionId}")
+    @PostMapping(value = "/seller/answer/{questionId}")
     public ResponseEntity<ApiResponse<Void>> createAnswer(@PathVariable Long questionId,
                                                           @LoginSeller Seller seller,
                                                           @Valid @RequestBody AnswerCreateRequest answerCreateRequest) {
@@ -90,7 +90,7 @@ public class QnAController {
 
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "질문 삭제")
-    @DeleteMapping(value = "/question/{questionId}")
+    @DeleteMapping(value = "/buyer/question/{questionId}")
     public ResponseEntity<ApiResponse<Void>> deleteQuestion(@PathVariable Long questionId,
                                                             @LoginBuyer Buyer buyer) {
         try {
@@ -106,7 +106,7 @@ public class QnAController {
 
     @Tag(name = "QnA", description = "qna 관련 API")
     @Operation(summary = "답변 삭제")
-    @DeleteMapping(value = "/answer/{answerId}")
+    @DeleteMapping(value = "/seller/answer/{answerId}")
     public ResponseEntity<ApiResponse<Void>> deleteAnswer(@PathVariable Long answerId,
                                                           @LoginSeller Seller seller) {
         try {

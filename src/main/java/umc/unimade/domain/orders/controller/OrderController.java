@@ -36,7 +36,7 @@ public class OrderController {
 
     @Tag(name = "Order", description = "구매 관련 API")
     @Operation(summary = "상품 구매하기")
-    @PostMapping("/{productId}")
+    @PostMapping("/buyer/{productId}")
     public ResponseEntity<ApiResponse<OrderResponse>> createOrder (@LoginBuyer Buyer buyer,
                                                                    @PathVariable Long productId,
                                                                    @Valid @RequestBody OrderRequest orderRequest){
@@ -52,7 +52,7 @@ public class OrderController {
 
     @Tag(name = "Order", description = "구매 관련 API")
     @Operation(summary = "선택한 구매 옵션 확인하기")
-    @PostMapping("/verify/{productId}")
+    @PostMapping("/buyer/verify/{productId}")
     public ResponseEntity<ApiResponse<OrderVerificationResponse>>verifyOrder(@PathVariable Long productId, @RequestBody OrderVerificationRequest request){
         try{
             return ResponseEntity.ok(ApiResponse.onSuccess(orderQueryService.verifyOrder(productId,request)));
@@ -89,7 +89,7 @@ public class OrderController {
 
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "주문 상태 변경하기(PENDING,PAID,RECEIVED)")
-    @PutMapping("/orderStatus/{orderId}")
+    @PutMapping("/seller/orderStatus/{orderId}")
     public ResponseEntity<SellerOrderResponse> changeOrderStatus(@PathVariable Long orderId, @RequestParam OrderStatus status) {
         Orders order = orderCommandService.changeOrderStatus(orderId, status);
         SellerOrderResponse updatedOrder = SellerOrderResponse.from(order);
@@ -98,7 +98,7 @@ public class OrderController {
 
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "수령 상태 변경하기(NOT_RECEIVED, RECEIVED)")
-    @PutMapping("/receiveStatus/{orderId}")
+    @PutMapping("/seller/receiveStatus/{orderId}")
     public ResponseEntity<SellerOrderResponse> changeReceiveStatus(@PathVariable Long orderId) {
         Orders order = orderCommandService.changeReceiveStatus(orderId);
         SellerOrderResponse updatedOrder = SellerOrderResponse.from(order);

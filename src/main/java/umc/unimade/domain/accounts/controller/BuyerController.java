@@ -25,7 +25,7 @@ import umc.unimade.global.security.LoginSeller;
 
 
 @RestController
-@RequestMapping("/api/buyer")
+@RequestMapping("/buyer")
 @RequiredArgsConstructor
 public class BuyerController {
     private final BuyerCommandService buyerCommandService;

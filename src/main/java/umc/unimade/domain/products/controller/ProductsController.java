@@ -91,7 +91,7 @@ public class ProductsController extends BaseEntity {
     // 상품 등록
     @Tag(name = "Products")
     @Operation(summary = "상품 등록", description = "productRegister로 저장")
-    @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/seller/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductRegisterResponse>> createProduct(@LoginSeller Seller seller,
                                                                               @RequestPart("createProductDto") CreateProductDto request,
                                                                               @RequestPart(name = "image", required = false) List<MultipartFile> images,
@@ -103,7 +103,7 @@ public class ProductsController extends BaseEntity {
     // 상품 수정
     @Tag(name = "Products")
     @Operation(summary = "상품 수정")
-    @PutMapping(value = "/{productId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/seller/{productId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@LoginSeller Seller seller,
                                                                             @PathVariable Long productId,
                                                                             @RequestPart("updateProductDto") UpdateProductDto request,
@@ -116,7 +116,7 @@ public class ProductsController extends BaseEntity {
     // 상품 삭제
     @Tag(name = "Products")
     @Operation(summary = "상품 삭제")
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/seller/{productId}")
     public ApiResponse<Object> deleteProduct(@PathVariable Long productId) {
         productsCommandService.deleteProduct(productId);
         return ApiResponse.noContent();
@@ -125,7 +125,7 @@ public class ProductsController extends BaseEntity {
     // 판매 재등록
     @Tag(name = "Products")
     @Operation(summary = "판매 재등록 (판매 종료 상품 판매 재등록)")
-    @PutMapping("/{productId}/resale")
+    @PutMapping("/seller/{productId}/resale")
     public ResponseEntity<ApiResponse<ProductResponse>> resaleProduct(@PathVariable Long productId) {
         ApiResponse<ProductResponse> response = productsCommandService.resaleProduct(productId);
         return ResponseEntity.ok(response);

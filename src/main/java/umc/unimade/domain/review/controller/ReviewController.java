@@ -34,7 +34,7 @@ public class ReviewController {
     private final ReviewQueryService reviewQueryService;
 
     @Operation(summary = "리뷰 생성")
-    @PostMapping(value = "/{orderId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/buyer/{orderId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<Void> createReview(@PathVariable Long orderId,
                                           @LoginBuyer Buyer buyer,
                                           @Valid @RequestPart("reviewCreateRequest") ReviewCreateRequest reviewCreateRequest,
@@ -61,8 +61,8 @@ public class ReviewController {
         }
     }
 
-    @Operation(summary = "리뷰 삭제하기", description = "buyerId 나중에 뺄게요!  ")
-    @DeleteMapping("/{reviewId}")
+    @Operation(summary = "리뷰 삭제하기")
+    @DeleteMapping("/buyer/{reviewId}")
     public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long reviewId,
                                                           @LoginBuyer Buyer buyer) {
         try {
@@ -76,7 +76,7 @@ public class ReviewController {
     }
 
     @Operation(summary = "리뷰 신고하기", description = "seller가 자신의 상품에 달린 리뷰를 신고")
-    @PostMapping("/{reviewId}/report")
+    @PostMapping("/seller/{reviewId}/report")
     public ApiResponse<ReviewReportResponse> reportReview(@LoginSeller Seller seller, @PathVariable Long reviewId, @RequestBody ReviewReportRequest request) {
         ReviewReportResponse response = reviewCommandService.reportReview(reviewId, request, seller);
         return ApiResponse.onSuccess(response);

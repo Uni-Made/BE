@@ -45,11 +45,10 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> {authorize
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/products/**").hasAnyRole("SELLER","BUYER","ADMIN")
-                        .requestMatchers("/api/buyer/**","/api/orders/**").hasRole("BUYER")
-                        .requestMatchers("/api/review/**","/api/qna/**").hasAnyRole("BUYER","SELLER")
-                        .requestMatchers("/seller/**").hasRole("SELLER")
-                        .requestMatchers("/api/products/**").hasRole("")
+                        .requestMatchers("/buyer/**","/api/products/buyer/**","/api/orders/buyer/**",
+                                "/api/review/buyer/**","/api/qna/buyer/**").hasRole("BUYER")
+                        .requestMatchers("/seller/**","/api/products/seller/**","/api/orders/seller/**",
+                                "/api/review/seller/**","/api/qna/seller/**").hasRole("SELLER")
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(swaggerUrls).permitAll()
                         .anyRequest().authenticated();})
