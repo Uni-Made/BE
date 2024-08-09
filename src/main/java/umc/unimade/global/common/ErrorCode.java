@@ -77,9 +77,11 @@ public enum ErrorCode implements BaseErrorCode {
     TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "TOKEN4003", "토큰 타입이 잘못되었습니다."),
     TOKEN_MALFORMED(HttpStatus.UNAUTHORIZED, "TOKEN4004", "토큰이 잘못되었습니다."),
     TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN4005", "토큰이 유효하지 않습니다."),
+
+    // 공지 관련 에러
+    NOTICEBOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE4000", "공지를 찾을 수 없습니다."),
     
     //sms 관련 오류
-
     SMS_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "SMS4000", "SMS 전송에 실패했습니다."),
     SMS_VERIFY_FAILED(HttpStatus.BAD_REQUEST, "SMS4001", "인증번호가 일치하지 않습니다.");
     
