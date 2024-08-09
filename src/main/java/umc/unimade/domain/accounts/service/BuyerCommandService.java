@@ -52,11 +52,13 @@ public class BuyerCommandService {
         return favoriteSellerRepository.findBySellerAndBuyer(seller,buyer);
     }
 
+    @Transactional
     public Boolean updateBuyerInfo(Buyer buyer, BuyerInfoRequestDto buyerInfoRequestDto) {
         buyer.updateBuyerInfo(buyerInfoRequestDto.getName(), buyerInfoRequestDto.getPhone());
         return true;
     }
 
+    @Transactional
     public Boolean updateBuyerProfile(Buyer buyer, BuyerProfileRequestDto buyerProfileRequestDto){
         buyer.updateBuyerProfile(buyerProfileRequestDto.getProfileImage());
         return true;
