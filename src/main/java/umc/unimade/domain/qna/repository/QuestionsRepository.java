@@ -10,4 +10,8 @@ import java.util.List;
 public interface QuestionsRepository extends JpaRepository<Questions, Long> {
     @Query("SELECT q FROM Questions q WHERE q.product.id = :productId AND (:cursor IS NULL OR q.id < :cursor) ORDER BY q.id DESC")
     List<Questions> findByProductIdWithCursorPagination(@Param("productId") Long productId, @Param("cursor") Long cursor, Pageable pageable);
+
+    List<Questions> findByProductIdAndAnswersIsNotEmpty(Long productId);
+
+    List<Questions> findByProductIdAndAnswersIsEmpty(Long productId);
 }
