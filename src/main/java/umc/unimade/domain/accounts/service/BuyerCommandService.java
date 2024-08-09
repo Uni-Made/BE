@@ -3,6 +3,8 @@ package umc.unimade.domain.accounts.service;
 import lombok.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.unimade.domain.accounts.dto.BuyerInfoRequestDto;
+import umc.unimade.domain.accounts.dto.BuyerProfileRequestDto;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.repository.SellerRepository;
@@ -48,5 +50,15 @@ public class BuyerCommandService {
 
     private Optional<FavoriteSeller> findFavoriteSeller(Seller seller,Buyer buyer) {
         return favoriteSellerRepository.findBySellerAndBuyer(seller,buyer);
+    }
+
+    public Boolean updateBuyerInfo(Buyer buyer, BuyerInfoRequestDto buyerInfoRequestDto) {
+        buyer.updateBuyerInfo(buyerInfoRequestDto.getName(), buyerInfoRequestDto.getPhone());
+        return true;
+    }
+
+    public Boolean updateBuyerProfile(Buyer buyer, BuyerProfileRequestDto buyerProfileRequestDto){
+        buyer.updateBuyerProfile(buyerProfileRequestDto.getProfileImage());
+        return true;
     }
 }
