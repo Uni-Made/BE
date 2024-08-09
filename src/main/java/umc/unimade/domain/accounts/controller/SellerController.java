@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.accounts.dto.SellerMyPageResponse;
@@ -13,9 +14,17 @@ import umc.unimade.domain.accounts.service.SellerCommandService;
 import umc.unimade.domain.accounts.service.SellerQueryService;
 import org.springframework.data.domain.Pageable;
 import umc.unimade.domain.orders.dto.ProductOrderResponse;
-import umc.unimade.domain.orders.service.OrderQueryService;
 import umc.unimade.domain.products.dto.MyPageProductResponse;
+import umc.unimade.domain.products.dto.ProductResponse;
+import umc.unimade.domain.products.entity.ViewType;
+import umc.unimade.domain.products.exception.ProductsExceptionHandler;
+import umc.unimade.domain.products.service.ProductsQueryService;
+import umc.unimade.domain.qna.dto.QuestionResponse;
+import umc.unimade.global.common.ApiResponse;
+import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.security.LoginSeller;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/seller")
@@ -24,6 +33,7 @@ public class SellerController {
 
     private final SellerQueryService sellerQueryService;
     private final SellerCommandService sellerCommandService;
+    private final ProductsQueryService productsQueryService;
 
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "판매자 마이페이지")
@@ -63,6 +73,38 @@ public class SellerController {
         Pageable pageable = PageRequest.of(page, size);
         Page<MyPageProductResponse> response = sellerQueryService.getSoldoutProductsList(seller, pageable);
         return ResponseEntity.ok(response);
+    }
+
+    @Tag(name = "Seller", description = "판매자 관련 API")
+    @Operation(summary = "판매자 마이페이지 상품 정보 가져오기")
+    @GetMapping("/myPage/{productId}")
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductDetails (@PathVariable Long productId ,
+                                                                           @RequestParam ViewType viewType,
+                                                                           @RequestParam(required = false) Long cursor,
+                                                                           @RequestParam(defaultValue = "10") int pageSize) {
+        try {
+            return ResponseEntity.ok(ApiResponse.onSuccess(productsQueryService.getProduct(productId, viewType, cursor, pageSize)));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+        } catch (ProductsExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.PRODUCT_NOT_FOUND.getCode(), ErrorCode.PRODUCT_NOT_FOUND.getMessage()));
+        }
+    }
+
+    @Tag(name = "Seller", description = "판매자 관련 API")
+    @Operation(summary = "판매자 마이페이지 질문 보기(답변완료/미답변)")
+    @GetMapping("/myPage/{productId}/answer")
+    public ResponseEntity<List<QuestionResponse>> getQuestions(@RequestParam Long productId,
+                                                               @RequestParam(required = false, defaultValue = "true") boolean answered) {
+        List<QuestionResponse> questions;
+        if (answered) {
+            questions = sellerQueryService.getAnsweredQuestionsList(productId);
+        } else {
+            questions = sellerQueryService.getUnansweredQuestionsList(productId);
+        }
+
+        return ResponseEntity.ok(questions);
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
