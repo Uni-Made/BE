@@ -42,7 +42,6 @@ public class AdminReviewController {
         return ApiResponse.onSuccess(response);
     }
 
-    // TODO: 관리자의 신고 처리 추가
     @Operation(summary = "리뷰 신고 처리", description = "유저 role이 관리자인 사람만 가능, 3일, 일주일, 한달, 영구 정지")
     @PostMapping("/{reviewReportId}")
     public ApiResponse<ReportProcessResponse> processReport(@PathVariable Long reviewReportId,

@@ -17,9 +17,15 @@ public class AdminAccessFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String path = request.getRequestURI();
+        String method = request.getMethod();
 
         if (path.startsWith("/admin")) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (method.equalsIgnoreCase("GET") && (path.equals("/admin/notice") || path.matches("/admin/notice/\\d+"))) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             if (authentication != null && authentication.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
