@@ -14,7 +14,7 @@ import umc.unimade.global.common.BaseEntity;
 public class ReviewAnswer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_answer_id", nullable = false)
+    @Column(name = "answer_id", nullable = false)
     private Long id;
 
     @Column(name = "title", nullable = false)

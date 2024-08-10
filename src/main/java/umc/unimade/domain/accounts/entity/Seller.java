@@ -7,6 +7,7 @@ import umc.unimade.domain.favorite.entity.FavoriteSeller;
 import umc.unimade.domain.products.entity.ProductRegister;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.qna.entity.Answers;
+import umc.unimade.domain.review.entity.ReviewAnswer;
 import umc.unimade.global.common.BaseEntity;
 
 import java.util.ArrayList;
@@ -69,6 +70,9 @@ public class Seller extends BaseEntity {
 
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private List<Answers> answers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
+    private List<ReviewAnswer> reviewAnswers = new ArrayList<>();
 
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private List<FavoriteSeller> favoriteSellers = new ArrayList<>();

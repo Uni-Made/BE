@@ -20,6 +20,7 @@ import umc.unimade.domain.products.entity.ViewType;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.products.service.ProductsQueryService;
 import umc.unimade.domain.qna.dto.QuestionResponse;
+import umc.unimade.domain.review.dto.ReviewResponse;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.global.security.LoginSeller;
@@ -94,7 +95,7 @@ public class SellerController {
 
     @Tag(name = "Seller", description = "판매자 관련 API")
     @Operation(summary = "판매자 마이페이지 질문 보기(답변완료/미답변)")
-    @GetMapping("/myPage/{productId}/answer")
+    @GetMapping("/myPage/{productId}/qna")
     public ResponseEntity<List<QuestionResponse>> getQuestions(@RequestParam Long productId,
                                                                @RequestParam(required = false, defaultValue = "true") boolean answered) {
         List<QuestionResponse> questions;
@@ -105,6 +106,21 @@ public class SellerController {
         }
 
         return ResponseEntity.ok(questions);
+    }
+
+    @Tag(name = "Seller", description = "판매자 관련 API")
+    @Operation(summary = "판매자 마이페이지 리뷰 보기(답변완료/미답변)")
+    @GetMapping("/myPage/{productId}/review")
+    public ResponseEntity<List<ReviewResponse>> getReviews(@RequestParam Long productId,
+                                                           @RequestParam(required = false, defaultValue = "true") boolean answered) {
+        List<ReviewResponse> reviews;
+        if (answered) {
+            reviews = sellerQueryService.getAnsweredReviewsList(productId);
+        } else {
+            reviews = sellerQueryService.getUnansweredReviewsList(productId);
+        }
+
+        return ResponseEntity.ok(reviews);
     }
 
     @Tag(name = "Seller", description = "판매자 관련 API")
