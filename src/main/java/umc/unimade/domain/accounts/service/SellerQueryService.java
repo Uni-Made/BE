@@ -17,6 +17,8 @@ import umc.unimade.domain.products.repository.ProductRepository;
 import org.springframework.data.domain.Pageable;
 import umc.unimade.domain.qna.dto.QuestionResponse;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
+import umc.unimade.domain.review.dto.ReviewResponse;
+import umc.unimade.domain.review.repository.ReviewRepository;
 import umc.unimade.global.common.ErrorCode;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class SellerQueryService {
     private final FavoriteSellerRepository favoriteSellerRepository;
     private final OrderRepository orderRepository;
     private final QuestionsRepository questionsRepository;
+    private final ReviewRepository reviewRepository;
 
     // 판매자 마이페이지
     public SellerMyPageResponse getSellerMyPage(Seller seller) {
@@ -76,6 +79,21 @@ public class SellerQueryService {
                 .collect(Collectors.toList());
     }
 
+    // 판매자 마이페이지 - 리뷰 상세 보기
+    public List<ReviewResponse> getAnsweredReviewsList(Long productId) {
+        return reviewRepository.findByProductIdAndReviewAnswersIsNotEmpty(productId)
+                .stream()
+                .map(ReviewResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReviewResponse> getUnansweredReviewsList(Long productId) {
+        return reviewRepository.findByProductIdAndReviewAnswersIsEmpty(productId)
+                .stream()
+                .map(ReviewResponse::from)
+                .collect(Collectors.toList());
+    }
+
     // 특정 상품의 구매 요청 확인(조회)
     public Page<ProductOrderResponse> getOrdersByProductId(Long productId, Pageable pageable) {
         productRepository.findById(productId)
@@ -85,4 +103,6 @@ public class SellerQueryService {
 
         return orders.map(ProductOrderResponse::from);
     }
+
+
 }

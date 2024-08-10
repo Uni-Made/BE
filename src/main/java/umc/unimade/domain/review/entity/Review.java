@@ -47,6 +47,9 @@ public class Review extends BaseEntity {
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ReviewAnswer> reviewAnswers = new ArrayList<>();
+
     public void setReviewImages(List<ReviewImage> reviewImages) {
         this.reviewImages = reviewImages.stream()
                 .map(reviewImage -> {
