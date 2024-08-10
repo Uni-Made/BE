@@ -10,13 +10,13 @@ import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OrderRepository;
-import umc.unimade.domain.review.dto.ReviewReportRequest;
-import umc.unimade.domain.review.dto.ReviewReportResponse;
+import umc.unimade.domain.review.dto.*;
+import umc.unimade.domain.review.entity.ReviewAnswer;
 import umc.unimade.domain.review.entity.ReviewReport;
 import umc.unimade.domain.review.exception.ReviewExceptionHandler;
+import umc.unimade.domain.review.repository.ReviewAnswerRepository;
 import umc.unimade.domain.review.repository.ReviewReportRepository;
 import umc.unimade.domain.review.repository.ReviewRepository;
-import umc.unimade.domain.review.dto.ReviewCreateRequest;
 import umc.unimade.domain.review.entity.Review;
 import umc.unimade.domain.review.entity.ReviewImage;
 import umc.unimade.global.common.ErrorCode;
@@ -31,6 +31,7 @@ public class ReviewCommandService {
     private final OrderRepository orderRepository;
     private final S3Provider s3Provider;
     private final ReviewReportRepository reviewReportRepository;
+    private final ReviewAnswerRepository reviewAnswerRepository;
 
     @Transactional
     public void createReview(Long orderId, Buyer buyer, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
@@ -66,6 +67,22 @@ public class ReviewCommandService {
     private Orders findOrderById(Long orderId){
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
+    }
+
+    @Transactional
+    public ReviewAnswerResposne createReviewAnswer(Long reviewId, Seller seller, ReviewAnswerCreateRequest reviewAnswerCreateRequest) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_FOUND));
+
+        // 자신의 상품에 대한 리뷰가 아닌 경우
+        if (!review.getProduct().getSeller().getId().equals(seller.getId())) {
+            throw new ReviewExceptionHandler(ErrorCode.REVIEW_NOT_YOURS);
+        }
+
+        ReviewAnswer reviewAnswer = reviewAnswerCreateRequest.toEntity(seller, review);
+        reviewAnswerRepository.save(reviewAnswer);
+
+        return ReviewAnswerResposne.from(reviewAnswer);
     }
 
     @Transactional

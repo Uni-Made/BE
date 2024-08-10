@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.review.dto.ReviewReportRequest;
-import umc.unimade.domain.review.dto.ReviewReportResponse;
-import umc.unimade.domain.review.dto.ReviewCreateRequest;
-import umc.unimade.domain.review.dto.ReviewResponse;
+import umc.unimade.domain.review.dto.*;
 import umc.unimade.domain.review.service.ReviewCommandService;
 import umc.unimade.domain.review.service.ReviewQueryService;
 import umc.unimade.global.common.ApiResponse;
@@ -73,6 +70,16 @@ public class ReviewController {
         } catch (UserExceptionHandler e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.REVIEW_NOT_FOUND.getCode(), ErrorCode.REVIEW_NOT_FOUND.getMessage()));
         }
+    }
+
+    @Operation(summary = "리뷰 답변 생성")
+    @PostMapping(value = "/answer/{reviewId}")
+    public ApiResponse<ReviewAnswerResposne> createAnswer(@PathVariable Long reviewId,
+                                                          @LoginSeller Seller seller,
+                                                          @Valid @RequestBody ReviewAnswerCreateRequest reviewAnswerCreateRequest) {
+
+        ReviewAnswerResposne reviewAnswer = reviewCommandService.createReviewAnswer(reviewId, seller, reviewAnswerCreateRequest);
+        return ApiResponse.onSuccess(reviewAnswer);
     }
 
     @Operation(summary = "리뷰 신고하기", description = "seller가 자신의 상품에 달린 리뷰를 신고")
