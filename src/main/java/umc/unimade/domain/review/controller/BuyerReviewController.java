@@ -3,30 +3,29 @@ package umc.unimade.domain.review.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
-import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.review.dto.*;
+import umc.unimade.domain.accounts.exception.UserExceptionHandler;
+import umc.unimade.domain.review.dto.ReviewCreateRequest;
+import umc.unimade.domain.review.dto.ReviewResponse;
 import umc.unimade.domain.review.service.ReviewCommandService;
 import umc.unimade.domain.review.service.ReviewQueryService;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
-import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.security.LoginBuyer;
-import umc.unimade.global.security.LoginSeller;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/review")
+@RequestMapping("/buyer/review")
 @Tag(name = "Review", description = "리뷰 관련 API")
 @RequiredArgsConstructor
-public class ReviewController {
+public class BuyerReviewController {
     private final ReviewCommandService reviewCommandService;
     private final ReviewQueryService reviewQueryService;
 
@@ -58,12 +57,12 @@ public class ReviewController {
         }
     }
 
-    @Operation(summary = "리뷰 삭제하기", description = "buyerId 나중에 뺄게요!  ")
+    @Operation(summary = "리뷰 삭제하기")
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long reviewId,
                                                           @LoginBuyer Buyer buyer) {
         try {
-            reviewCommandService.deleteReview(reviewId,buyer);
+            reviewCommandService.deleteReview(reviewId, buyer);
             return ResponseEntity.ok(ApiResponse.onSuccess(null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
@@ -71,23 +70,4 @@ public class ReviewController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.REVIEW_NOT_FOUND.getCode(), ErrorCode.REVIEW_NOT_FOUND.getMessage()));
         }
     }
-
-    @Operation(summary = "리뷰 답변 생성")
-    @PostMapping(value = "/answer/{reviewId}")
-    public ApiResponse<ReviewAnswerResposne> createAnswer(@PathVariable Long reviewId,
-                                                          @LoginSeller Seller seller,
-                                                          @Valid @RequestBody ReviewAnswerCreateRequest reviewAnswerCreateRequest) {
-
-        ReviewAnswerResposne reviewAnswer = reviewCommandService.createReviewAnswer(reviewId, seller, reviewAnswerCreateRequest);
-        return ApiResponse.onSuccess(reviewAnswer);
-    }
-
-    @Operation(summary = "리뷰 신고하기", description = "seller가 자신의 상품에 달린 리뷰를 신고")
-    @PostMapping("/{reviewId}/report")
-    public ApiResponse<ReviewReportResponse> reportReview(@LoginSeller Seller seller, @PathVariable Long reviewId, @RequestBody ReviewReportRequest request) {
-        ReviewReportResponse response = reviewCommandService.reportReview(reviewId, request, seller);
-        return ApiResponse.onSuccess(response);
-    }
 }
-
-

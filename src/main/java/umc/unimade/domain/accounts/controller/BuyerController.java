@@ -1,6 +1,5 @@
 package umc.unimade.domain.accounts.controller;
 
-import com.google.protobuf.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.*;
@@ -24,11 +23,10 @@ import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.global.security.LoginBuyer;
-import umc.unimade.global.security.LoginSeller;
 
 
 @RestController
-@RequestMapping("/api/buyer")
+@RequestMapping("/buyer")
 @RequiredArgsConstructor
 public class BuyerController {
     private final BuyerCommandService buyerCommandService;
