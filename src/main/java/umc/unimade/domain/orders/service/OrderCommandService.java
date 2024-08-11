@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderCommandService {
 
     private final OrderRepository orderRepository;
@@ -45,7 +46,7 @@ public class OrderCommandService {
     private final BuyerRepository buyerRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Transactional
+
     public OrderResponse createOrder(Long productId, Buyer buyer, OrderRequest orderRequest) {
         validateOrderRequest(orderRequest);
         Products product = findProductById(productId);
