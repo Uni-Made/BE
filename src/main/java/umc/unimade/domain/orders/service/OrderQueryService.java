@@ -49,17 +49,6 @@ public class OrderQueryService {
         return OrderVerificationResponse.from(orderOptionResponses, totalPrice);
     }
 
-    public OrderResponse getBankingInfo(Long orderId){
-        Orders order = findOrderById(orderId);
-        if(order.getStatus() == OrderStatus.PENDING){
-            return OrderResponse.from(order,order.getProduct(),order.getTotalPrice());
-        }else {
-            throw new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND);
-        }
-    }
-
-
-
     private Products findProductById(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductsExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
