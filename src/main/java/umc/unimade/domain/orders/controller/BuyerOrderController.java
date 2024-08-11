@@ -36,8 +36,6 @@ public class BuyerOrderController {
             return ResponseEntity.ok(ApiResponse.onSuccess(orderCommandService.createOrder(productId, buyer, orderRequest)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
-        } catch (ProductsExceptionHandler e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.PRODUCT_NOT_FOUND.getCode(), ErrorCode.PRODUCT_NOT_FOUND.getMessage()));
         }
     }
 
