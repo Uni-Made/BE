@@ -52,7 +52,7 @@ public class OrderStatusDetailResponse {
 
     public static OrderStatusDetailResponse fromPaidOfflineOrder(Orders order) {
         return commonResponse(order)
-                .pickupDate(order.getPurchaseForm().getPickupDate())
+                .pickupDate(order.getPurchaseForm().getProduct().getPickupDate())
                 .pickupAddress(order.getProduct().getPickupLocation())
                 .build();
     }

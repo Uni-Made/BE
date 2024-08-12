@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.entity.Buyer;
-import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
 import umc.unimade.domain.notification.dto.NotificationListResponse;
@@ -44,12 +43,6 @@ public class NotificationService {
     private final QuestionsRepository questionsRepository;
     private final BuyerNotificationRepository buyerNotificationRepository;
     private final RedisUtil redisUtil;
-
-    /*판매자 알림*/
-    @Async
-    public void sendSellerNotification(Seller seller, NotificationRequest notificationRequest) {
-        sendNotification(seller.getEmail(), notificationRequest);
-    }
 
     /*구매자 알림*/
     public NotificationListResponse getNotificationList(Buyer buyer, Long cursor, int pageSize){

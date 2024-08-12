@@ -3,14 +3,12 @@ package umc.unimade.domain.orders.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.accounts.repository.BuyerRepository;
-import umc.unimade.domain.notification.events.OrderCancelledEvent;
-import umc.unimade.domain.notification.events.OrderRequestEvent;
-import umc.unimade.domain.notification.events.PaymentRequestEvent;
-import umc.unimade.domain.notification.events.ReviewRequestEvent;
+import umc.unimade.domain.notification.events.*;
 import umc.unimade.domain.orders.dto.OrderRequest;
 import umc.unimade.domain.orders.dto.OrderRequest.OrderOptionRequest;
 import umc.unimade.domain.orders.dto.OrderRequest.PurchaseFormRequest;
@@ -84,6 +82,7 @@ public class OrderCommandService {
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
         eventPublisher.publishEvent(new OrderRequestEvent(order.getBuyer().getId(),order.getId()));
+        eventPublisher.publishEvent(new OrderedEvent(product.getSeller().getId(), order.getId()));
         return OrderResponse.from(order, product, totalPrice);
     }
 
@@ -139,15 +138,32 @@ public class OrderCommandService {
         }
     }
 
+    // 주문 후 3일 미입금 시 주문 취소
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void cancelUnpaidOrders() {
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        List<Orders> unpaidOrders = orderRepository.findByStatusAndCreatedAtBefore(OrderStatus.PENDING, threeDaysAgo);
+
+        for (Orders order : unpaidOrders) {
+            order.setStatus(OrderStatus.CANCELLED);
+            orderRepository.save(order);
+            eventPublisher.publishEvent(new OrderCancelledEvent(order.getBuyer().getId(), order.getId()));
+        }
+    }
+
     // 주문 상태 변경 PENDING,PAID,RECEIVED
     @Transactional
     public Orders changeOrderStatus(Long orderId, OrderStatus status) {
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderExceptionHandler(ErrorCode.ORDER_NOT_FOUND));
         order.setStatus(status);
-        if (status == OrderStatus.CANCELLED) {
-            eventPublisher.publishEvent(new OrderCancelledEvent(order.getBuyer().getId(),orderId));
+
+        if (status == OrderStatus.RECEIVED) {
+            order.setReceiveStatus(ReceiveStatus.RECEIVED);
+            eventPublisher.publishEvent(new ReviewRequestEvent(order.getBuyer().getId(), order.getId()));
         }
+
         return orderRepository.save(order);
     }
 

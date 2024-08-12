@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.notification.events.AnswerPostedEvent;
+import umc.unimade.domain.notification.events.QuestionPostedEvent;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.qna.dto.AnswerCreateRequest;
@@ -33,6 +34,7 @@ public class QnACommandService {
         Products product = findProductById(productId);
         Questions question = questionCreateRequest.toEntity(product, buyer);
         questionsRepository.save(question);
+        eventPublisher.publishEvent(new QuestionPostedEvent(product.getSeller().getId(), question.getId()));
     }
 
     @Transactional
