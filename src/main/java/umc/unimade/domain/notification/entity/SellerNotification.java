@@ -27,7 +27,4 @@ public class SellerNotification extends BaseEntity {
 
     @Column
     private String body;
-
-//    @Column
-//    private boolean isRead;
 }

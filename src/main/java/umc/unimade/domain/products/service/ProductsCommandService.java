@@ -73,7 +73,6 @@ public class ProductsCommandService {
     }
 
     // 상품 등록
-    // TODO - seller 추가
     @Transactional
     public ApiResponse<ProductRegisterResponse> createProduct(Seller seller, CreateProductDto request, List<MultipartFile> images, List<MultipartFile> detailImages) {
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -96,7 +95,6 @@ public class ProductsCommandService {
     }
 
     // 상품 수정
-    // TODO - seller 추가
     @Transactional
     public ApiResponse<ProductUpdateResponse> updateProduct(Seller seller, Long productId, UpdateProductDto request, List<MultipartFile> images, List<MultipartFile> detailImages) {
         Products product = productRepository.findById(productId)
