@@ -33,8 +33,8 @@ public class PurchaseForm extends BaseEntity {
     @Column(name = "pickup_option")
     private PickupOption pickupOption;
 
-    @Column(name = "pickup_date")
-    private LocalDate pickupDate;
+//    @Column(name = "pickup_date")
+//    private LocalDate pickupDate;
 
     @Column(name = "address")
     private String address;

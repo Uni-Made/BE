@@ -1,9 +1,9 @@
 package umc.unimade.domain.notification.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.domain.accounts.entity.Seller;
+import umc.unimade.global.common.BaseEntity;
 
 @Entity
 @Builder
@@ -11,7 +11,7 @@ import umc.unimade.domain.accounts.entity.Seller;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "seller_notification")
-public class SellerNotification {
+public class SellerNotification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +28,6 @@ public class SellerNotification {
     @Column
     private String body;
 
-    @Column
-    private boolean isRead;
+//    @Column
+//    private boolean isRead;
 }

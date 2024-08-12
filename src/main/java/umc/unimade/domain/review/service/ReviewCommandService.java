@@ -1,5 +1,6 @@
 package umc.unimade.domain.review.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
+import umc.unimade.domain.notification.events.ReviewPostedEvent;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OrderRepository;
@@ -32,6 +34,7 @@ public class ReviewCommandService {
     private final S3Provider s3Provider;
     private final ReviewReportRepository reviewReportRepository;
     private final ReviewAnswerRepository reviewAnswerRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void createReview(Long orderId, Buyer buyer, ReviewCreateRequest reviewCreateRequest, List<MultipartFile> images) {
@@ -48,6 +51,7 @@ public class ReviewCommandService {
             review.setReviewImages(reviewImages);
         }
         reviewRepository.save(review);
+        eventPublisher.publishEvent(new ReviewPostedEvent(order.getProduct().getSeller().getId(), review.getId()));
     }
 
     @Transactional

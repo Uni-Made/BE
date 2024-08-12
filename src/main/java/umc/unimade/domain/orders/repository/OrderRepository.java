@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.domain.orders.entity.Orders;
+import umc.unimade.domain.products.entity.PickupOption;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,12 +25,17 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
     @Query("SELECT o FROM Orders o WHERE o.buyer = :buyer AND (:cursor IS NULL OR o.id < :cursor) ORDER BY o.id DESC")
     List<Orders> findOrdersByBuyerWithCursorPagination(Buyer buyer, @Param("cursor") Long cursor, Pageable pageable);
 
-    @Query("SELECT o FROM Orders o WHERE o.purchaseForm.createdAt < :threeDaysAgo AND o.status = :status")
-    List<Orders> findOrdersCreatedBefore(LocalDateTime threeDaysAgo, OrderStatus status);
+    List<Orders> findByStatusAndCreatedAtBefore(OrderStatus status, LocalDateTime threeDaysAgo);
 
     @Query("SELECT o FROM Orders o WHERE o.status = :status AND o.createdAt BETWEEN :start AND :end")
     List<Orders> findByStatusAndCreatedAtBetween(OrderStatus status, LocalDateTime start, LocalDateTime end);
 
-    @Query("SELECT o FROM Orders o WHERE o.status = :status AND o.purchaseForm.pickupDate = :pickupDate")
+    @Query("SELECT o FROM Orders o WHERE o.status = :status AND o.purchaseForm.product.pickupDate = :pickupDate")
     List<Orders> findByStatusAndPickupDate(OrderStatus status, LocalDate pickupDate);
+
+    @Query("SELECT o FROM Orders o WHERE o.purchaseForm.pickupOption = :pickupOption AND o.status = :status AND o.purchaseForm.product.pickupDate < :pickupDate")
+    List<Orders> findByStatusAndPickupOptionAndPickupDateBefore(PickupOption pickupOption, OrderStatus status, LocalDate pickupDate);
+
+    @Query("SELECT o FROM Orders o WHERE o.purchaseForm.pickupOption = :pickupOption AND o.status = :status AND o.createdAt = :threeDaysAgo")
+    List<Orders> findByStatusAndPickupOptionAndCreatedAt(PickupOption pickupOption, OrderStatus status, LocalDate threeDaysAgo);
 }
