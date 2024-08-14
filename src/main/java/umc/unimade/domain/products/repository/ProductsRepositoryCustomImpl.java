@@ -8,6 +8,7 @@ import umc.unimade.domain.products.entity.Products;
 import umc.unimade.domain.products.entity.QProducts;
 import umc.unimade.domain.favorite.entity.QFavoriteProduct;
 import com.querydsl.core.types.OrderSpecifier;
+import umc.unimade.domain.products.entity.SortType;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Products> findProductsByFilters(List<Long> categoryIds, String keyword, Long minPrice, Long maxPrice, String sort, Long cursor, int pageSize) {
+    public List<Products> findProductsByFilters(List<Long> categoryIds, String keyword, Long minPrice, Long maxPrice, SortType sort, int offset, int pageSize) {
         QProducts products = QProducts.products;
         QFavoriteProduct favoriteProduct = QFavoriteProduct.favoriteProduct;
 
@@ -27,12 +28,12 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
                         categoryIn(categoryIds),
                         keywordContains(keyword),
                         priceBetween(minPrice, maxPrice),
-                        cursorLessThan(cursor),
                         statusEq(ProductStatus.SELLING)
                 )
                 .groupBy(products.id)
                 .orderBy(getSortOrder(sort, products, favoriteProduct))
-                .limit(pageSize)
+                .offset(offset)  // 오프셋 지정
+                .limit(pageSize) // 페이지 크기 지정
                 .fetch();
     }
 
@@ -58,23 +59,18 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
         return QProducts.products.price.between(minPrice, maxPrice);
     }
 
-    private BooleanExpression cursorLessThan(Long cursor) {
-        return cursor != null ? QProducts.products.id.lt(cursor) : null;
-    }
-
     private BooleanExpression statusEq(ProductStatus status) {
         return QProducts.products.status.eq(status);
     }
 
-    private OrderSpecifier<?> getSortOrder(String sort, QProducts products, QFavoriteProduct favoriteProduct) {
-        if (sort == null || sort.isEmpty()) {
-            sort = "favorite";
+    private OrderSpecifier<?> getSortOrder(SortType sort, QProducts products, QFavoriteProduct favoriteProduct) {
+        if (sort == null) {
+            sort = SortType.FAVORITE;
         }
         return switch (sort) {
-            case "favorite" -> favoriteProduct.id.count().desc();
-            case "latest" -> products.createdAt.desc();
-            case "deadline" -> products.deadline.asc();
-            default -> products.id.desc();
+            case FAVORITE -> favoriteProduct.id.count().desc();
+            case LATEST -> products.createdAt.desc();
+            case DEADLINE -> products.deadline.asc();
         };
     }
 }

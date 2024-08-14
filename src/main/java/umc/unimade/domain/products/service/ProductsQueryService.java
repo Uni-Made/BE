@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.products.dto.ProductsListResponse;
+import umc.unimade.domain.products.entity.SortType;
 import umc.unimade.domain.products.repository.ProductRepository;
 import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.products.entity.Products;
@@ -34,13 +35,11 @@ public class ProductsQueryService {
     }
 
     @Transactional
-    public ProductsListResponse findProductsByFilters(List<Long> categoryIds, String keyword, Long minPrice, Long maxPrice, String sort, Long cursor, int pageSize) {
-        List<Products> products = productRepository.findProductsByFilters(categoryIds, keyword, minPrice, maxPrice, sort, cursor, pageSize);
-
-        Long nextCursor = products.isEmpty() ? null : products.get(products.size() - 1).getId();
+    public ProductsListResponse findProductsByFilters(List<Long> categoryIds, String keyword, Long minPrice, Long maxPrice, SortType sort, int offset, int pageSize) {
+        List<Products> products = productRepository.findProductsByFilters(categoryIds, keyword, minPrice, maxPrice, sort, offset, pageSize);
         boolean isLast = products.size() < pageSize;
-
-        return ProductsListResponse.from(products, nextCursor, isLast);
+        int nextOffset = offset + products.size();
+        return ProductsListResponse.from(products, nextOffset, isLast);
     }
 
     private Products findProductById(Long productId){

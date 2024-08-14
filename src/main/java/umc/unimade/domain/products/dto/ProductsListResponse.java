@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Builder
 public class ProductsListResponse {
     private List<ProductInfo> productsList;
-    private Long nextCursor;
+    private int nextOffset;
     private Boolean isLast;
 
     @Getter
@@ -39,13 +39,13 @@ public class ProductsListResponse {
         }
     }
 
-    public static ProductsListResponse from(List<Products> productsList, Long nextCursor, Boolean isLast) {
+    public static ProductsListResponse from(List<Products> productsList,int nextOffset, Boolean isLast) {
         List<ProductInfo> products = productsList.stream()
                 .map(ProductInfo::from)
                 .collect(Collectors.toList());
         return ProductsListResponse.builder()
                 .productsList(products)
-                .nextCursor(nextCursor)
+                .nextOffset(nextOffset)
                 .isLast(isLast)
                 .build();
     }
