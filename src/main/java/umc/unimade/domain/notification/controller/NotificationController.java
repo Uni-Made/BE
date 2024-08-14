@@ -11,7 +11,7 @@ import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.notification.dto.NotificationListResponse;
 import umc.unimade.domain.notification.dto.SellerNotificationListResponse;
-import umc.unimade.domain.notification.service.NotificationService;
+import umc.unimade.domain.notification.service.BuyerNotificationService;
 import umc.unimade.domain.notification.service.SellerNotificationService;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
@@ -21,7 +21,7 @@ import umc.unimade.global.security.LoginSeller;
 @RestController
 @RequiredArgsConstructor
 public class  NotificationController {
-    private final NotificationService notificationService;
+    private final BuyerNotificationService buyerNotificationService;
     private final SellerNotificationService sellerNotificationService;
 
     @Tag(name = "Notification")
@@ -31,7 +31,7 @@ public class  NotificationController {
                                                                                            @RequestParam(required = false) Long cursor,
                                                                                            @RequestParam int pageSize) {
         try{
-            return ResponseEntity.ok(ApiResponse.onSuccess(notificationService.getNotificationList(buyer, cursor, pageSize)));
+            return ResponseEntity.ok(ApiResponse.onSuccess(buyerNotificationService.getNotificationList(buyer, cursor, pageSize)));
         }catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (UserExceptionHandler e) {
