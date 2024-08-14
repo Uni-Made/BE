@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.entity.FavoriteSeller;
+import umc.unimade.domain.notification.entity.BuyerNotification;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.review.entity.ReportStatus;
@@ -76,6 +77,9 @@ public class Buyer extends BaseEntity {
 
     @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Orders> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "buyer",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BuyerNotification> notifications;
 
     @PostPersist
     private void setRoleAndStatus() {

@@ -19,7 +19,7 @@ public class BuyerNotification extends BaseEntity {
     @Column(name = "notification_id", nullable = false)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 
