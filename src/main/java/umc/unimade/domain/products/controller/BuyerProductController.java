@@ -10,6 +10,7 @@ import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
 import umc.unimade.domain.products.dto.ProductResponse;
 import umc.unimade.domain.products.dto.ProductsListResponse;
+import umc.unimade.domain.products.entity.SortType;
 import umc.unimade.domain.products.entity.ViewType;
 import umc.unimade.domain.products.exception.ProductsExceptionHandler;
 import umc.unimade.domain.products.service.ProductsCommandService;
@@ -65,16 +66,21 @@ public class BuyerProductController extends BaseEntity {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long minPrice,
             @RequestParam(required = false) Long maxPrice,
-            @RequestParam(required = false) String sort,
-            @RequestParam(required = false) Long cursor,
+            @RequestParam SortType sort,
+            @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int pageSize) {
 
         try {
-            return ResponseEntity.ok(ApiResponse.onSuccess(productsQueryService.findProductsByFilters(categoryIds, keyword, minPrice, maxPrice, sort, cursor, pageSize)));
+            ProductsListResponse response = productsQueryService.findProductsByFilters(
+                    categoryIds, keyword, minPrice, maxPrice, sort, offset, pageSize);  // 변경: cursor를 offset으로 대체
+
+            return ResponseEntity.ok(ApiResponse.onSuccess(response));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.onFailure(HttpStatus.BAD_REQUEST.name(), e.getMessage()));
         } catch (ProductsExceptionHandler e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.onFailure(ErrorCode.PRODUCT_NOT_FOUND.getCode(), ErrorCode.PRODUCT_NOT_FOUND.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.onFailure(ErrorCode.PRODUCT_NOT_FOUND.getCode(), ErrorCode.PRODUCT_NOT_FOUND.getMessage()));
         }
     }
 }
