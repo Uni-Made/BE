@@ -37,7 +37,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class NotificationService {
+public class BuyerNotificationService {
     private final BuyerRepository buyerRepository;
     private final OrderRepository orderRepository;
     private final QuestionsRepository questionsRepository;
@@ -179,7 +179,6 @@ public class NotificationService {
                         .buyer(buyer)
                         .title(notificationRequest.getTitle())
                         .body(notificationRequest.getBody())
-                        .extraId(notificationRequest.getId())
                         .build();
                 buyerNotificationRepository.save(notification);
             }
