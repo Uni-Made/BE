@@ -179,6 +179,7 @@ public class BuyerNotificationService {
                         .buyer(buyer)
                         .title(notificationRequest.getTitle())
                         .body(notificationRequest.getBody())
+                        .extraId(notificationRequest.getId())
                         .build();
                 buyerNotificationRepository.save(notification);
             }
