@@ -17,9 +17,6 @@ public class Answers extends BaseEntity {
     @Column(name = "answer_id", nullable = false)
     private Long id;
 
-    @Column(name = "title", nullable = false)
-    private String title;
-
     @Column(name = "content", nullable = false)
     private String content;
 

@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class AnswerResponse {
     private Long answerId;
     private String seller;
-    private String title;
     private String content;
     private Boolean isPrivate;
     private LocalDateTime createdAt;
@@ -21,7 +20,6 @@ public class AnswerResponse {
         return AnswerResponse.builder()
                 .answerId(answer.getId())
                 .seller(answer.getSeller().getName())
-                .title(answer.getTitle())
                 .content(answer.getContent())
                 .isPrivate(answer.getIsPrivate())
                 .createdAt(answer.getCreatedAt())

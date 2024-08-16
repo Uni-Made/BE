@@ -51,7 +51,6 @@ public class QnAListResponse {
     @Builder
     public static class AnswerInfo {
         private Long answerId;
-        private String title;
         private String content;
         private String seller;
         private Boolean isPrivate;
@@ -60,7 +59,6 @@ public class QnAListResponse {
         public static AnswerInfo from(Answers answer) {
             return AnswerInfo.builder()
                     .answerId(answer.getId())
-                    .title(answer.getTitle())
                     .content(answer.getContent())
                     .seller(answer.getSeller().getName())
                     .isPrivate(answer.getIsPrivate())
