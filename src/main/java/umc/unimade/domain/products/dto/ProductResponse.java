@@ -34,6 +34,8 @@ public class ProductResponse {
     private Integer favoriteCount;
     private List<OptionResponse> options;
     private PickupOption pickupOption;
+    private LocalDate pickupDate;
+    private String pickupLocation;
     private ProductDetailResponse detail;
     private ReviewListResponse reviews;
     private QnAListResponse questions;
@@ -57,6 +59,8 @@ public class ProductResponse {
                         .map(OptionResponse::from)
                         .collect(Collectors.toList()))
                 .pickupOption(product.getPickupOption())
+                .pickupDate(product.getPickupDate())
+                .pickupLocation(product.getPickupLocation())
                 .build();
     }
 
