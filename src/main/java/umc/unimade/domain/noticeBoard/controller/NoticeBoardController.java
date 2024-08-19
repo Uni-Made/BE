@@ -44,10 +44,13 @@ public class NoticeBoardController {
     @GetMapping()
     public ApiResponse<Page<NoticeBoardsResponse>> getNotices(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "DESC") String sortDirection,
+            @RequestParam(required = false) String keyword
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<NoticeBoardsResponse> responsePage = noticeBoardQueryService.getNotices(pageable);
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection.toUpperCase());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "createdAt"));
+        Page<NoticeBoardsResponse> responsePage = noticeBoardQueryService.getNotices(pageable, keyword);
         return ApiResponse.onSuccess(responsePage);
     }
 
