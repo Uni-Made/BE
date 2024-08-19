@@ -32,8 +32,14 @@ public class NoticeBoardQueryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<NoticeBoardsResponse> getNotices(Pageable pageable) {
-        Page<NoticeBoard> noticeBoards = noticeBoardRepository.findAll(pageable);
+    public Page<NoticeBoardsResponse> getNotices(Pageable pageable, String keyword) {
+        Page<NoticeBoard> noticeBoards;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            noticeBoards = noticeBoardRepository.findByTitleContaining(keyword, pageable);
+        } else {
+            noticeBoards = noticeBoardRepository.findAll(pageable);
+        }
         return noticeBoards.map(NoticeBoardsResponse::from);
     }
 }
