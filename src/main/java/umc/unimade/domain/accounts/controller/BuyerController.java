@@ -8,11 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import umc.unimade.domain.accounts.dto.BuyerInfoRequestDto;
-import umc.unimade.domain.accounts.dto.BuyerProfileRequestDto;
-import umc.unimade.domain.accounts.dto.SellerPageResponse;
+import umc.unimade.domain.accounts.dto.*;
 import umc.unimade.domain.orders.dto.BuyerOrderHistoryResponse;
-import umc.unimade.domain.accounts.dto.BuyerPageResponse;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.service.BuyerCommandService;
 import umc.unimade.domain.accounts.service.BuyerQueryService;
@@ -131,11 +128,18 @@ public class BuyerController {
         return ResponseEntity.ok(sellerPage);
     }
 
+    @Tag(name = "Buyer", description = "구매자 기본 정보")
+    @Operation(summary = "구매자 기본 정보")
+    @PatchMapping("/info")
+    public ApiResponse<BuyerUpdateInfoResponseDto> buyerInfo(@LoginBuyer Buyer buyer) {
+        return ApiResponse.onSuccess(buyerCommandService.buyerInfo(buyer));
+    }
+
     @Tag(name = "Buyer", description = "구매자 정보수정")
     @Operation(summary = "구매자 정보 수정")
     @PatchMapping("/update/info")
-    public ApiResponse<Boolean> updateBuyerInfo(@LoginBuyer Buyer buyer,
-                               @RequestBody BuyerInfoRequestDto buyerInfoRequestDto) {
+    public ApiResponse<BuyerUpdateInfoResponseDto> updateBuyerInfo(@LoginBuyer Buyer buyer,
+                                                                   @RequestBody BuyerInfoRequestDto buyerInfoRequestDto) {
         return ApiResponse.onSuccess(buyerCommandService.updateBuyerInfo(buyer, buyerInfoRequestDto));
     }
 

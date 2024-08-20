@@ -116,9 +116,8 @@ public class Buyer extends BaseEntity {
         status = newStatus;
     }
 
-    public void updateBuyerInfo(String name, String phone) {
+    public void updateBuyerInfo(String name) {
         this.name = name;
-        this.phone = phone;
     }
 
     public void updateBuyerProfile(String profile) {
