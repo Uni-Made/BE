@@ -141,7 +141,7 @@ public class SellerController {
 
     @Tag(name = "Seller", description = "판매자 기본 정보")
     @Operation(summary = "판매자 기본 정보")
-    @PatchMapping("/info")
+    @GetMapping("/info")
     public ApiResponse<SellerInfoResponseDto> sellerInfo(@LoginSeller Seller seller) {
         return ApiResponse.onSuccess(sellerCommandService.sellerInfo(seller));
     }
