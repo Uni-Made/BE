@@ -8,4 +8,5 @@ import lombok.Getter;
 public class SellerInfoRequestDto {
     private String name;
     private String password;
+    private String newPassword;
 }

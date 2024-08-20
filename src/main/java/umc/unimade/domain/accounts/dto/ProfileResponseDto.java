@@ -5,6 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class BuyerProfileRequestDto {
+public class ProfileResponseDto {
     private String profileImage;
+
+    public static ProfileResponseDto of(String profileImage) {
+        return new ProfileResponseDto(profileImage);
+    }
 }
