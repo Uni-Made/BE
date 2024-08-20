@@ -27,7 +27,9 @@ public class ReviewListResponse {
     @Builder
     public static class ReviewPreview {
         private Long reviewId;
-        private String buyer;
+        private Long buyerId;
+        private String buyerName;
+        private String profileImgUrl;
         private List<String> options;
         private String title;
         private Integer ratingStar;
@@ -41,7 +43,9 @@ public class ReviewListResponse {
                     .collect(Collectors.toList());
             return ReviewPreview.builder()
                     .reviewId(review.getId())
-                    .buyer(review.getBuyer().getName())
+                    .buyerId(review.getBuyer().getId())
+                    .buyerName(review.getBuyer().getName())
+                    .profileImgUrl(review.getBuyer().getProfileImage())
                     .options(options)
                     .title(review.getTitle())
                     .ratingStar(review.getRatingStar())
