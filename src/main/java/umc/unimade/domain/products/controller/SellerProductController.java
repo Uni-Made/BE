@@ -41,7 +41,7 @@ public class SellerProductController extends BaseEntity {
     // 상품 수정
     @Tag(name = "Products")
     @Operation(summary = "상품 수정")
-    @PutMapping(value = "/{productId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/{productId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ApiResponse<ProductUpdateResponse>> updateProduct(@LoginSeller Seller seller,
                                                                             @PathVariable Long productId,
                                                                             @RequestPart("updateProductDto") ProductRequest.UpdateProductDto request,
