@@ -3,8 +3,9 @@ package umc.unimade.domain.accounts.service;
 import lombok.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.dto.BuyerInfoRequestDto;
-import umc.unimade.domain.accounts.dto.BuyerProfileRequestDto;
+import umc.unimade.domain.accounts.dto.ProfileResponseDto;
 import umc.unimade.domain.accounts.dto.BuyerUpdateInfoResponseDto;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
@@ -14,6 +15,8 @@ import umc.unimade.domain.favorite.repository.FavoriteSellerRepository;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
 import umc.unimade.domain.accounts.exception.UserExceptionHandler;
+import umc.unimade.global.util.s3.S3Provider;
+import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 import java.util.Optional;
 
@@ -24,6 +27,7 @@ public class BuyerCommandService {
 
     private final SellerRepository sellerRepository;
     private final FavoriteSellerRepository favoriteSellerRepository;
+    private final S3Provider s3Provider;
 
     @Transactional
     public ApiResponse<Void> toggleFavoriteSeller(Long sellerId, Buyer buyer){
@@ -65,8 +69,12 @@ public class BuyerCommandService {
     }
 
     @Transactional
-    public Boolean updateBuyerProfile(Buyer buyer, BuyerProfileRequestDto buyerProfileRequestDto){
-        buyer.updateBuyerProfile(buyerProfileRequestDto.getProfileImage());
-        return true;
+    public ProfileResponseDto updateBuyerProfile(Buyer buyer, MultipartFile image){
+        String imageUrl = s3Provider.uploadFile(image, S3UploadRequest.builder()
+                                                                .userId(buyer.getId())
+                                                                .dirName("profileBuyer")
+                                                                .build());
+        buyer.updateBuyerProfile(imageUrl);
+        return ProfileResponseDto.of(imageUrl);
     }
 }

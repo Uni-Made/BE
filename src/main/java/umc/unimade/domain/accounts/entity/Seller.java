@@ -112,4 +112,8 @@ public class Seller extends BaseEntity {
         this.name = name;
         this.password = password;
     }
+
+    public void updateSellerProfile(String imageUrl){
+        this.profileImage = imageUrl;
+    }
 }

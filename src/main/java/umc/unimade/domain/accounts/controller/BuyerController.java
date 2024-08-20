@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.dto.*;
 import umc.unimade.domain.orders.dto.BuyerOrderHistoryResponse;
 import umc.unimade.domain.accounts.entity.Buyer;
@@ -146,8 +147,8 @@ public class BuyerController {
     @Tag(name = "Buyer", description = "구매자 프로필 수정")
     @Operation(summary = "구매자 프로필 수정")
     @PatchMapping("/update/profile")
-    public ApiResponse<Boolean> updateBuyerProfile(@LoginBuyer Buyer buyer,
-                                                   @RequestBody BuyerProfileRequestDto buyerProfileRequestDto) {
-        return ApiResponse.onSuccess(buyerCommandService.updateBuyerProfile(buyer, buyerProfileRequestDto));
+    public ApiResponse<ProfileResponseDto> updateBuyerProfile(@LoginBuyer Buyer buyer,
+                                                              @RequestPart(name = "image", required = false) MultipartFile image) {
+        return ApiResponse.onSuccess(buyerCommandService.updateBuyerProfile(buyer, image));
     }
 }
