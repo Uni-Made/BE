@@ -54,6 +54,11 @@ public class BuyerCommandService {
     }
 
     @Transactional
+    public BuyerUpdateInfoResponseDto buyerInfo(Buyer buyer) {
+        return BuyerUpdateInfoResponseDto.of(buyer.getName());
+    }
+
+    @Transactional
     public BuyerUpdateInfoResponseDto updateBuyerInfo(Buyer buyer, BuyerInfoRequestDto buyerInfoRequestDto) {
         buyer.updateBuyerInfo(buyerInfoRequestDto.getName());
         return BuyerUpdateInfoResponseDto.of(buyer.getName());

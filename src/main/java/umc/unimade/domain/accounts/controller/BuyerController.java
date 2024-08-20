@@ -128,6 +128,13 @@ public class BuyerController {
         return ResponseEntity.ok(sellerPage);
     }
 
+    @Tag(name = "Buyer", description = "구매자 기본 정보")
+    @Operation(summary = "구매자 기본 정보")
+    @PatchMapping("/info")
+    public ApiResponse<BuyerUpdateInfoResponseDto> buyerInfo(@LoginBuyer Buyer buyer) {
+        return ApiResponse.onSuccess(buyerCommandService.buyerInfo(buyer));
+    }
+
     @Tag(name = "Buyer", description = "구매자 정보수정")
     @Operation(summary = "구매자 정보 수정")
     @PatchMapping("/update/info")
