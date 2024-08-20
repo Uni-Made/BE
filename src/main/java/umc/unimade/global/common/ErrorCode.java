@@ -47,6 +47,7 @@ public enum ErrorCode implements BaseErrorCode {
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER4000", "판매자를 찾을 수 없습니다."),
     SELLER_STATUS_IS_NOT_PENDING(HttpStatus.BAD_REQUEST, "SELLER4001", "대기중인 요청만 처리할 수 있습니다."),
     SELLER_STATUS_IS_NOT_PENDING_OR_HOLD(HttpStatus.BAD_REQUEST, "SELLER4002", "대기중 이거나 보류중인 요청만 승인할 수 있습니다."),
+    SELLER_INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "SELLER4003", "비밀번호가 일치하지 않습니다."),
 
     // 구매자 관련 에러
     BUYER_NOT_FOUND(HttpStatus.NOT_FOUND, "BUYER4000", "구매자를 찾을 수 없습니다."),

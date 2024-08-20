@@ -107,4 +107,9 @@ public class Seller extends BaseEntity {
     public void updateDescription(String description) {
         this.description = description;
     }
+
+    public void updateInfo(String name, String password){
+        this.name = name;
+        this.password = password;
+    }
 }

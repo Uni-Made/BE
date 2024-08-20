@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.unimade.domain.accounts.dto.BuyerUpdateInfoResponseDto;
+import umc.unimade.domain.accounts.dto.SellerInfoRequestDto;
 import umc.unimade.domain.accounts.dto.SellerInfoResponseDto;
 import umc.unimade.domain.accounts.dto.SellerMyPageResponse;
 import umc.unimade.domain.accounts.entity.Buyer;
@@ -141,7 +142,15 @@ public class SellerController {
     @Tag(name = "Seller", description = "판매자 기본 정보")
     @Operation(summary = "판매자 기본 정보")
     @PatchMapping("/info")
-    public ApiResponse<SellerInfoResponseDto> buyerInfo(@LoginSeller Seller seller) {
+    public ApiResponse<SellerInfoResponseDto> sellerInfo(@LoginSeller Seller seller) {
         return ApiResponse.onSuccess(sellerCommandService.sellerInfo(seller));
+    }
+
+    @Tag(name = "Seller", description = "판매자 기본 정보")
+    @Operation(summary = "판매자 기본 정보")
+    @PatchMapping("/update/info")
+    public ApiResponse<SellerInfoResponseDto> updateSellerInfo(@LoginSeller Seller seller,
+                                                               @RequestBody SellerInfoRequestDto sellerInfoRequestDto) {
+        return ApiResponse.onSuccess(sellerCommandService.updateSellerInfo(seller, sellerInfoRequestDto));
     }
 }
