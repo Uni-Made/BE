@@ -130,7 +130,7 @@ public class BuyerController {
 
     @Tag(name = "Buyer", description = "구매자 기본 정보")
     @Operation(summary = "구매자 기본 정보")
-    @PatchMapping("/info")
+    @GetMapping("/info")
     public ApiResponse<BuyerUpdateInfoResponseDto> buyerInfo(@LoginBuyer Buyer buyer) {
         return ApiResponse.onSuccess(buyerCommandService.buyerInfo(buyer));
     }
