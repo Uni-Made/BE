@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.unimade.domain.accounts.dto.BuyerInfoRequestDto;
 import umc.unimade.domain.accounts.dto.BuyerProfileRequestDto;
+import umc.unimade.domain.accounts.dto.BuyerUpdateInfoResponseDto;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.repository.SellerRepository;
@@ -53,9 +54,9 @@ public class BuyerCommandService {
     }
 
     @Transactional
-    public Boolean updateBuyerInfo(Buyer buyer, BuyerInfoRequestDto buyerInfoRequestDto) {
-        buyer.updateBuyerInfo(buyerInfoRequestDto.getName(), buyerInfoRequestDto.getPhone());
-        return true;
+    public BuyerUpdateInfoResponseDto updateBuyerInfo(Buyer buyer, BuyerInfoRequestDto buyerInfoRequestDto) {
+        buyer.updateBuyerInfo(buyerInfoRequestDto.getName());
+        return BuyerUpdateInfoResponseDto.of(buyer.getName());
     }
 
     @Transactional

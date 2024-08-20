@@ -8,6 +8,4 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BuyerInfoRequestDto {
     private final String name;
-    private final String phone;
-
 }
