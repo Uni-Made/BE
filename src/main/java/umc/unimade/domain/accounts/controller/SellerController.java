@@ -8,7 +8,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.unimade.domain.accounts.dto.BuyerUpdateInfoResponseDto;
+import umc.unimade.domain.accounts.dto.SellerInfoResponseDto;
 import umc.unimade.domain.accounts.dto.SellerMyPageResponse;
+import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
 import umc.unimade.domain.accounts.service.SellerCommandService;
 import umc.unimade.domain.accounts.service.SellerQueryService;
@@ -23,6 +26,7 @@ import umc.unimade.domain.qna.dto.QuestionResponse;
 import umc.unimade.domain.review.dto.ReviewResponse;
 import umc.unimade.global.common.ApiResponse;
 import umc.unimade.global.common.ErrorCode;
+import umc.unimade.global.security.LoginBuyer;
 import umc.unimade.global.security.LoginSeller;
 
 import java.util.List;
@@ -132,5 +136,12 @@ public class SellerController {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProductOrderResponse> orders = sellerQueryService.getOrdersByProductId(productId, pageable);
         return ResponseEntity.ok(orders);
+    }
+
+    @Tag(name = "Seller", description = "판매자 기본 정보")
+    @Operation(summary = "판매자 기본 정보")
+    @PatchMapping("/info")
+    public ApiResponse<SellerInfoResponseDto> buyerInfo(@LoginSeller Seller seller) {
+        return ApiResponse.onSuccess(sellerCommandService.sellerInfo(seller));
     }
 }
