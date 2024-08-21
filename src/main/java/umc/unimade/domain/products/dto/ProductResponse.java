@@ -36,6 +36,9 @@ public class ProductResponse {
     private PickupOption pickupOption;
     private LocalDate pickupDate;
     private String pickupLocation;
+    private String accountName;
+    private String accountNumber;
+    private String bankName;
     private ProductDetailResponse detail;
     private ReviewListResponse reviews;
     private QnAListResponse questions;
@@ -61,6 +64,9 @@ public class ProductResponse {
                 .pickupOption(product.getPickupOption())
                 .pickupDate(product.getPickupDate())
                 .pickupLocation(product.getPickupLocation())
+                .accountName(product.getAccountName())
+                .accountNumber(product.getAccountNumber())
+                .bankName(product.getBankName())
                 .build();
     }
 
