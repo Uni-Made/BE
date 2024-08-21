@@ -30,6 +30,7 @@ import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -189,6 +190,9 @@ public class ProductsCommandService {
                     })
                     .collect(Collectors.toList());
             product.setProductDetailImages(productDetailImages);
+        }
+        else {
+            product.setProductDetailImages(new ArrayList<>());
         }
     }
 
