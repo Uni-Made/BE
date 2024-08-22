@@ -72,13 +72,20 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
         }
         try {
             String[] parts = cursor.split("_");
-            Object cursorValue = parseCursorValue(parts[0]);
+            String cursorKey = parts[0];
             Long cursorId = parts.length > 1 ? Long.parseLong(parts[1]) : null;
+
+            if ("nextCursor".equals(cursorKey)) {
+                return new CursorInfo(cursorId, cursorId);  // LATEST의 경우 cursorValue는 cursorId로 설정
+            }
+
+            Object cursorValue = parseCursorValue(cursorKey);
             return new CursorInfo(cursorValue, cursorId);
         } catch (Exception e) {
             return new CursorInfo(null, null);
         }
     }
+
 
     private Object parseCursorValue(String cursorPart) {
         if (cursorPart.matches("\\d{4}-\\d{2}-\\d{2}")) {
@@ -100,9 +107,7 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
             case FAVORITE -> products.totalFavorite.lt((Integer) cursorValue)
                     .or(products.totalFavorite.eq((Integer) cursorValue)
                             .and(products.id.lt(cursorId)));
-            case LATEST -> products.createdAt.lt((LocalDateTime) cursorValue)
-                    .or(products.createdAt.eq((LocalDateTime) cursorValue)
-                            .and(products.id.lt(cursorId)));
+            case LATEST -> products.id.lt(cursorId);
             case DEADLINE -> products.deadline.gt((LocalDate) cursorValue)
                     .or(products.deadline.eq((LocalDate) cursorValue)
                             .and(products.id.lt(cursorId)));
@@ -120,7 +125,6 @@ public class ProductsRepositoryCustomImpl implements ProductsRepositoryCustom {
                     products.id.desc()
             };
             case LATEST -> new OrderSpecifier[]{
-                    products.createdAt.desc(),
                     products.id.desc()
             };
             case DEADLINE -> new OrderSpecifier[]{
