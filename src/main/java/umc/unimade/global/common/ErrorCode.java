@@ -23,6 +23,7 @@ public enum ErrorCode implements BaseErrorCode {
     // Products 관련 에러
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT4000", "해당 제품을 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4001", "해당 카테고리를 찾을 수 없습니다."),
+    PRODUCT_IS_NOT_YOURS(HttpStatus.BAD_REQUEST, "PRODUCT4001", "자신의 상품이 아닙니다."),
 
     // Products 관련 에러
     PRODUCT_STATUS_IS_NOT_PENDING(HttpStatus.BAD_REQUEST, "PRODUCT4001", "대기중인 요청만 처리할 수 있습니다."),

@@ -105,6 +105,10 @@ public class ProductsCommandService {
             throw new ProductExceptionHandler(ErrorCode.PRODUCT_STATUS_IS_NOT_SELLING);
         }
 
+        if (!product.getSeller().getId().equals(seller.getId())) {
+            throw new ProductExceptionHandler(ErrorCode.PRODUCT_IS_NOT_YOURS);
+        }
+
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
 
