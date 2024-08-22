@@ -65,6 +65,9 @@ public class Products extends BaseEntity {
     @Column(name = "account_name", nullable = false)
     private String accountName;
 
+    @Column(name = "total_favorite", nullable = false)
+    private Integer totalFavorite = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     @JsonIgnore
@@ -130,4 +133,17 @@ public class Products extends BaseEntity {
     public void setStatus(ProductStatus status) {
         this.status = status;
     }
+
+    public void incrementFavoriteCount() {
+        this.totalFavorite++;
+    }
+
+    public void decrementFavoriteCount() {
+        if (this.totalFavorite > 0) {
+            this.totalFavorite--;
+        }
+    }
+
+    public void setTotalFavorite(Integer totalFavorite)
+    { this.totalFavorite=totalFavorite;}
 }

@@ -1,13 +1,13 @@
 package umc.unimade.domain.products.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.products.dto.OptionCategoryRequest;
@@ -44,24 +44,46 @@ public class ProductsCommandService {
     private final ProductRegisterRepository productRegisterRepository;
     private final CategoryRepository categoryRepository;
     private final S3Provider s3Provider;
-    private final SellerRepository sellerRepository;
+    private final RedisTemplate<String, Integer> redisTemplate;
+    private final AsyncProductService asyncProductService;
+    private static final String TOTAL_FAVORITE_KEY = "product:totalFavorite:";
 
     @Transactional
     public ApiResponse<Void> toggleFavoriteProduct(Long productId, Buyer buyer) {
         Products product = findProductById(productId);
-        Optional<FavoriteProduct> existingFavorite = findFavoriteProduct(product,buyer);
+        Optional<FavoriteProduct> existingFavorite = findFavoriteProduct(product, buyer);
 
         if (existingFavorite.isPresent()) {
-            favoriteProductRepository.delete(existingFavorite.get());
+            removeFavorite(existingFavorite.get(), productId);
             return ApiResponse.CANCELED_LIKE();
-        }else{
-            FavoriteProduct favoriteProduct = FavoriteProduct.builder()
-                    .buyer(buyer)
-                    .product(product)
-                    .build();
-            favoriteProductRepository.save(favoriteProduct);
+        } else {
+            addFavorite(product, buyer, productId);
             return ApiResponse.SUCCESS_LIKE();
         }
+    }
+
+    private void removeFavorite(FavoriteProduct favoriteProduct, Long productId) {
+        favoriteProductRepository.delete(favoriteProduct);
+        updateFavoriteCount(productId, false);
+    }
+
+    private void addFavorite(Products product, Buyer buyer, Long productId) {
+        FavoriteProduct favoriteProduct = FavoriteProduct.builder()
+                .buyer(buyer)
+                .product(product)
+                .build();
+        favoriteProductRepository.save(favoriteProduct);
+        updateFavoriteCount(productId, true);
+    }
+
+    private void updateFavoriteCount(Long productId, boolean increment) {
+        String key = TOTAL_FAVORITE_KEY + productId;
+        if (increment) {
+            redisTemplate.opsForValue().increment(key);
+        } else {
+            redisTemplate.opsForValue().decrement(key);
+        }
+        asyncProductService.updateTotalFavorite(productId);
     }
 
     private Products findProductById(Long productId){

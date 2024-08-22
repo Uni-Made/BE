@@ -67,13 +67,13 @@ public class BuyerProductController extends BaseEntity {
             @RequestParam(required = false) Long minPrice,
             @RequestParam(required = false) Long maxPrice,
             @RequestParam SortType sort,
-            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "10") int pageSize) {
 
         try {
-            ProductsListResponse response = productsQueryService.findProductsByFilters(
-                    categoryIds, keyword, minPrice, maxPrice, sort, offset, pageSize);  // 변경: cursor를 offset으로 대체
 
+            ProductsListResponse response = productsQueryService.findProductsByFilters(
+                    categoryIds, keyword, minPrice, maxPrice, sort, cursor, pageSize);
             return ResponseEntity.ok(ApiResponse.onSuccess(response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

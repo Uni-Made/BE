@@ -1,5 +1,6 @@
 package umc.unimade.domain.notification.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import umc.unimade.domain.orders.entity.OrderStatus;
 import umc.unimade.domain.orders.entity.Orders;
 import umc.unimade.domain.orders.exception.OrderExceptionHandler;
 import umc.unimade.domain.orders.repository.OrderRepository;
+import umc.unimade.domain.products.dto.ProductsListResponse;
 import umc.unimade.domain.qna.entity.Questions;
 import umc.unimade.domain.qna.exception.QnAExceptionHandler;
 import umc.unimade.domain.qna.repository.QuestionsRepository;
@@ -43,6 +45,8 @@ public class BuyerNotificationService {
     private final QuestionsRepository questionsRepository;
     private final BuyerNotificationRepository buyerNotificationRepository;
     private final RedisUtil redisUtil;
+    private final ObjectMapper objectMapper;
+
 
     /*구매자 알림*/
     public NotificationListResponse getNotificationList(Buyer buyer, Long cursor, int pageSize){
@@ -151,16 +155,28 @@ public class BuyerNotificationService {
     }
 
     private void sendReviewReminderNotification(Buyer buyer,Orders order) {
-        NotificationRequest notificationRequest = new NotificationRequest("리뷰 작성 알림",order.getProduct().getName(), String.valueOf(order.getId()));
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        sendNotification(buyer.getSocialId(), notificationRequest);
-                    }
-                },
-                5 * 60 * 1000 // 5 minutes delay
-        );
+        ProductsListResponse.ProductInfo productInfo = ProductsListResponse.ProductInfo.from(order.getProduct());
+        try {
+            String body = objectMapper.writeValueAsString(productInfo);
+
+            NotificationRequest notificationRequest = new NotificationRequest(
+                    "리뷰 작성 알림",
+                    body,
+                    String.valueOf(order.getId())
+            );
+
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            sendNotification(buyer.getSocialId(), notificationRequest);
+                        }
+                    },
+                    5 * 60 * 1000 // 5 minutes delay
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendNotification(String socialId, NotificationRequest notificationRequest) {
