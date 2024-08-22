@@ -128,6 +128,7 @@ public class ProductRegisterCommandService {
                 .bankName(productRegister.getBankName())
                 .accountNumber(productRegister.getAccountNumber())
                 .accountName(productRegister.getAccountName())
+                .totalFavorite(0)
                 .seller(productRegister.getSeller())
                 .category(productRegister.getCategory())
                 .build();

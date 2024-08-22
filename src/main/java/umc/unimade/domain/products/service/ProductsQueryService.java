@@ -35,12 +35,33 @@ public class ProductsQueryService {
     }
 
     @Transactional
-    public ProductsListResponse findProductsByFilters(List<Long> categoryIds, String keyword, Long minPrice, Long maxPrice, SortType sort, int offset, int pageSize) {
-        List<Products> products = productRepository.findProductsByFilters(categoryIds, keyword, minPrice, maxPrice, sort, offset, pageSize);
+    public ProductsListResponse findProductsByFilters(List<Long> categoryIds, String keyword, Long minPrice, Long maxPrice, SortType sort, String cursor, int pageSize) {
+        List<Products> products = productRepository.findProductsByFilters(categoryIds, keyword, minPrice, maxPrice, sort, cursor, pageSize);
+
+        Object nextCursor = determineNextCursor(products, sort);
         boolean isLast = products.size() < pageSize;
-        int nextOffset = offset + products.size();
-        return ProductsListResponse.from(products, nextOffset, isLast);
+
+        return ProductsListResponse.from(products, nextCursor, isLast);
     }
+
+    private String determineNextCursor(List<Products> products, SortType sort) {
+        if (products.isEmpty()) {
+            return null;
+        }
+
+        Products lastProduct = products.get(products.size() - 1);
+        String cursorValue;
+        String cursorId = String.valueOf(lastProduct.getId());
+
+        cursorValue = switch (sort) {
+            case FAVORITE -> String.valueOf(lastProduct.getTotalFavorite());
+            case LATEST -> String.valueOf(lastProduct.getCreatedAt());
+            case DEADLINE -> String.valueOf(lastProduct.getDeadline());
+        };
+
+        return cursorValue + "_" + cursorId;
+    }
+
 
     private Products findProductById(Long productId){
         return productRepository.findById(productId)
