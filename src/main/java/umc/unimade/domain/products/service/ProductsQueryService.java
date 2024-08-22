@@ -55,7 +55,7 @@ public class ProductsQueryService {
 
         cursorValue = switch (sort) {
             case FAVORITE -> String.valueOf(lastProduct.getTotalFavorite());
-            case LATEST -> String.valueOf(lastProduct.getCreatedAt());
+            case LATEST -> "nextCursor";
             case DEADLINE -> String.valueOf(lastProduct.getDeadline());
         };
 
