@@ -30,6 +30,7 @@ import umc.unimade.global.util.s3.dto.S3UploadRequest;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -126,6 +127,10 @@ public class ProductsCommandService {
             throw new ProductExceptionHandler(ErrorCode.PRODUCT_STATUS_IS_NOT_SELLING);
         }
 
+        if (!product.getSeller().getId().equals(seller.getId())) {
+            throw new ProductExceptionHandler(ErrorCode.PRODUCT_IS_NOT_YOURS);
+        }
+
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
 
@@ -146,10 +151,14 @@ public class ProductsCommandService {
     }
 
     // 상품 삭제
-    public void deleteProduct(Long productId) {
+    public void deleteProduct(Seller seller, Long productId) {
 
         Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (!product.getSeller().getId().equals(seller.getId())) {
+            throw new ProductExceptionHandler(ErrorCode.PRODUCT_IS_NOT_YOURS);
+        }
 
         productRepository.deleteById(productId);
     }
@@ -211,6 +220,9 @@ public class ProductsCommandService {
                     })
                     .collect(Collectors.toList());
             product.setProductDetailImages(productDetailImages);
+        }
+        else {
+            product.setProductDetailImages(new ArrayList<>());
         }
     }
 
