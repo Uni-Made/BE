@@ -67,6 +67,7 @@ public class ProductRegister {
     @Column(name = "reason")
     private String reason;  // 거부 or 보류 사유
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private RegisterType type;  // 등록 요청 or 수정 요청
 
