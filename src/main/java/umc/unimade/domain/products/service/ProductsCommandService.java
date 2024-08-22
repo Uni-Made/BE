@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.unimade.domain.accounts.entity.Buyer;
 import umc.unimade.domain.accounts.entity.Seller;
-import umc.unimade.domain.accounts.repository.SellerRepository;
 import umc.unimade.domain.favorite.entity.FavoriteProduct;
 import umc.unimade.domain.favorite.repository.FavoriteProductRepository;
 import umc.unimade.domain.products.dto.OptionCategoryRequest;
@@ -45,7 +44,6 @@ public class ProductsCommandService {
     private final ProductRegisterRepository productRegisterRepository;
     private final CategoryRepository categoryRepository;
     private final S3Provider s3Provider;
-    private final SellerRepository sellerRepository;
 
     @Transactional
     public ApiResponse<Void> toggleFavoriteProduct(Long productId, Buyer buyer) {
@@ -105,6 +103,10 @@ public class ProductsCommandService {
             throw new ProductExceptionHandler(ErrorCode.PRODUCT_STATUS_IS_NOT_SELLING);
         }
 
+        if (!product.getSeller().getId().equals(seller.getId())) {
+            throw new ProductExceptionHandler(ErrorCode.PRODUCT_IS_NOT_YOURS);
+        }
+
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.CATEGORY_NOT_FOUND));
 
@@ -125,10 +127,14 @@ public class ProductsCommandService {
     }
 
     // 상품 삭제
-    public void deleteProduct(Long productId) {
+    public void deleteProduct(Seller seller, Long productId) {
 
         Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductExceptionHandler(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (!product.getSeller().getId().equals(seller.getId())) {
+            throw new ProductExceptionHandler(ErrorCode.PRODUCT_IS_NOT_YOURS);
+        }
 
         productRepository.deleteById(productId);
     }

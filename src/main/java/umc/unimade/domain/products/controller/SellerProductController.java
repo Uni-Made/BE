@@ -55,8 +55,9 @@ public class SellerProductController extends BaseEntity {
     @Tag(name = "Products")
     @Operation(summary = "상품 삭제")
     @DeleteMapping("/{productId}")
-    public ApiResponse<Object> deleteProduct(@PathVariable Long productId) {
-        productsCommandService.deleteProduct(productId);
+    public ApiResponse<Object> deleteProduct(@LoginSeller Seller seller,
+                                             @PathVariable Long productId) {
+        productsCommandService.deleteProduct(seller, productId);
         return ApiResponse.noContent();
     }
 
