@@ -141,10 +141,17 @@ public class ProductsCommandService {
         addOptionCategoriesToProduct(request.getOptions(), savedProduct);
 
         // 사진 등록
-        addImagesToProduct(images, seller.getId(), savedProduct);
+        if (images != null && !images.isEmpty()) {
+            addImagesToProduct(images, seller.getId(), savedProduct);
+        } else {
+            productRegister.setProductImages(new ArrayList<>(product.getProductImages()));
+        }
 
-        // 상세 설명 사진 등록
-        addDetailImagesToProduct(detailImages, seller.getId(), savedProduct);
+        if (detailImages != null && !detailImages.isEmpty()) {
+            addDetailImagesToProduct(detailImages, seller.getId(), savedProduct);
+        } else {
+            productRegister.setProductDetailImages(new ArrayList<>(product.getProductDetailImages()));
+        }
 
         ProductUpdateResponse response = ProductUpdateResponse.from(savedProduct);
         return ApiResponse.onSuccess(response);
