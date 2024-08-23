@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {authorize
                         .requestMatchers(HttpMethod.GET, "/admin/notice", "/admin/notice/{noticeBoardId}").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/buyer/**","/qna/question/**").hasRole("BUYER")
+                        .requestMatchers("/buyer/**","/qna/question/**").hasAnyRole("BUYER", "SELLER")
                         .requestMatchers("/seller/**","/qna/answer/**").hasRole("SELLER")
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(swaggerUrls).permitAll()
