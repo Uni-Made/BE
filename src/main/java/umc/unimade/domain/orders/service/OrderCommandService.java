@@ -81,8 +81,8 @@ public class OrderCommandService {
                 .sum();
         order.setTotalPrice(totalPrice);
         orderRepository.save(order);
-        eventPublisher.publishEvent(new OrderRequestEvent(order.getBuyer().getId(),order.getId()));
-        eventPublisher.publishEvent(new OrderedEvent(product.getSeller().getId(), order.getId()));
+//        eventPublisher.publishEvent(new OrderRequestEvent(order.getBuyer().getId(),order.getId()));
+//        eventPublisher.publishEvent(new OrderedEvent(product.getSeller().getId(), order.getId()));
         return OrderResponse.from(order, product, totalPrice);
     }
 

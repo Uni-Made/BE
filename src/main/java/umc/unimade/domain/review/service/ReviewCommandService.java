@@ -51,7 +51,7 @@ public class ReviewCommandService {
             review.setReviewImages(reviewImages);
         }
         reviewRepository.save(review);
-        eventPublisher.publishEvent(new ReviewPostedEvent(order.getProduct().getSeller().getId(), review.getId()));
+//        eventPublisher.publishEvent(new ReviewPostedEvent(order.getProduct().getSeller().getId(), review.getId()));
     }
 
     @Transactional
